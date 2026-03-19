@@ -224,13 +224,17 @@ class TestWhenClauseGating:
         state, _ = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
         assert state["rank"] == 50
 
-    def test_al_always_executes_regardless_of_when(self) -> None:
-        # AL ignores any WHEN clause — it runs unconditionally
+    def test_al_respects_when_clause(self) -> None:
+        # AL respects WHEN — skipped when condition is False, runs when True
         actions = [("AL", "quality_score", "esg_score", "+", "rank", "preferred_supplier = True")]
-        attrs = {"quality_score": 80, "esg_score": 70, "preferred_supplier": False}
-        state, _ = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
-        # AL must run even though preferred_supplier is False
-        assert state["rank"] == 150
+        attrs_false = {"quality_score": 80, "esg_score": 70, "preferred_supplier": False}
+        attrs_true  = {"quality_score": 80, "esg_score": 70, "preferred_supplier": True}
+        state_false, _ = evaluate_actions(actions, BASE_REQUEST, attrs_false, FIX_IN_KEYS)
+        state_true,  _ = evaluate_actions(actions, BASE_REQUEST, attrs_true,  FIX_IN_KEYS)
+        # WHEN False → rank not written (action skipped)
+        assert "rank" not in state_false
+        # WHEN True → rank = 80 + 70 = 150
+        assert state_true["rank"] == 150
 
     def test_when_with_and_condition(self) -> None:
         # Both sub-conditions must be True
@@ -281,49 +285,72 @@ class TestWhenClauseGating:
 # 4. rank ordering in supplier_results output
 # ===========================================================================
 
+def _make_supplier_with_pricing(
+    supplier_id: str,
+    unit_price: float,
+    **kwargs,
+) -> dict:
+    """Set unit_price and cost_total (unit_price × BASE_REQUEST quantity=5) in attrs."""
+    s = _make_supplier(supplier_id=supplier_id, **kwargs)
+    s["attributes"]["unit_price"]  = unit_price
+    s["attributes"]["cost_total"]  = unit_price * BASE_REQUEST["quantity"]  # qty=5
+    return s
+
+
 class TestRankOrdering:
-    def test_supplier_results_sorted_descending_by_cost_rank_score(self) -> None:
-        # Suppliers are sorted by cost_rank_score DESC, not rank.
+    # BASE_REQUEST: quantity=5, budget=10_000, category_l2="Laptops"
+    # Historical avg for IT/Laptops ≈ 965 EUR/unit (n=29)
+    # budget per unit = 2_000; 5% overage cap → cost_total > 10_500 → penalty=0
+    # All test unit_prices are above hist avg so base_cost_score = hist_avg/unit_price < 1
+
+    def test_supplier_results_sorted_descending_by_normalized_rank(self) -> None:
+        # Lower unit_price → higher base_cost_score → higher normalized_rank
+        # SUP-A: 1100/unit (cheapest)  SUP-B: 1500  SUP-C: 2000 (most expensive)
+        # All within budget (cost_totals: 5500, 7500, 10000)
         suppliers = [
-            _make_supplier(supplier_id="SUP-A", cost_rank_score=30.0),
-            _make_supplier(supplier_id="SUP-B", cost_rank_score=80.0),
-            _make_supplier(supplier_id="SUP-C", cost_rank_score=55.0),
+            _make_supplier_with_pricing("SUP-A", 1100.0),
+            _make_supplier_with_pricing("SUP-B", 1500.0),
+            _make_supplier_with_pricing("SUP-C", 2000.0),
         ]
         result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], suppliers, FIX_IN_KEYS
         )
-        scores = [r[2].get("cost_rank_score", 0) for r in result["supplier_results"]]
+        scores = [r[1] for r in result["supplier_results"]]
         assert scores == sorted(scores, reverse=True)
 
-    def test_highest_cost_rank_score_supplier_is_first(self) -> None:
+    def test_lowest_unit_price_supplier_is_first(self) -> None:
         suppliers = [
-            _make_supplier(supplier_id="SUP-LOW", cost_rank_score=10.0),
-            _make_supplier(supplier_id="SUP-HIGH", cost_rank_score=90.0),
+            _make_supplier_with_pricing("SUP-EXPENSIVE", 2000.0),
+            _make_supplier_with_pricing("SUP-CHEAP", 1200.0),
         ]
         result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], suppliers, FIX_IN_KEYS
         )
-        assert result["supplier_results"][0][0]["supplier_id"] == "SUP-HIGH"
+        assert result["supplier_results"][0][0]["supplier_id"] == "SUP-CHEAP"
 
-    def test_cost_rank_score_modified_by_oslm_affects_ordering(self) -> None:
-        # SUP-A starts cost_rank_score=50, preferred → +30 bonus → 80
-        # SUP-B starts cost_rank_score=70, not preferred → stays 70
-        actions = [
-            ("OSLM", "cost_rank_score", "30", "+", "cost_rank_score",
-             "preferred_supplier = True"),
+    def test_over_budget_supplier_gets_zero_cost_score(self) -> None:
+        # SUP-OVER: unit_price=2200 → cost_total=11_000 (10% over budget=10_000 → penalty=0)
+        # SUP-UNDER: unit_price=1200 → cost_total=6_000 (within budget → penalty=1.0)
+        # Supplier with rep_score=0: normalized_rank = 0.95*0 + 0.025*0 + 0.025*1 = 0.025
+        suppliers = [
+            _make_supplier_with_pricing("SUP-OVER", 2200.0),
+            _make_supplier_with_pricing("SUP-UNDER", 1200.0),
         ]
-        sup_a = _make_supplier(
-            supplier_id="SUP-A", cost_rank_score=50.0, preferred_supplier=True
-        )
-        sup_b = _make_supplier(
-            supplier_id="SUP-B", cost_rank_score=70.0, preferred_supplier=False
-        )
-
         result, _ = run_procurement_evaluation(
-            BASE_REQUEST, SCHEMA, actions, [sup_a, sup_b], FIX_IN_KEYS
+            BASE_REQUEST, SCHEMA, [], suppliers, FIX_IN_KEYS
         )
-        ids = [r[0]["supplier_id"] for r in result["supplier_results"]]
-        assert ids[0] == "SUP-A"  # boosted cost_rank_score = 80
+        assert result["supplier_results"][0][0]["supplier_id"] == "SUP-UNDER"
+        over_rank = result["supplier_results"][1][2].get("normalized_rank")
+        import pytest as _pytest
+        assert over_rank == _pytest.approx(0.025)  # 0.95*0 + 0.025*0 + 0.025*1
+
+    def test_normalized_rank_is_in_zero_to_one_range(self) -> None:
+        s = _make_supplier_with_pricing("SUP-X", 1500.0)
+        result, _ = run_procurement_evaluation(
+            BASE_REQUEST, SCHEMA, [], [s], FIX_IN_KEYS
+        )
+        rank = result["supplier_results"][0][1]
+        assert 0.0 <= rank <= 1.0
 
     def test_empty_filtered_list_returns_empty_results(self) -> None:
         # All suppliers are in wrong category
@@ -363,10 +390,15 @@ class TestMissingFixIn:
         assert "request_id" not in ctx
         assert "rank" not in ctx
 
-    def test_missing_fix_in_raised_by_run_procurement_evaluation(self) -> None:
+    def test_missing_fix_in_continues_with_partial_context(self) -> None:
+        # ISSUE-022: run_procurement_evaluation must NOT crash when fix_in fields
+        # are missing.  It should build a partial context and let the evaluation
+        # complete so the escalation engine can surface the missing fields.
         incomplete = {k: v for k, v in BASE_REQUEST.items() if k != "category_l1"}
-        with pytest.raises(KeyError, match="category_l1"):
-            run_procurement_evaluation(incomplete, SCHEMA, [], [], FIX_IN_KEYS)
+        result, log = run_procurement_evaluation(incomplete, SCHEMA, [], [], FIX_IN_KEYS)
+        # Evaluation should succeed and return an empty supplier list (no suppliers
+        # matched because category_l1 is absent from global_context).
+        assert "supplier_results" in result
 
 
 # ===========================================================================
@@ -1070,54 +1102,52 @@ class TestCostTotalBaseComputation:
 # ===========================================================================
 
 class TestLexicographicSort:
-    def test_cost_rank_score_tiebreak_by_reputation_score(self) -> None:
-        """When cost_rank_score is equal, reputation_score decides order."""
-        sup_a = _make_supplier(
-            supplier_id="SUP-A", cost_rank_score=50.0, reputation_score=80.0
-        )
-        sup_b = _make_supplier(
-            supplier_id="SUP-B", cost_rank_score=50.0, reputation_score=60.0
-        )
+    def test_reputation_score_breaks_tie_when_unit_price_equal(self) -> None:
+        """Same unit_price → same cost component; reputation_score (2.5%) decides order."""
+        sup_a = _make_supplier_with_pricing("SUP-A", 1500.0, reputation_score=80.0)
+        sup_b = _make_supplier_with_pricing("SUP-B", 1500.0, reputation_score=60.0)
         result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], [sup_a, sup_b], FIX_IN_KEYS
         )
         ids = [r[0]["supplier_id"] for r in result["supplier_results"]]
-        assert ids[0] == "SUP-A"  # higher reputation_score wins tiebreak
+        assert ids[0] == "SUP-A"  # higher reputation wins when cost tied
 
-    def test_cost_rank_score_dominates_over_reputation_score(self) -> None:
-        """Higher cost_rank_score always beats lower one regardless of reputation."""
-        sup_a = _make_supplier(
-            supplier_id="SUP-A", cost_rank_score=80.0, reputation_score=20.0
-        )
-        sup_b = _make_supplier(
-            supplier_id="SUP-B", cost_rank_score=40.0, reputation_score=99.0
-        )
+    def test_cost_dominates_over_reputation(self) -> None:
+        """Lower unit_price (95% weight) always beats higher reputation (2.5% weight)."""
+        # SUP-A: 1200/unit, rep=0  → high cost_score, low rep_norm → wins on cost
+        # SUP-B: 2000/unit, rep=100 → lower cost_score, max rep_norm → still loses
+        sup_a = _make_supplier_with_pricing("SUP-A", 1200.0, reputation_score=0.0)
+        sup_b = _make_supplier_with_pricing("SUP-B", 2000.0, reputation_score=100.0)
         result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], [sup_a, sup_b], FIX_IN_KEYS
         )
         ids = [r[0]["supplier_id"] for r in result["supplier_results"]]
         assert ids[0] == "SUP-A"
 
-    def test_rank_field_retained_in_output_for_transparency(self) -> None:
-        s = _make_supplier(rank=75)
+    def test_normalized_rank_returned_as_tuple_rank(self) -> None:
+        """The rank value in the supplier_results tuple is normalized_rank in [0, 1]."""
+        s = _make_supplier_with_pricing("SUP-X", 1500.0)
         result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], [s], FIX_IN_KEYS
         )
         _, rank, _ = result["supplier_results"][0]
-        assert rank == 75
+        assert 0.0 <= rank <= 1.0
 
-    def test_three_suppliers_sorted_by_cost_then_reputation(self) -> None:
+    def test_three_suppliers_sorted_by_normalized_rank(self) -> None:
+        # Lower unit_price → cheaper vs blended avg → higher base_cost_score → first
+        # SUP-A: 1100/unit (cheapest, cost_total=5500)
+        # SUP-B: 1500/unit (mid,     cost_total=7500)
+        # SUP-C: 2000/unit (priciest, cost_total=10000, at budget)
         suppliers = [
-            _make_supplier(supplier_id="C", cost_rank_score=30.0, reputation_score=90.0),
-            _make_supplier(supplier_id="A", cost_rank_score=80.0, reputation_score=50.0),
-            _make_supplier(supplier_id="B", cost_rank_score=80.0, reputation_score=70.0),
+            _make_supplier_with_pricing("SUP-C", 2000.0),
+            _make_supplier_with_pricing("SUP-A", 1100.0),
+            _make_supplier_with_pricing("SUP-B", 1500.0),
         ]
         result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], suppliers, FIX_IN_KEYS
         )
         ids = [r[0]["supplier_id"] for r in result["supplier_results"]]
-        # B beats A on reputation (both cost_rank_score=80), C last
-        assert ids == ["B", "A", "C"]
+        assert ids == ["SUP-A", "SUP-B", "SUP-C"]
 
 
 # ===========================================================================

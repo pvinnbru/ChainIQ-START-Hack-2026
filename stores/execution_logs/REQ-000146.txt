@@ -1,5 +1,5 @@
 REQUEST: REQ-000146
-Timestamp: 2026-03-19T07:32:20.167357+00:00
+Timestamp: 2026-03-19T14:36:49.344057+00:00
 Context: {'category_l1': 'Professional Services', 'category_l2': 'Software Development Services', 'budget': 124800, 'currency': 'EUR', 'quantity': 120, 'amount_unit': 'consulting_day', 'delivery_country': 'FR', 'days_until_required': 40, 'preferred_supplier_mentioned': 'Capgemini Consulting', 'incumbent_supplier': 'Capgemini Consulting', 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Professional Services')]
@@ -168,469 +168,481 @@ SUPPLIER: Capgemini Consulting (SUP-0031) — Data Engineering Services  [EXCLUD
 
 SUPPLIER: Capgemini Consulting (SUP-0031) — Software Development Services
 Pricing: 1050.6 EUR x 120 units = 126071.99999999999
-Final scores: cost_rank=126071.99999999999, reputation=184
+Final scores: normalized_rank=0.182725, cost_rank=True, reputation=84.0, compliance=1.0
 
-  [RULE: ER-001] Escalates to requester clarification due to missing required information.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_requester')
-    Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_requester None → True
+  [RULE: AT-001] Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = "EUR"')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: ER-002] Escalate to Procurement Manager when preferred supplier is restricted.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager')
-    Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_procurement_manager None → True
+  [RULE: AT-002] Sets minimum supplier quotes to 2 for EUR budgets between 25,000 and 99,999.99
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR"')
+    Inputs: immediate = 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: ER-003] Escalates to Head of Strategic Sourcing when value exceeds threshold.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing')
+  [RULE: AT-002] Requires Procurement Manager approval for EUR budgets between 25,000 and 99,999.99
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_head_of_strategic_sourcing None → True
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR" → FAILED
+    Result: escalate_to_procurement_manager [SKIPPED]
 
-  [RULE: ER-004] Escalates to Head of Category when no compliant supplier is found.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category')
+  [RULE: AT-003] Sets minimum supplier quotes to 3 for EUR budgets between 100,000 and 499,999.99
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR"')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR" → PASSED
+    Result: min_supplier_quotes None → 3
+
+  [RULE: AT-003] Requires Head of Category escalation for EUR budgets between 100,000 and 499,999.99
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR" → PASSED
     Result: escalate_to_head_of_category None → True
 
-  [RULE: ER-005] Escalates to Security and Compliance Review due to data residency constraint conflict.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_security_compliance')
+  [RULE: AT-004] Sets minimum supplier quotes to 3 for EUR budgets between 500,000 and 4,999,999.99
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR"')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
+
+  [RULE: AT-004] Requires escalation to Head of Strategic Sourcing for EUR budgets between 500,000 and 4,999,999.99
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_security_compliance None → True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR" → FAILED
+    Result: escalate_to_head_of_strategic_sourcing [SKIPPED]
 
-  [RULE: ER-006] Escalates to Sourcing Excellence Lead due to single-supplier capacity risk.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_sourcing_excellence')
+  [RULE: AT-005] Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 EUR.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR"')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
+
+  [RULE: AT-005] Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 EUR.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_sourcing_excellence None → True
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR" → FAILED
+    Result: escalate_to_cpo [SKIPPED]
 
-  [RULE: ER-007] Escalates to Marketing Governance Lead when a brand safety review is needed.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_marketing_governance')
-    Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_marketing_governance None → True
-
-  [RULE: ER-008] Escalate to Regional Compliance Lead if supplier is not registered or sanctioned-screened in the delivery country and the currency is USD
-    Action: ALI ('ALI', 'currency', '"USD"', '=', 'escalate_to_regional_compliance', 'WHEN currency = "USD"')
-    Inputs: currency = EUR, immediate = USD
-    WHEN: WHEN currency = "USD" → PASSED
-    Result: escalate_to_regional_compliance None → False
-
-  [RULE: CR-001] At least three compliant supplier options must be compared above EUR/CHF 100000
-    Action: ALI ('ALI', 'budget', '100000', '>=', 'min_supplier_quotes', 'WHEN currency = EUR OR currency = CHF')
-    Inputs: budget = 124800, immediate = 100000
-    WHEN: WHEN currency = EUR OR currency = CHF → PASSED
-    Result: min_supplier_quotes None → True
-
-  [RULE: CR-002] Enforces compatibility review for mobile workstation requests above 50 units in IT category
-    Action: ALI ('ALI', 'quantity', '50', '>', 'requires_engineering_review', 'WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations"')
-    Inputs: quantity = 120, immediate = 50
-    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations" → PASSED
-    Result: requires_engineering_review None → True
-
-  [RULE: CR-004] Ensures suppliers are evaluated only if they support data residency requirements for IT/Cloud Compute requests
-    Action: OSLM ('OSLM', 'data_residency_constraint', 'data_residency_supported', 'AND', 'rank', 'WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute"')
-    Inputs: data_residency_constraint = False, data_residency_supported = False
-    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute" → FAILED
-    Result: rank [SKIPPED]
-
-  [RULE: CR-006] Reception and lounge projects require business design sign-off before award
-    Action: ALI ('ALI', 'category_l1', '"Facilities"', '=', 'requires_design_signoff', 'WHEN category_l2 = "Reception and Lounge Furniture"')
-    Inputs: category_l1 = Professional Services, immediate = Facilities
-    WHEN: WHEN category_l2 = "Reception and Lounge Furniture" → PASSED
-    Result: requires_design_signoff None → False
-
-  [RULE: CR-007] Enforces that named consultant CVs or equivalent capability profiles are required for Software Development Services above 60 consulting days
-    Action: ALI ('ALI', 'quantity', '60', '>', 'requires_cv_review', 'WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services"')
-    Inputs: quantity = 120, immediate = 60
-    WHEN: WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services" → PASSED
-    Result: requires_cv_review None → True
-
-  [RULE: CR-008] Cybersecurity advisory suppliers must demonstrate relevant certifications or equivalent references
-    Action: ALI ('ALI', 'category_l1', '"Professional Services"', '=', 'requires_certification_check', 'WHEN category_l2 = "Cybersecurity Advisory"')
-    Inputs: category_l1 = Professional Services, immediate = Professional Services
-    WHEN: WHEN category_l2 = "Cybersecurity Advisory" → PASSED
-    Result: requires_certification_check None → True
-
-  [RULE: CR-010] Enforces brand-safety review for influencer campaigns in the Marketing category
-    Action: ALI ('ALI', 'category_l1', '"Marketing"', '=', 'requires_brand_safety_review', 'WHEN category_l2 = "Influencer Campaign Management"')
-    Inputs: category_l1 = Professional Services, immediate = Marketing
-    WHEN: WHEN category_l2 = "Influencer Campaign Management" → PASSED
-    Result: requires_brand_safety_review None → False
-
-  [RULE: AT-001] Sets the minimum number of supplier quotes required for budgets between 0 and 24,999.99 EUR.
-    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR')
+  [RULE: AT-006] Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = "CHF"')
     Inputs: immediate = 1
-    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes True → 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-002] Set minimum supplier quotes to 2 for mid-value thresholds in EUR
-    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+  [RULE: AT-007] Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF"')
     Inputs: immediate = 2
-    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 1 → 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-002] Escalate to Procurement Manager for mid-value thresholds in EUR
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+  [RULE: AT-007] Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
-    Result: escalate_to_procurement_manager True → True
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_procurement_manager [SKIPPED]
 
-  [RULE: AT-003] Set minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+  [RULE: AT-008] Sets minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 CHF
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 2 → 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-003] Escalate to Head of Category for budgets between 100,000 and 499,999.99 EUR
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+  [RULE: AT-008] Requires Head of Category escalation for budgets between 100,000 and 499,999.99 CHF
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
-    Result: escalate_to_head_of_category True → True
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_head_of_category [SKIPPED]
 
-  [RULE: AT-004] Set minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+  [RULE: AT-009] Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 CHF
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-004] Escalate to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+  [RULE: AT-009] Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 CHF
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
-    Result: escalate_to_head_of_strategic_sourcing True → True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_head_of_strategic_sourcing [SKIPPED]
 
-  [RULE: AT-005] Set minimum supplier quotes to 3 for budgets >= 5,000,000 EUR and escalate to CPO for approval.
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+  [RULE: AT-010] Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-005] Escalate to CPO for approval for budgets >= 5,000,000 EUR.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+  [RULE: AT-010] Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
-    Result: escalate_to_cpo None → True
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_cpo [SKIPPED]
 
-  [RULE: AT-006] Sets minimum supplier quotes to 1 for budgets up to 24,999.99 CHF.
-    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF')
+  [RULE: AT-011] Sets minimum supplier quotes to 1 for USD budgets between 0 and 27,000
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 27000 AND currency = "USD"')
     Inputs: immediate = 1
-    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 3 → 1
+    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-007] Set minimum supplier quotes and escalate to Procurement Manager for mid-value thresholds in CHF currency
-    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF')
+  [RULE: AT-011] Requires business sign-off for USD budgets between 0 and 27,000
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_requester', 'WHEN budget >= 0 AND budget <= 27000 AND currency = "USD"')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = "USD" → FAILED
+    Result: escalate_to_requester [SKIPPED]
+
+  [RULE: AT-012] Sets minimum supplier quotes to 2 for budgets between 27,000 and 108,000 USD
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD"')
     Inputs: immediate = 2
-    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 1 → 2
+    WHEN: WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-008] Set minimum supplier quotes and escalation to Head of Category for mid-value thresholds in CHF currency
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF')
-    Inputs: immediate = 3
-    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 2 → 3
-
-  [RULE: AT-009] Set minimum supplier quotes and escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
-    Inputs: immediate = 3
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 3 → 3
-
-  [RULE: AT-009] Escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
+  [RULE: AT-012] Requires Procurement Manager escalation for budgets between 27,000 and 108,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
-    Result: escalate_to_head_of_strategic_sourcing True → True
+    WHEN: WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD" → FAILED
+    Result: escalate_to_procurement_manager [SKIPPED]
 
-  [RULE: AT-010] Set minimum supplier quotes and escalate to CPO for very high-value contracts in CHF currency
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF')
+  [RULE: AT-013] Sets minimum supplier quotes to 3 for budgets between 108,000 and 540,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-011] Sets minimum supplier quotes to 1 for budgets up to 27,000 USD
-    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 27000 AND currency = USD')
-    Inputs: immediate = 1
-    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 3 → 1
-
-  [RULE: AT-012] Set minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000
-    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
-    Inputs: immediate = 2
-    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 1 → 2
-
-  [RULE: AT-012] Escalate to Procurement Manager for USD budgets between 27,000 and 108,000
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
+  [RULE: AT-013] Requires Head of Category approval for budgets between 108,000 and 540,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
-    Result: escalate_to_procurement_manager True → True
+    WHEN: WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD" → FAILED
+    Result: escalate_to_head_of_category [SKIPPED]
 
-  [RULE: AT-013] Set minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 108000 AND budget <= 540000 AND currency = USD')
+  [RULE: AT-014] Sets minimum supplier quotes to 3 for budgets between 540,000 and 5,400,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD"')
     Inputs: immediate = 3
-    WHEN: WHEN budget > 108000 AND budget <= 540000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 2 → 3
+    WHEN: WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-014] Set minimum supplier quotes and escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
-    Inputs: immediate = 3
-    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 3 → 3
-
-  [RULE: AT-014] Escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
+  [RULE: AT-014] Requires Head of Strategic Sourcing approval for budgets between 540,000 and 5,400,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
-    Result: escalate_to_head_of_strategic_sourcing True → True
+    WHEN: WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD" → FAILED
+    Result: escalate_to_head_of_strategic_sourcing [SKIPPED]
 
-  [RULE: AT-015] Set minimum supplier quotes to 3 for budgets above 5,400,000 USD
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 5400000 AND currency = USD')
+  [RULE: AT-015] Sets minimum supplier quotes to 3 for budgets >= 5,400,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5400000 AND currency = "USD"')
     Inputs: immediate = 3
-    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 5400000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-015] Escalate to CPO for budgets above 5,400,000 USD
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget > 5400000 AND currency = USD')
+  [RULE: AT-015] Requires CPO approval for budgets >= 5,400,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5400000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
-    Result: escalate_to_cpo True → True
+    WHEN: WHEN budget >= 5400000 AND currency = "USD" → FAILED
+    Result: escalate_to_cpo [SKIPPED]
+
+  [RULE: RANKING] Compute intermediate 0.2 * esg_score for reputation_score calculation.
+    Action: OSLM ('OSLM', 'esg_score', '0.2', '*', '_rep_esg')
+    Inputs: esg_score = 76, 0.2 = None
+    WHEN: N/A
+    Result: _rep_esg None → 15.200000000000001
+
+  [RULE: RANKING] Compute intermediate 0.5 * quality_score for reputation_score calculation.
+    Action: OSLM ('OSLM', 'quality_score', '0.5', '*', '_rep_quality')
+    Inputs: quality_score = 89, 0.5 = None
+    WHEN: N/A
+    Result: _rep_quality None → 44.5
+
+  [RULE: RANKING] Compute intermediate -0.3 * risk_score for reputation_score calculation.
+    Action: OSLM ('OSLM', 'risk_score', '-0.3', '*', '_rep_risk_neg')
+    Inputs: risk_score = 19, -0.3 = None
+    WHEN: N/A
+    Result: _rep_risk_neg None → -5.7
+
+  [RULE: RANKING] Compute intermediate 0.3 * (100 - risk_score) for reputation_score calculation.
+    Action: OSLM ('OSLM', '_rep_risk_neg', '30', '+', '_rep_risk')
+    Inputs: _rep_risk_neg = -5.7, 30 = None
+    WHEN: N/A
+    Result: _rep_risk None → 24.3
+
+  [RULE: RANKING] Sum quality and risk components for reputation_score calculation.
+    Action: OSLM ('OSLM', '_rep_quality', '_rep_risk', '+', '_rep_quality_risk')
+    Inputs: _rep_quality = 44.5, _rep_risk = 24.3
+    WHEN: N/A
+    Result: _rep_quality_risk None → 68.8
+
+  [RULE: RANKING] Add ESG component to compute final reputation_score.
+    Action: OSLM ('OSLM', '_rep_quality_risk', '_rep_esg', '+', 'reputation_score')
+    Inputs: _rep_quality_risk = 68.8, _rep_esg = 15.200000000000001
+    WHEN: N/A
+    Result: reputation_score None → 84.0
+
+  [RULE: RANKING] Compute total cost (cost_total) as quantity * unit_price.
+    Action: OSLM ('OSLM', 'quantity', 'unit_price', '*', 'cost_total')
+    Inputs: quantity = 120, unit_price = 1050.6
+    WHEN: N/A
+    Result: cost_total None → 126071.99999999999
+
+  [RULE: RANKING] Compute raw cost rank score (_crs_raw) as 10000000 / (cost_total + 1).
+    Action: OSLM ('OSLM', 'cost_total', '1', '+', '_crs_denom')
+    Inputs: cost_total = 126071.99999999999, 1 = None
+    WHEN: N/A
+    Result: _crs_denom None → 126072.99999999999
+
+  [RULE: RANKING] Cap cost_rank_score at 100 (or use raw value directly if capping unavailable).
+    Action: OSLM ('OSLM', '10000000', '_crs_denom', '/', '_crs_raw')
+    Inputs: 10000000 = None, _crs_denom = 126072.99999999999
+    WHEN: N/A
+    Result: _crs_raw None → 79.31912463414055
+
+  [RULE: RANKING] Compute cost component of rank as cost_rank_score * 100.
+    Action: OSLM ('OSLM', '_crs_raw', '100', '<=', 'cost_rank_score')
+    Inputs: _crs_raw = 79.31912463414055, 100 = None
+    WHEN: N/A
+    Result: cost_rank_score None → True
+
+  [RULE: RANKING] Combine cost component and reputation_score to compute final rank.
+    Action: SRM ('SRM', 'cost_rank_score', '100', '*', '_rank_cost_component')
+    Inputs: cost_rank_score = True, 100 = None
+    WHEN: N/A
+    Result: _rank_cost_component None → 100
 
 SUPPLIER: Capgemini Consulting (SUP-0031) — IT Project Management Services  [EXCLUDED: category_l2 mismatch ('IT Project Management Services' != 'Software Development Services')]
 
 SUPPLIER: Thoughtworks Europe (SUP-0032) — Software Development Services
 Pricing: 1071.0 EUR x 120 units = 128520.0
-Final scores: cost_rank=128520.0, reputation=181
+Final scores: normalized_rank=0.038644, cost_rank=True, reputation=83.89999999999999, compliance=1.0
 
-  [RULE: ER-001] Escalates to requester clarification due to missing required information.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_requester')
-    Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_requester None → True
+  [RULE: AT-001] Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = "EUR"')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: ER-002] Escalate to Procurement Manager when preferred supplier is restricted.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager')
-    Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_procurement_manager None → True
+  [RULE: AT-002] Sets minimum supplier quotes to 2 for EUR budgets between 25,000 and 99,999.99
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR"')
+    Inputs: immediate = 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: ER-003] Escalates to Head of Strategic Sourcing when value exceeds threshold.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing')
+  [RULE: AT-002] Requires Procurement Manager approval for EUR budgets between 25,000 and 99,999.99
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_head_of_strategic_sourcing None → True
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR" → FAILED
+    Result: escalate_to_procurement_manager [SKIPPED]
 
-  [RULE: ER-004] Escalates to Head of Category when no compliant supplier is found.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category')
+  [RULE: AT-003] Sets minimum supplier quotes to 3 for EUR budgets between 100,000 and 499,999.99
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR"')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR" → PASSED
+    Result: min_supplier_quotes None → 3
+
+  [RULE: AT-003] Requires Head of Category escalation for EUR budgets between 100,000 and 499,999.99
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR" → PASSED
     Result: escalate_to_head_of_category None → True
 
-  [RULE: ER-005] Escalates to Security and Compliance Review due to data residency constraint conflict.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_security_compliance')
+  [RULE: AT-004] Sets minimum supplier quotes to 3 for EUR budgets between 500,000 and 4,999,999.99
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR"')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
+
+  [RULE: AT-004] Requires escalation to Head of Strategic Sourcing for EUR budgets between 500,000 and 4,999,999.99
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_security_compliance None → True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR" → FAILED
+    Result: escalate_to_head_of_strategic_sourcing [SKIPPED]
 
-  [RULE: ER-006] Escalates to Sourcing Excellence Lead due to single-supplier capacity risk.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_sourcing_excellence')
+  [RULE: AT-005] Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 EUR.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR"')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
+
+  [RULE: AT-005] Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 EUR.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_sourcing_excellence None → True
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR" → FAILED
+    Result: escalate_to_cpo [SKIPPED]
 
-  [RULE: ER-007] Escalates to Marketing Governance Lead when a brand safety review is needed.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_marketing_governance')
-    Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_marketing_governance None → True
-
-  [RULE: ER-008] Escalate to Regional Compliance Lead if supplier is not registered or sanctioned-screened in the delivery country and the currency is USD
-    Action: ALI ('ALI', 'currency', '"USD"', '=', 'escalate_to_regional_compliance', 'WHEN currency = "USD"')
-    Inputs: currency = EUR, immediate = USD
-    WHEN: WHEN currency = "USD" → PASSED
-    Result: escalate_to_regional_compliance None → False
-
-  [RULE: CR-001] At least three compliant supplier options must be compared above EUR/CHF 100000
-    Action: ALI ('ALI', 'budget', '100000', '>=', 'min_supplier_quotes', 'WHEN currency = EUR OR currency = CHF')
-    Inputs: budget = 124800, immediate = 100000
-    WHEN: WHEN currency = EUR OR currency = CHF → PASSED
-    Result: min_supplier_quotes None → True
-
-  [RULE: CR-002] Enforces compatibility review for mobile workstation requests above 50 units in IT category
-    Action: ALI ('ALI', 'quantity', '50', '>', 'requires_engineering_review', 'WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations"')
-    Inputs: quantity = 120, immediate = 50
-    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations" → PASSED
-    Result: requires_engineering_review None → True
-
-  [RULE: CR-004] Ensures suppliers are evaluated only if they support data residency requirements for IT/Cloud Compute requests
-    Action: OSLM ('OSLM', 'data_residency_constraint', 'data_residency_supported', 'AND', 'rank', 'WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute"')
-    Inputs: data_residency_constraint = False, data_residency_supported = True
-    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute" → FAILED
-    Result: rank [SKIPPED]
-
-  [RULE: CR-006] Reception and lounge projects require business design sign-off before award
-    Action: ALI ('ALI', 'category_l1', '"Facilities"', '=', 'requires_design_signoff', 'WHEN category_l2 = "Reception and Lounge Furniture"')
-    Inputs: category_l1 = Professional Services, immediate = Facilities
-    WHEN: WHEN category_l2 = "Reception and Lounge Furniture" → PASSED
-    Result: requires_design_signoff None → False
-
-  [RULE: CR-007] Enforces that named consultant CVs or equivalent capability profiles are required for Software Development Services above 60 consulting days
-    Action: ALI ('ALI', 'quantity', '60', '>', 'requires_cv_review', 'WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services"')
-    Inputs: quantity = 120, immediate = 60
-    WHEN: WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services" → PASSED
-    Result: requires_cv_review None → True
-
-  [RULE: CR-008] Cybersecurity advisory suppliers must demonstrate relevant certifications or equivalent references
-    Action: ALI ('ALI', 'category_l1', '"Professional Services"', '=', 'requires_certification_check', 'WHEN category_l2 = "Cybersecurity Advisory"')
-    Inputs: category_l1 = Professional Services, immediate = Professional Services
-    WHEN: WHEN category_l2 = "Cybersecurity Advisory" → PASSED
-    Result: requires_certification_check None → True
-
-  [RULE: CR-010] Enforces brand-safety review for influencer campaigns in the Marketing category
-    Action: ALI ('ALI', 'category_l1', '"Marketing"', '=', 'requires_brand_safety_review', 'WHEN category_l2 = "Influencer Campaign Management"')
-    Inputs: category_l1 = Professional Services, immediate = Marketing
-    WHEN: WHEN category_l2 = "Influencer Campaign Management" → PASSED
-    Result: requires_brand_safety_review None → False
-
-  [RULE: AT-001] Sets the minimum number of supplier quotes required for budgets between 0 and 24,999.99 EUR.
-    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR')
+  [RULE: AT-006] Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = "CHF"')
     Inputs: immediate = 1
-    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes True → 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-002] Set minimum supplier quotes to 2 for mid-value thresholds in EUR
-    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+  [RULE: AT-007] Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF"')
     Inputs: immediate = 2
-    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 1 → 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-002] Escalate to Procurement Manager for mid-value thresholds in EUR
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+  [RULE: AT-007] Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
-    Result: escalate_to_procurement_manager True → True
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_procurement_manager [SKIPPED]
 
-  [RULE: AT-003] Set minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+  [RULE: AT-008] Sets minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 CHF
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 2 → 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-003] Escalate to Head of Category for budgets between 100,000 and 499,999.99 EUR
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+  [RULE: AT-008] Requires Head of Category escalation for budgets between 100,000 and 499,999.99 CHF
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
-    Result: escalate_to_head_of_category True → True
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_head_of_category [SKIPPED]
 
-  [RULE: AT-004] Set minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+  [RULE: AT-009] Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 CHF
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-004] Escalate to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+  [RULE: AT-009] Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 CHF
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
-    Result: escalate_to_head_of_strategic_sourcing True → True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_head_of_strategic_sourcing [SKIPPED]
 
-  [RULE: AT-005] Set minimum supplier quotes to 3 for budgets >= 5,000,000 EUR and escalate to CPO for approval.
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+  [RULE: AT-010] Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-005] Escalate to CPO for approval for budgets >= 5,000,000 EUR.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+  [RULE: AT-010] Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
-    Result: escalate_to_cpo None → True
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_cpo [SKIPPED]
 
-  [RULE: AT-006] Sets minimum supplier quotes to 1 for budgets up to 24,999.99 CHF.
-    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF')
+  [RULE: AT-011] Sets minimum supplier quotes to 1 for USD budgets between 0 and 27,000
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 27000 AND currency = "USD"')
     Inputs: immediate = 1
-    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 3 → 1
+    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-007] Set minimum supplier quotes and escalate to Procurement Manager for mid-value thresholds in CHF currency
-    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF')
+  [RULE: AT-011] Requires business sign-off for USD budgets between 0 and 27,000
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_requester', 'WHEN budget >= 0 AND budget <= 27000 AND currency = "USD"')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = "USD" → FAILED
+    Result: escalate_to_requester [SKIPPED]
+
+  [RULE: AT-012] Sets minimum supplier quotes to 2 for budgets between 27,000 and 108,000 USD
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD"')
     Inputs: immediate = 2
-    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 1 → 2
+    WHEN: WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-008] Set minimum supplier quotes and escalation to Head of Category for mid-value thresholds in CHF currency
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF')
-    Inputs: immediate = 3
-    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 2 → 3
-
-  [RULE: AT-009] Set minimum supplier quotes and escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
-    Inputs: immediate = 3
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 3 → 3
-
-  [RULE: AT-009] Escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
+  [RULE: AT-012] Requires Procurement Manager escalation for budgets between 27,000 and 108,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
-    Result: escalate_to_head_of_strategic_sourcing True → True
+    WHEN: WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD" → FAILED
+    Result: escalate_to_procurement_manager [SKIPPED]
 
-  [RULE: AT-010] Set minimum supplier quotes and escalate to CPO for very high-value contracts in CHF currency
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF')
+  [RULE: AT-013] Sets minimum supplier quotes to 3 for budgets between 108,000 and 540,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-011] Sets minimum supplier quotes to 1 for budgets up to 27,000 USD
-    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 27000 AND currency = USD')
-    Inputs: immediate = 1
-    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 3 → 1
-
-  [RULE: AT-012] Set minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000
-    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
-    Inputs: immediate = 2
-    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 1 → 2
-
-  [RULE: AT-012] Escalate to Procurement Manager for USD budgets between 27,000 and 108,000
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
+  [RULE: AT-013] Requires Head of Category approval for budgets between 108,000 and 540,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
-    Result: escalate_to_procurement_manager True → True
+    WHEN: WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD" → FAILED
+    Result: escalate_to_head_of_category [SKIPPED]
 
-  [RULE: AT-013] Set minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 108000 AND budget <= 540000 AND currency = USD')
+  [RULE: AT-014] Sets minimum supplier quotes to 3 for budgets between 540,000 and 5,400,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD"')
     Inputs: immediate = 3
-    WHEN: WHEN budget > 108000 AND budget <= 540000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 2 → 3
+    WHEN: WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-014] Set minimum supplier quotes and escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
-    Inputs: immediate = 3
-    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 3 → 3
-
-  [RULE: AT-014] Escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
+  [RULE: AT-014] Requires Head of Strategic Sourcing approval for budgets between 540,000 and 5,400,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
-    Result: escalate_to_head_of_strategic_sourcing True → True
+    WHEN: WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD" → FAILED
+    Result: escalate_to_head_of_strategic_sourcing [SKIPPED]
 
-  [RULE: AT-015] Set minimum supplier quotes to 3 for budgets above 5,400,000 USD
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 5400000 AND currency = USD')
+  [RULE: AT-015] Sets minimum supplier quotes to 3 for budgets >= 5,400,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5400000 AND currency = "USD"')
     Inputs: immediate = 3
-    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 5400000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-015] Escalate to CPO for budgets above 5,400,000 USD
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget > 5400000 AND currency = USD')
+  [RULE: AT-015] Requires CPO approval for budgets >= 5,400,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5400000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
-    Result: escalate_to_cpo True → True
+    WHEN: WHEN budget >= 5400000 AND currency = "USD" → FAILED
+    Result: escalate_to_cpo [SKIPPED]
+
+  [RULE: RANKING] Compute intermediate 0.2 * esg_score for reputation_score calculation.
+    Action: OSLM ('OSLM', 'esg_score', '0.2', '*', '_rep_esg')
+    Inputs: esg_score = 74, 0.2 = None
+    WHEN: N/A
+    Result: _rep_esg None → 14.8
+
+  [RULE: RANKING] Compute intermediate 0.5 * quality_score for reputation_score calculation.
+    Action: OSLM ('OSLM', 'quality_score', '0.5', '*', '_rep_quality')
+    Inputs: quality_score = 89, 0.5 = None
+    WHEN: N/A
+    Result: _rep_quality None → 44.5
+
+  [RULE: RANKING] Compute intermediate -0.3 * risk_score for reputation_score calculation.
+    Action: OSLM ('OSLM', 'risk_score', '-0.3', '*', '_rep_risk_neg')
+    Inputs: risk_score = 18, -0.3 = None
+    WHEN: N/A
+    Result: _rep_risk_neg None → -5.3999999999999995
+
+  [RULE: RANKING] Compute intermediate 0.3 * (100 - risk_score) for reputation_score calculation.
+    Action: OSLM ('OSLM', '_rep_risk_neg', '30', '+', '_rep_risk')
+    Inputs: _rep_risk_neg = -5.3999999999999995, 30 = None
+    WHEN: N/A
+    Result: _rep_risk None → 24.6
+
+  [RULE: RANKING] Sum quality and risk components for reputation_score calculation.
+    Action: OSLM ('OSLM', '_rep_quality', '_rep_risk', '+', '_rep_quality_risk')
+    Inputs: _rep_quality = 44.5, _rep_risk = 24.6
+    WHEN: N/A
+    Result: _rep_quality_risk None → 69.1
+
+  [RULE: RANKING] Add ESG component to compute final reputation_score.
+    Action: OSLM ('OSLM', '_rep_quality_risk', '_rep_esg', '+', 'reputation_score')
+    Inputs: _rep_quality_risk = 69.1, _rep_esg = 14.8
+    WHEN: N/A
+    Result: reputation_score None → 83.89999999999999
+
+  [RULE: RANKING] Compute total cost (cost_total) as quantity * unit_price.
+    Action: OSLM ('OSLM', 'quantity', 'unit_price', '*', 'cost_total')
+    Inputs: quantity = 120, unit_price = 1071.0
+    WHEN: N/A
+    Result: cost_total None → 128520.0
+
+  [RULE: RANKING] Compute raw cost rank score (_crs_raw) as 10000000 / (cost_total + 1).
+    Action: OSLM ('OSLM', 'cost_total', '1', '+', '_crs_denom')
+    Inputs: cost_total = 128520.0, 1 = None
+    WHEN: N/A
+    Result: _crs_denom None → 128521.0
+
+  [RULE: RANKING] Cap cost_rank_score at 100 (or use raw value directly if capping unavailable).
+    Action: OSLM ('OSLM', '10000000', '_crs_denom', '/', '_crs_raw')
+    Inputs: 10000000 = None, _crs_denom = 128521.0
+    WHEN: N/A
+    Result: _crs_raw None → 77.80829592051104
+
+  [RULE: RANKING] Compute cost component of rank as cost_rank_score * 100.
+    Action: OSLM ('OSLM', '_crs_raw', '100', '<=', 'cost_rank_score')
+    Inputs: _crs_raw = 77.80829592051104, 100 = None
+    WHEN: N/A
+    Result: cost_rank_score None → True
+
+  [RULE: RANKING] Combine cost component and reputation_score to compute final rank.
+    Action: SRM ('SRM', 'cost_rank_score', '100', '*', '_rank_cost_component')
+    Inputs: cost_rank_score = True, 100 = None
+    WHEN: N/A
+    Result: _rank_cost_component None → 100
 
 SUPPLIER: Thoughtworks Europe (SUP-0032) — Cloud Architecture Consulting  [EXCLUDED: category_l2 mismatch ('Cloud Architecture Consulting' != 'Software Development Services')]
 
@@ -644,235 +656,241 @@ SUPPLIER: Deloitte Technology Advisory (SUP-0033) — IT Project Management Serv
 
 SUPPLIER: EPAM Delivery Services (SUP-0034) — Software Development Services
 Pricing: 938.4 EUR x 120 units = 112608.0
-Final scores: cost_rank=112608.0, reputation=176
+Final scores: normalized_rank=0.7959, cost_rank=True, reputation=79.5, compliance=1.0
 
-  [RULE: ER-001] Escalates to requester clarification due to missing required information.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_requester')
-    Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_requester None → True
+  [RULE: AT-001] Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = "EUR"')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: ER-002] Escalate to Procurement Manager when preferred supplier is restricted.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager')
-    Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_procurement_manager None → True
+  [RULE: AT-002] Sets minimum supplier quotes to 2 for EUR budgets between 25,000 and 99,999.99
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR"')
+    Inputs: immediate = 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: ER-003] Escalates to Head of Strategic Sourcing when value exceeds threshold.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing')
+  [RULE: AT-002] Requires Procurement Manager approval for EUR budgets between 25,000 and 99,999.99
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_head_of_strategic_sourcing None → True
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "EUR" → FAILED
+    Result: escalate_to_procurement_manager [SKIPPED]
 
-  [RULE: ER-004] Escalates to Head of Category when no compliant supplier is found.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category')
+  [RULE: AT-003] Sets minimum supplier quotes to 3 for EUR budgets between 100,000 and 499,999.99
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR"')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR" → PASSED
+    Result: min_supplier_quotes None → 3
+
+  [RULE: AT-003] Requires Head of Category escalation for EUR budgets between 100,000 and 499,999.99
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "EUR" → PASSED
     Result: escalate_to_head_of_category None → True
 
-  [RULE: ER-005] Escalates to Security and Compliance Review due to data residency constraint conflict.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_security_compliance')
+  [RULE: AT-004] Sets minimum supplier quotes to 3 for EUR budgets between 500,000 and 4,999,999.99
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR"')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
+
+  [RULE: AT-004] Requires escalation to Head of Strategic Sourcing for EUR budgets between 500,000 and 4,999,999.99
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_security_compliance None → True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "EUR" → FAILED
+    Result: escalate_to_head_of_strategic_sourcing [SKIPPED]
 
-  [RULE: ER-006] Escalates to Sourcing Excellence Lead due to single-supplier capacity risk.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_sourcing_excellence')
+  [RULE: AT-005] Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 EUR.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR"')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
+
+  [RULE: AT-005] Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 EUR.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR"')
     Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_sourcing_excellence None → True
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "EUR" → FAILED
+    Result: escalate_to_cpo [SKIPPED]
 
-  [RULE: ER-007] Escalates to Marketing Governance Lead when a brand safety review is needed.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_marketing_governance')
-    Inputs: immediate = True
-    WHEN: N/A
-    Result: escalate_to_marketing_governance None → True
-
-  [RULE: ER-008] Escalate to Regional Compliance Lead if supplier is not registered or sanctioned-screened in the delivery country and the currency is USD
-    Action: ALI ('ALI', 'currency', '"USD"', '=', 'escalate_to_regional_compliance', 'WHEN currency = "USD"')
-    Inputs: currency = EUR, immediate = USD
-    WHEN: WHEN currency = "USD" → PASSED
-    Result: escalate_to_regional_compliance None → False
-
-  [RULE: CR-001] At least three compliant supplier options must be compared above EUR/CHF 100000
-    Action: ALI ('ALI', 'budget', '100000', '>=', 'min_supplier_quotes', 'WHEN currency = EUR OR currency = CHF')
-    Inputs: budget = 124800, immediate = 100000
-    WHEN: WHEN currency = EUR OR currency = CHF → PASSED
-    Result: min_supplier_quotes None → True
-
-  [RULE: CR-002] Enforces compatibility review for mobile workstation requests above 50 units in IT category
-    Action: ALI ('ALI', 'quantity', '50', '>', 'requires_engineering_review', 'WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations"')
-    Inputs: quantity = 120, immediate = 50
-    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations" → PASSED
-    Result: requires_engineering_review None → True
-
-  [RULE: CR-004] Ensures suppliers are evaluated only if they support data residency requirements for IT/Cloud Compute requests
-    Action: OSLM ('OSLM', 'data_residency_constraint', 'data_residency_supported', 'AND', 'rank', 'WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute"')
-    Inputs: data_residency_constraint = False, data_residency_supported = False
-    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute" → FAILED
-    Result: rank [SKIPPED]
-
-  [RULE: CR-006] Reception and lounge projects require business design sign-off before award
-    Action: ALI ('ALI', 'category_l1', '"Facilities"', '=', 'requires_design_signoff', 'WHEN category_l2 = "Reception and Lounge Furniture"')
-    Inputs: category_l1 = Professional Services, immediate = Facilities
-    WHEN: WHEN category_l2 = "Reception and Lounge Furniture" → PASSED
-    Result: requires_design_signoff None → False
-
-  [RULE: CR-007] Enforces that named consultant CVs or equivalent capability profiles are required for Software Development Services above 60 consulting days
-    Action: ALI ('ALI', 'quantity', '60', '>', 'requires_cv_review', 'WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services"')
-    Inputs: quantity = 120, immediate = 60
-    WHEN: WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services" → PASSED
-    Result: requires_cv_review None → True
-
-  [RULE: CR-008] Cybersecurity advisory suppliers must demonstrate relevant certifications or equivalent references
-    Action: ALI ('ALI', 'category_l1', '"Professional Services"', '=', 'requires_certification_check', 'WHEN category_l2 = "Cybersecurity Advisory"')
-    Inputs: category_l1 = Professional Services, immediate = Professional Services
-    WHEN: WHEN category_l2 = "Cybersecurity Advisory" → PASSED
-    Result: requires_certification_check None → True
-
-  [RULE: CR-010] Enforces brand-safety review for influencer campaigns in the Marketing category
-    Action: ALI ('ALI', 'category_l1', '"Marketing"', '=', 'requires_brand_safety_review', 'WHEN category_l2 = "Influencer Campaign Management"')
-    Inputs: category_l1 = Professional Services, immediate = Marketing
-    WHEN: WHEN category_l2 = "Influencer Campaign Management" → PASSED
-    Result: requires_brand_safety_review None → False
-
-  [RULE: AT-001] Sets the minimum number of supplier quotes required for budgets between 0 and 24,999.99 EUR.
-    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR')
+  [RULE: AT-006] Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = "CHF"')
     Inputs: immediate = 1
-    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes True → 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-002] Set minimum supplier quotes to 2 for mid-value thresholds in EUR
-    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+  [RULE: AT-007] Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF"')
     Inputs: immediate = 2
-    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 1 → 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-002] Escalate to Procurement Manager for mid-value thresholds in EUR
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+  [RULE: AT-007] Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
-    Result: escalate_to_procurement_manager True → True
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_procurement_manager [SKIPPED]
 
-  [RULE: AT-003] Set minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+  [RULE: AT-008] Sets minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 CHF
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 2 → 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-003] Escalate to Head of Category for budgets between 100,000 and 499,999.99 EUR
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+  [RULE: AT-008] Requires Head of Category escalation for budgets between 100,000 and 499,999.99 CHF
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
-    Result: escalate_to_head_of_category True → True
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_head_of_category [SKIPPED]
 
-  [RULE: AT-004] Set minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+  [RULE: AT-009] Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 CHF
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-004] Escalate to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+  [RULE: AT-009] Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 CHF
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
-    Result: escalate_to_head_of_strategic_sourcing True → True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_head_of_strategic_sourcing [SKIPPED]
 
-  [RULE: AT-005] Set minimum supplier quotes to 3 for budgets >= 5,000,000 EUR and escalate to CPO for approval.
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+  [RULE: AT-010] Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-005] Escalate to CPO for approval for budgets >= 5,000,000 EUR.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+  [RULE: AT-010] Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
-    Result: escalate_to_cpo None → True
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = "CHF" → FAILED
+    Result: escalate_to_cpo [SKIPPED]
 
-  [RULE: AT-006] Sets minimum supplier quotes to 1 for budgets up to 24,999.99 CHF.
-    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF')
+  [RULE: AT-011] Sets minimum supplier quotes to 1 for USD budgets between 0 and 27,000
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 27000 AND currency = "USD"')
     Inputs: immediate = 1
-    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 3 → 1
+    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-007] Set minimum supplier quotes and escalate to Procurement Manager for mid-value thresholds in CHF currency
-    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF')
+  [RULE: AT-011] Requires business sign-off for USD budgets between 0 and 27,000
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_requester', 'WHEN budget >= 0 AND budget <= 27000 AND currency = "USD"')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = "USD" → FAILED
+    Result: escalate_to_requester [SKIPPED]
+
+  [RULE: AT-012] Sets minimum supplier quotes to 2 for budgets between 27,000 and 108,000 USD
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD"')
     Inputs: immediate = 2
-    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 1 → 2
+    WHEN: WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-008] Set minimum supplier quotes and escalation to Head of Category for mid-value thresholds in CHF currency
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF')
-    Inputs: immediate = 3
-    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 2 → 3
-
-  [RULE: AT-009] Set minimum supplier quotes and escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
-    Inputs: immediate = 3
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 3 → 3
-
-  [RULE: AT-009] Escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
+  [RULE: AT-012] Requires Procurement Manager escalation for budgets between 27,000 and 108,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
-    Result: escalate_to_head_of_strategic_sourcing True → True
+    WHEN: WHEN budget >= 27000 AND budget <= 108000 AND currency = "USD" → FAILED
+    Result: escalate_to_procurement_manager [SKIPPED]
 
-  [RULE: AT-010] Set minimum supplier quotes and escalate to CPO for very high-value contracts in CHF currency
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF')
+  [RULE: AT-013] Sets minimum supplier quotes to 3 for budgets between 108,000 and 540,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD"')
     Inputs: immediate = 3
-    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-011] Sets minimum supplier quotes to 1 for budgets up to 27,000 USD
-    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 27000 AND currency = USD')
-    Inputs: immediate = 1
-    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 3 → 1
-
-  [RULE: AT-012] Set minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000
-    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
-    Inputs: immediate = 2
-    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 1 → 2
-
-  [RULE: AT-012] Escalate to Procurement Manager for USD budgets between 27,000 and 108,000
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
+  [RULE: AT-013] Requires Head of Category approval for budgets between 108,000 and 540,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
-    Result: escalate_to_procurement_manager True → True
+    WHEN: WHEN budget >= 108000 AND budget <= 540000 AND currency = "USD" → FAILED
+    Result: escalate_to_head_of_category [SKIPPED]
 
-  [RULE: AT-013] Set minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 108000 AND budget <= 540000 AND currency = USD')
+  [RULE: AT-014] Sets minimum supplier quotes to 3 for budgets between 540,000 and 5,400,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD"')
     Inputs: immediate = 3
-    WHEN: WHEN budget > 108000 AND budget <= 540000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 2 → 3
+    WHEN: WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-014] Set minimum supplier quotes and escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
-    Inputs: immediate = 3
-    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 3 → 3
-
-  [RULE: AT-014] Escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
+  [RULE: AT-014] Requires Head of Strategic Sourcing approval for budgets between 540,000 and 5,400,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
-    Result: escalate_to_head_of_strategic_sourcing True → True
+    WHEN: WHEN budget >= 540000 AND budget <= 5400000 AND currency = "USD" → FAILED
+    Result: escalate_to_head_of_strategic_sourcing [SKIPPED]
 
-  [RULE: AT-015] Set minimum supplier quotes to 3 for budgets above 5,400,000 USD
-    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 5400000 AND currency = USD')
+  [RULE: AT-015] Sets minimum supplier quotes to 3 for budgets >= 5,400,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5400000 AND currency = "USD"')
     Inputs: immediate = 3
-    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
-    Result: min_supplier_quotes 3 → 3
+    WHEN: WHEN budget >= 5400000 AND currency = "USD" → FAILED
+    Result: min_supplier_quotes [SKIPPED]
 
-  [RULE: AT-015] Escalate to CPO for budgets above 5,400,000 USD
-    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget > 5400000 AND currency = USD')
+  [RULE: AT-015] Requires CPO approval for budgets >= 5,400,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5400000 AND currency = "USD"')
     Inputs: immediate = True
-    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
-    Result: escalate_to_cpo True → True
+    WHEN: WHEN budget >= 5400000 AND currency = "USD" → FAILED
+    Result: escalate_to_cpo [SKIPPED]
+
+  [RULE: RANKING] Compute intermediate 0.2 * esg_score for reputation_score calculation.
+    Action: OSLM ('OSLM', 'esg_score', '0.2', '*', '_rep_esg')
+    Inputs: esg_score = 75, 0.2 = None
+    WHEN: N/A
+    Result: _rep_esg None → 15.0
+
+  [RULE: RANKING] Compute intermediate 0.5 * quality_score for reputation_score calculation.
+    Action: OSLM ('OSLM', 'quality_score', '0.5', '*', '_rep_quality')
+    Inputs: quality_score = 81, 0.5 = None
+    WHEN: N/A
+    Result: _rep_quality None → 40.5
+
+  [RULE: RANKING] Compute intermediate -0.3 * risk_score for reputation_score calculation.
+    Action: OSLM ('OSLM', 'risk_score', '-0.3', '*', '_rep_risk_neg')
+    Inputs: risk_score = 20, -0.3 = None
+    WHEN: N/A
+    Result: _rep_risk_neg None → -6.0
+
+  [RULE: RANKING] Compute intermediate 0.3 * (100 - risk_score) for reputation_score calculation.
+    Action: OSLM ('OSLM', '_rep_risk_neg', '30', '+', '_rep_risk')
+    Inputs: _rep_risk_neg = -6.0, 30 = None
+    WHEN: N/A
+    Result: _rep_risk None → 24.0
+
+  [RULE: RANKING] Sum quality and risk components for reputation_score calculation.
+    Action: OSLM ('OSLM', '_rep_quality', '_rep_risk', '+', '_rep_quality_risk')
+    Inputs: _rep_quality = 40.5, _rep_risk = 24.0
+    WHEN: N/A
+    Result: _rep_quality_risk None → 64.5
+
+  [RULE: RANKING] Add ESG component to compute final reputation_score.
+    Action: OSLM ('OSLM', '_rep_quality_risk', '_rep_esg', '+', 'reputation_score')
+    Inputs: _rep_quality_risk = 64.5, _rep_esg = 15.0
+    WHEN: N/A
+    Result: reputation_score None → 79.5
+
+  [RULE: RANKING] Compute total cost (cost_total) as quantity * unit_price.
+    Action: OSLM ('OSLM', 'quantity', 'unit_price', '*', 'cost_total')
+    Inputs: quantity = 120, unit_price = 938.4
+    WHEN: N/A
+    Result: cost_total None → 112608.0
+
+  [RULE: RANKING] Compute raw cost rank score (_crs_raw) as 10000000 / (cost_total + 1).
+    Action: OSLM ('OSLM', 'cost_total', '1', '+', '_crs_denom')
+    Inputs: cost_total = 112608.0, 1 = None
+    WHEN: N/A
+    Result: _crs_denom None → 112609.0
+
+  [RULE: RANKING] Cap cost_rank_score at 100 (or use raw value directly if capping unavailable).
+    Action: OSLM ('OSLM', '10000000', '_crs_denom', '/', '_crs_raw')
+    Inputs: 10000000 = None, _crs_denom = 112609.0
+    WHEN: N/A
+    Result: _crs_raw None → 88.80284879538935
+
+  [RULE: RANKING] Compute cost component of rank as cost_rank_score * 100.
+    Action: OSLM ('OSLM', '_crs_raw', '100', '<=', 'cost_rank_score')
+    Inputs: _crs_raw = 88.80284879538935, 100 = None
+    WHEN: N/A
+    Result: cost_rank_score None → True
+
+  [RULE: RANKING] Combine cost component and reputation_score to compute final rank.
+    Action: SRM ('SRM', 'cost_rank_score', '100', '*', '_rank_cost_component')
+    Inputs: cost_rank_score = True, 100 = None
+    WHEN: N/A
+    Result: _rank_cost_component None → 100
 
 SUPPLIER: EPAM Delivery Services (SUP-0034) — Data Engineering Services  [EXCLUDED: category_l2 mismatch ('Data Engineering Services' != 'Software Development Services')]
 
@@ -993,3 +1011,15 @@ SUPPLIER: Havas Group Americas (SUP-0047) — Social Media Advertising  [EXCLUDE
 SUPPLIER: Havas Group Americas (SUP-0047) — Content Production Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'Professional Services')]
 
 SUPPLIER: Havas Group Americas (SUP-0047) — Influencer Campaign Management  [EXCLUDED: category_l1 mismatch ('Marketing' != 'Professional Services')]
+
+============================================================
+RESULT FLAGS
+============================================================
+  [⚠  WARNING] [HIGH_EXCLUSION_RATE]
+    148 of 151 candidate suppliers (98%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.
+
+  [ℹ  INFO] [DOMINANT_SUPPLIER]
+    'EPAM Delivery Services' leads the ranking by 0.613 points (rank 0.796 vs 0.183 for #2). The selection is unambiguous — verify this is not a data or configuration anomaly before issuing a single quote.
+
+  [ℹ  INFO] [PREFERRED_SUPPLIER_EXCLUDED]
+    Preferred supplier restricted due to: 'Capgemini Consulting' was explicitly requested but excluded — category_l2 mismatch ('Cloud Architecture Consulting' != 'Software Development Services').

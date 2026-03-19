@@ -58,7 +58,17 @@ def get_execution_log(
 
 # ── AI Summary ────────────────────────────────────────────────────────────────
 
-_summary_cache: dict[str, str] = {}
+_SUMMARY_CACHE_DIR = pathlib.Path(__file__).parent.parent / "_ai_summary_cache"
+_SUMMARY_CACHE_DIR.mkdir(exist_ok=True)
+
+
+def _cache_get(request_id: str) -> str | None:
+    p = _SUMMARY_CACHE_DIR / f"{request_id}.txt"
+    return p.read_text(encoding="utf-8") if p.exists() else None
+
+
+def _cache_set(request_id: str, summary: str) -> None:
+    (_SUMMARY_CACHE_DIR / f"{request_id}.txt").write_text(summary, encoding="utf-8")
 
 _SUMMARY_PROMPT = (
     "Summarise this procurement evaluation in exactly 3 bullet points.\n\n"
@@ -116,8 +126,9 @@ def get_ai_summary(
     db=Depends(get_db),
     current_user=Depends(get_current_user),
 ):
-    if request_id in _summary_cache:
-        return {"summary": _summary_cache[request_id]}
+    cached = _cache_get(request_id)
+    if cached:
+        return {"summary": cached}
 
     text = _resolve_log_text(request_id, db)
     execution_log = json.loads(text)
@@ -136,7 +147,7 @@ def get_ai_summary(
         stream=False,
     )
     summary = resp.choices[0].message.content or ""
-    _summary_cache[request_id] = summary
+    _cache_set(request_id, summary)
     return {"summary": summary}
 
 

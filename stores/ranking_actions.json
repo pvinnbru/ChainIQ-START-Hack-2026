@@ -1,6 +1,6 @@
 {
   "data_hash": "4921ef9152a628150dc48adabc12ed9a212b41db347eb0caa8bd0d0ea8a26bbe",
-  "created_at": "2026-03-19T07:28:43.351549+00:00",
+  "created_at": "2026-03-19T14:32:25.770613+00:00",
   "ranking_actions": [
     [
       "OSLM",
@@ -11,85 +11,77 @@
     ],
     [
       "OSLM",
-      "quality_score",
-      "_",
-      "*",
-      "_rep_quality_weighted",
-      "WHEN '0.5'"
-    ],
-    [
-      "OSLM",
       "risk_score",
-      "_",
-      "-",
-      "_rep_risk_inverted",
-      "WHEN '100'"
+      "-0.3",
+      "*",
+      "_rep_risk_neg"
     ],
     [
       "OSLM",
-      "_rep_risk_inverted",
-      "_",
+      "_rep_risk_neg",
+      "30",
+      "+",
+      "_rep_risk"
+    ],
+    [
+      "OSLM",
+      "quality_score",
+      "0.5",
       "*",
-      "_rep_risk_weighted",
-      "WHEN '0.3'"
+      "_rep_quality"
     ],
     [
       "OSLM",
       "esg_score",
-      "_",
+      "0.2",
       "*",
-      "_rep_esg_weighted",
-      "WHEN '0.2'"
+      "_rep_esg"
     ],
     [
       "OSLM",
-      "_rep_quality_weighted",
-      "_rep_risk_weighted",
+      "_rep_quality",
+      "_rep_risk",
       "+",
-      "_rep_partial_sum"
+      "_rep_quality_risk"
     ],
     [
       "OSLM",
-      "_rep_partial_sum",
-      "_rep_esg_weighted",
+      "_rep_quality_risk",
+      "_rep_esg",
       "+",
       "reputation_score"
     ],
     [
       "OSLM",
       "cost_total",
-      "_",
+      "1",
       "+",
-      "_crs_denom",
-      "WHEN '1'"
+      "_crs_denom"
     ],
     [
       "OSLM",
-      "_",
+      "10000000",
       "_crs_denom",
       "/",
-      "_crs_raw",
-      "WHEN '10000000'"
+      "_crs_raw"
     ],
     [
       "OSLM",
       "_crs_raw",
-      "_",
+      "100",
       "<=",
-      "cost_rank_score",
-      "WHEN '100'"
+      "cost_rank_score"
     ],
     [
       "SRM",
       "cost_rank_score",
-      "_",
+      "100",
       "*",
-      "_rank_weighted",
-      "WHEN '100'"
+      "_rank_cost_component"
     ],
     [
       "SRM",
-      "_rank_weighted",
+      "_rank_cost_component",
       "reputation_score",
       "+",
       "rank"

@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
-  ArrowLeft, Bot, Printer, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Send,
+  ArrowLeft, Bot, Printer, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Send, Trash2,
   AlertTriangle, CheckCircle, Minus, ArrowRight, Star, Package, Clock, ShieldCheck, TrendingUp,
 } from 'lucide-react';
 
@@ -43,7 +43,7 @@ interface SupplierLog {
   pricing_resolved: Record<string, unknown>;
   action_logs: ActionLog[];
   final_state: Record<string, unknown>;
-  final_cost_rank_score: number | null;
+  normalized_rank: number | null;
   final_reputation_score: number | null;
 }
 
@@ -143,7 +143,7 @@ function SupplierFunnel({ logs }: { logs: SupplierLog[] }) {
     const total = logs.length;
     const catMatch = logs.filter(s => !s.exclusion_reason?.includes('mismatch')).length;
     const evaluated = logs.filter(s => s.action_logs?.length > 0).length;
-    const shortlisted = logs.filter(s => s.final_cost_rank_score != null).length;
+    const shortlisted = logs.filter(s => s.normalized_rank != null).length;
     return [
       { label: 'Suppliers Considered', count: total,       bg: 'bg-slate-200 dark:bg-slate-700' },
       { label: 'Category Match',       count: catMatch,    bg: 'bg-blue-200 dark:bg-blue-900' },
@@ -647,18 +647,30 @@ function AiChatSidebar({
     <div className="w-96 flex flex-col border-l bg-card">
       <div className="px-4 py-3 border-b shrink-0 flex items-center justify-between">
         <div className="flex items-center gap-2 text-base font-semibold">
-          <Bot className="h-4 w-4 text-primary" />
+          <Bot className="h-4 w-4 text-red-500" />
           Ask AI
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-6 w-6 p-0"
-          onClick={() => onOpenChange(false)}
-          title="Close AI Chat"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+            onClick={() => setMessages([])}
+            title="Clear chat"
+            disabled={messages.length === 0}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
+            onClick={() => onOpenChange(false)}
+            title="Close AI Chat"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
         {/* Messages */}
@@ -701,6 +713,16 @@ function AiChatSidebar({
                         em: ({ children }) => <em className="italic">{children}</em>,
                         h3: ({ children }) => <h3 className="font-semibold text-sm mb-1 mt-2">{children}</h3>,
                         code: ({ children }) => <code className="bg-background/60 rounded px-1 text-xs font-mono">{children}</code>,
+                        table: ({ children }) => (
+                          <div className="overflow-x-auto my-2 -mx-3">
+                            <table className="w-full text-xs border-collapse">{children}</table>
+                          </div>
+                        ),
+                        thead: ({ children }) => <thead className="bg-background/50">{children}</thead>,
+                        tbody: ({ children }) => <tbody>{children}</tbody>,
+                        tr: ({ children }) => <tr className="border-b border-border/40 last:border-0">{children}</tr>,
+                        th: ({ children }) => <th className="px-3 py-1.5 text-left font-semibold text-muted-foreground whitespace-nowrap">{children}</th>,
+                        td: ({ children }) => <td className="px-3 py-1.5 align-top">{children}</td>,
                       }}
                     >
                       {msg.content}
@@ -847,7 +869,7 @@ export default function TransparencyPage() {
               onClick={() => setChatOpen(true)}
               title="Open AI Chat"
             >
-              <Bot className="h-4 w-4" />
+              <Bot className="h-4 w-4 text-red-500" />
               <ChevronLeft className="h-4 w-4" />
             </Button>
           )}
@@ -866,7 +888,7 @@ export default function TransparencyPage() {
         <Card className="border-primary/20 bg-primary/5 dark:bg-primary/10">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Bot className="h-4 w-4 text-primary" />
+              <Bot className="h-4 w-4 text-red-500" />
               What happened with this request
             </CardTitle>
           </CardHeader>
@@ -959,7 +981,7 @@ export default function TransparencyPage() {
                 <tbody>
                   {evaluatedSuppliers
                     .slice()
-                    .sort((a, b) => (a.final_cost_rank_score ?? 1) - (b.final_cost_rank_score ?? 1))
+                    .sort((a, b) => (b.normalized_rank ?? 0) - (a.normalized_rank ?? 0))
                     .map((s, i) => {
                       const rank = i + 1;
                       const m = supplierMetrics(s);
@@ -1005,12 +1027,12 @@ export default function TransparencyPage() {
                           <td className="px-4 py-3">{scoreBar(m.quality as number | null) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
                           <td className="px-4 py-3">{scoreBar(m.risk as number | null, true) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
                           <td className="px-4 py-3">{scoreBar(m.esg as number | null) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
-                          <td className="px-4 py-3">{s.final_cost_rank_score != null ? (
+                          <td className="px-4 py-3">{s.normalized_rank != null ? (
                             <div className="flex items-center gap-1.5">
                               <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                                <div className="h-full rounded-full bg-emerald-400" style={{ width: `${Math.min(100, Math.max(0, s.final_cost_rank_score))}%` }} />
+                                <div className="h-full rounded-full bg-emerald-400" style={{ width: `${Math.min(100, Math.max(0, s.normalized_rank))}%` }} />
                               </div>
-                              <span className="text-xs font-mono w-6 text-right text-muted-foreground">{Math.round(s.final_cost_rank_score)}</span>
+                              <span className="text-xs font-mono w-6 text-right text-muted-foreground">{Math.round(s.normalized_rank)}</span>
                             </div>
                           ) : <span className="text-xs text-muted-foreground">—</span>}</td>
                         </tr>
@@ -1083,8 +1105,8 @@ export default function TransparencyPage() {
                     <TabsList className="h-auto flex-wrap gap-1 bg-transparent p-0">
                       {evaluatedSuppliers.map(s => {
                         const key = `${s.supplier_id}-${s.category_l2}`;
-                        const rank = s.final_cost_rank_score != null
-                          ? `#${evaluatedSuppliers.filter(x => x.final_cost_rank_score != null).sort((a, b) => (a.final_cost_rank_score ?? 0) - (b.final_cost_rank_score ?? 0)).findIndex(x => x.supplier_id === s.supplier_id && x.category_l2 === s.category_l2) + 1}`
+                        const rank = s.normalized_rank != null
+                          ? `#${evaluatedSuppliers.filter(x => x.normalized_rank != null).sort((a, b) => (b.normalized_rank ?? 0) - (a.normalized_rank ?? 0)).findIndex(x => x.supplier_id === s.supplier_id && x.category_l2 === s.category_l2) + 1}`
                           : null;
                         return (
                           <TabsTrigger key={key} value={key} className="text-xs h-8">
@@ -1099,7 +1121,7 @@ export default function TransparencyPage() {
                     const key = `${s.supplier_id}-${s.category_l2}`;
                     return (
                       <TabsContent key={key} value={key} className="mt-0">
-                        {(Object.keys(s.pricing_resolved).length > 0 || s.final_cost_rank_score != null) && (
+                        {(Object.keys(s.pricing_resolved).length > 0 || s.normalized_rank != null) && (
                           <div className="px-4 py-3 border-b flex flex-wrap gap-4 text-xs">
                             {Object.entries(s.pricing_resolved).map(([k, v]) => (
                               <div key={k}>
@@ -1107,11 +1129,11 @@ export default function TransparencyPage() {
                                 <span className="font-mono font-medium">{String(v)}</span>
                               </div>
                             ))}
-                            {s.final_cost_rank_score != null && (
+                            {s.normalized_rank != null && (
                               <>
                                 <div>
                                   <span className="text-muted-foreground">cost rank score: </span>
-                                  <span className="font-mono font-medium">{s.final_cost_rank_score.toFixed(4)}</span>
+                                  <span className="font-mono font-medium">{s.normalized_rank.toFixed(4)}</span>
                                 </div>
                                 <div>
                                   <span className="text-muted-foreground">reputation score: </span>

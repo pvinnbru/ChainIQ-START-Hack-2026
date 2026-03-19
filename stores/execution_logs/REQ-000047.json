@@ -1,6 +1,6 @@
 {
   "request_id": "REQ-000047",
-  "timestamp": "2026-03-19T07:32:19.512701+00:00",
+  "timestamp": "2026-03-19T14:33:54.888482+00:00",
   "global_context_snapshot": {
     "category_l1": "IT",
     "category_l2": "Desktop Workstations",
@@ -25,6 +25,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Desktop Workstations')"
     },
@@ -37,6 +39,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Desktop Workstations')"
     },
@@ -49,6 +53,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Desktop Workstations')"
     },
@@ -61,6 +67,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Desktop Workstations')"
     },
@@ -73,6 +81,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Desktop Workstations')"
     },
@@ -85,6 +95,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Desktop Workstations')"
     },
@@ -97,6 +109,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Desktop Workstations')"
     },
@@ -109,6 +123,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "no matching pricing tier for this region/quantity"
     },
@@ -121,6 +137,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Desktop Workstations')"
     },
@@ -133,6 +151,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Desktop Workstations')"
     },
@@ -145,6 +165,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Desktop Workstations')"
     },
@@ -157,6 +179,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "no matching pricing tier for this region/quantity"
     },
@@ -169,6 +193,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Desktop Workstations')"
     },
@@ -181,6 +207,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Desktop Workstations')"
     },
@@ -193,6 +221,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Desktop Workstations')"
     },
@@ -205,6 +235,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Smartphones' != 'Desktop Workstations')"
     },
@@ -217,6 +249,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Desktop Workstations')"
     },
@@ -229,6 +263,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Desktop Workstations')"
     },
@@ -241,6 +277,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Smartphones' != 'Desktop Workstations')"
     },
@@ -253,6 +291,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Desktop Workstations')"
     },
@@ -265,6 +305,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Rugged Devices' != 'Desktop Workstations')"
     },
@@ -277,6 +319,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Rugged Devices' != 'Desktop Workstations')"
     },
@@ -289,6 +333,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Desktop Workstations')"
     },
@@ -301,6 +347,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Desktop Workstations')"
     },
@@ -313,6 +361,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Desktop Workstations')"
     },
@@ -325,6 +375,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Desktop Workstations')"
     },
@@ -337,6 +389,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Desktop Workstations')"
     },
@@ -349,6 +403,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Desktop Workstations')"
     },
@@ -361,6 +417,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Desktop Workstations')"
     },
@@ -373,6 +431,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Desktop Workstations')"
     },
@@ -385,6 +445,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "does not serve delivery country 'CH'"
     },
@@ -397,6 +459,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Desktop Workstations')"
     },
@@ -409,6 +473,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Desktop Workstations')"
     },
@@ -421,6 +487,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Desktop Workstations')"
     },
@@ -433,6 +501,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Desktop Workstations')"
     },
@@ -445,6 +515,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Desktop Workstations')"
     },
@@ -457,6 +529,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Desktop Workstations')"
     },
@@ -469,6 +543,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Desktop Workstations')"
     },
@@ -481,6 +557,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Security Services' != 'Desktop Workstations')"
     },
@@ -493,6 +571,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Desktop Workstations')"
     },
@@ -505,6 +585,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Desktop Workstations')"
     },
@@ -517,6 +599,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Desktop Workstations')"
     },
@@ -529,6 +613,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Desktop Workstations')"
     },
@@ -541,6 +627,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Security Services' != 'Desktop Workstations')"
     },
@@ -553,6 +641,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Desktop Workstations')"
     },
@@ -565,6 +655,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Desktop Workstations')"
     },
@@ -577,6 +669,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Desktop Workstations')"
     },
@@ -589,6 +683,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Desktop Workstations')"
     },
@@ -601,6 +697,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Security Services' != 'Desktop Workstations')"
     },
@@ -613,6 +711,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Desktop Workstations')"
     },
@@ -625,6 +725,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Desktop Workstations')"
     },
@@ -637,6 +739,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Desktop Workstations')"
     },
@@ -649,6 +753,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Desktop Workstations')"
     },
@@ -661,6 +767,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Desktop Workstations')"
     },
@@ -673,6 +781,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Desktop Workstations')"
     },
@@ -685,6 +795,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Security Services' != 'Desktop Workstations')"
     },
@@ -697,6 +809,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -709,6 +823,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -721,6 +837,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -733,6 +851,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -745,6 +865,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -757,6 +879,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -769,6 +893,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -781,6 +907,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -793,6 +921,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -805,6 +935,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -817,6 +949,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -829,6 +963,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -841,6 +977,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -853,6 +991,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -865,6 +1005,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -877,6 +1019,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -889,6 +1033,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -901,6 +1047,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -913,6 +1061,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -925,6 +1075,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -937,6 +1089,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -949,6 +1103,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -961,6 +1117,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -973,6 +1131,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -985,6 +1145,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -997,6 +1159,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1009,6 +1173,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1021,6 +1187,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1033,6 +1201,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1045,6 +1215,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1057,6 +1229,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1069,6 +1243,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1081,6 +1257,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1093,6 +1271,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1105,6 +1285,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1117,6 +1299,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1129,6 +1313,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1141,6 +1327,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1153,6 +1341,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1165,6 +1355,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1177,6 +1369,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1189,6 +1383,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1201,6 +1397,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1213,6 +1411,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1225,6 +1425,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1237,6 +1439,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1249,6 +1453,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1261,6 +1467,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1273,6 +1481,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1285,6 +1495,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1297,6 +1509,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1309,6 +1523,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1321,6 +1537,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1333,6 +1551,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1345,6 +1565,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1357,6 +1579,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1369,6 +1593,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1381,6 +1607,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Desktop Workstations')"
     },
@@ -1393,6 +1621,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Desktop Workstations')"
     },
@@ -1405,6 +1635,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Desktop Workstations')"
     },
@@ -1417,6 +1649,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Desktop Workstations')"
     },
@@ -1429,6 +1663,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "does not serve delivery country 'CH'"
     },
@@ -1441,6 +1677,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Desktop Workstations')"
     },
@@ -1453,6 +1691,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Desktop Workstations')"
     },
@@ -1465,6 +1705,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Security Services' != 'Desktop Workstations')"
     },
@@ -1477,6 +1719,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Desktop Workstations')"
     },
@@ -1489,6 +1733,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Desktop Workstations')"
     },
@@ -1501,6 +1747,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "does not serve delivery country 'CH'"
     },
@@ -1513,6 +1761,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Desktop Workstations')"
     },
@@ -1525,6 +1775,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Desktop Workstations')"
     },
@@ -1537,6 +1789,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Desktop Workstations')"
     },
@@ -1549,6 +1803,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Desktop Workstations')"
     },
@@ -1561,6 +1817,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Desktop Workstations')"
     },
@@ -1573,6 +1831,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Desktop Workstations')"
     },
@@ -1585,6 +1845,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -1597,6 +1859,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -1609,6 +1873,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -1621,6 +1887,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -1633,6 +1901,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -1645,6 +1915,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -1657,6 +1929,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -1669,6 +1943,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1681,6 +1957,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1693,6 +1971,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1705,6 +1985,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1717,6 +1999,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1729,6 +2013,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1741,6 +2027,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1753,6 +2041,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -1765,6 +2055,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1777,6 +2069,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1789,6 +2083,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1801,6 +2097,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1813,6 +2111,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -1825,9 +2125,44 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     }
   ],
-  "global_action_logs": []
+  "global_action_logs": [],
+  "escalation_assessment": null,
+  "flag_assessment": {
+    "flags": [
+      {
+        "flag_id": "HIGH_EXCLUSION_RATE",
+        "severity": "warning",
+        "description": "151 of 151 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.",
+        "details": {
+          "n_total": 151,
+          "n_excluded": 151,
+          "exclusion_fraction": 1.0
+        }
+      },
+      {
+        "flag_id": "SINGLE_QUALIFIED_SUPPLIER",
+        "severity": "warning",
+        "description": "Only 0 supplier(s) qualified after evaluation. Competitive pricing cannot be guaranteed without market alternatives.",
+        "details": {
+          "n_qualified": 0
+        }
+      },
+      {
+        "flag_id": "PREFERRED_SUPPLIER_EXCLUDED",
+        "severity": "info",
+        "description": "Preferred supplier restricted due to: 'HP Enterprise Devices' was explicitly requested but excluded \u2014 category_l2 mismatch ('Laptops' != 'Desktop Workstations').",
+        "details": {
+          "supplier_name": "HP Enterprise Devices",
+          "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Desktop Workstations')"
+        }
+      }
+    ],
+    "has_warnings": true
+  }
 }
