@@ -647,7 +647,7 @@ function AiChatSidebar({
     <div className="w-96 flex flex-col border-l bg-card">
       <div className="px-4 py-3 border-b shrink-0 flex items-center justify-between">
         <div className="flex items-center gap-2 text-base font-semibold">
-          <Bot className="h-4 w-4 text-primary" />
+          <Bot className="h-4 w-4 text-red-500" />
           Ask AI
         </div>
         <div className="flex items-center gap-1">
@@ -713,6 +713,16 @@ function AiChatSidebar({
                         em: ({ children }) => <em className="italic">{children}</em>,
                         h3: ({ children }) => <h3 className="font-semibold text-sm mb-1 mt-2">{children}</h3>,
                         code: ({ children }) => <code className="bg-background/60 rounded px-1 text-xs font-mono">{children}</code>,
+                        table: ({ children }) => (
+                          <div className="overflow-x-auto my-2 -mx-3">
+                            <table className="w-full text-xs border-collapse">{children}</table>
+                          </div>
+                        ),
+                        thead: ({ children }) => <thead className="bg-background/50">{children}</thead>,
+                        tbody: ({ children }) => <tbody>{children}</tbody>,
+                        tr: ({ children }) => <tr className="border-b border-border/40 last:border-0">{children}</tr>,
+                        th: ({ children }) => <th className="px-3 py-1.5 text-left font-semibold text-muted-foreground whitespace-nowrap">{children}</th>,
+                        td: ({ children }) => <td className="px-3 py-1.5 align-top">{children}</td>,
                       }}
                     >
                       {msg.content}
@@ -859,7 +869,7 @@ export default function TransparencyPage() {
               onClick={() => setChatOpen(true)}
               title="Open AI Chat"
             >
-              <Bot className="h-4 w-4" />
+              <Bot className="h-4 w-4 text-red-500" />
               <ChevronLeft className="h-4 w-4" />
             </Button>
           )}
@@ -878,7 +888,7 @@ export default function TransparencyPage() {
         <Card className="border-primary/20 bg-primary/5 dark:bg-primary/10">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Bot className="h-4 w-4 text-primary" />
+              <Bot className="h-4 w-4 text-red-500" />
               What happened with this request
             </CardTitle>
           </CardHeader>
