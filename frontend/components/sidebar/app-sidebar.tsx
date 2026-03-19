@@ -91,21 +91,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={navMain} />
       </SidebarContent>
 
-      <SidebarSeparator />
+      <SidebarSeparator className="group-data-[collapsible=icon]:hidden" />
 
-      <SidebarFooter className="p-3 space-y-2">
+      <SidebarFooter className="p-2">
         {user && (
           <>
-            <div className="flex items-center gap-2 px-1">
+            {/* Expanded: full user row */}
+            <div className="group-data-[collapsible=icon]:hidden flex items-center gap-2 px-1 py-1">
               <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 ${ROLE_AVATAR[user.role] ?? "bg-muted text-muted-foreground"}`}>
                 {user.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{user.name}</p>
-                <Badge
-                  variant="outline"
-                  className={`text-[10px] mt-0.5 ${ROLE_BADGE[user.role] ?? ""}`}
-                >
+                <Badge variant="outline" className={`text-[10px] mt-0.5 ${ROLE_BADGE[user.role] ?? ""}`}>
                   {ROLE_LABELS[user.role] ?? user.role}
                 </Badge>
               </div>
@@ -117,7 +115,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </Link>
               )}
             </div>
-            <div className="flex gap-1">
+
+            {/* Expanded: action buttons */}
+            <div className="group-data-[collapsible=icon]:hidden flex gap-1">
               <Button
                 variant="ghost"
                 size="sm"
@@ -131,6 +131,40 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 variant="ghost"
                 size="sm"
                 className="px-2 text-muted-foreground hover:text-foreground"
+                onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                title="Toggle theme"
+              >
+                {resolvedTheme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </Button>
+            </div>
+
+            {/* Collapsed: icon-only buttons */}
+            <div className="hidden group-data-[collapsible=icon]:flex flex-col items-center gap-1">
+              <div className="relative">
+                <div className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-semibold ${ROLE_AVATAR[user.role] ?? "bg-muted text-muted-foreground"}`}>
+                  {user.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()}
+                </div>
+                {escalationCount > 0 && (
+                  <Link href="/dashboard/escalations">
+                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-orange-500 text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                      {escalationCount > 9 ? '9+' : escalationCount}
+                    </span>
+                  </Link>
+                )}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
+                onClick={logout}
+                title="Sign out"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
                 onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
                 title="Toggle theme"
               >
