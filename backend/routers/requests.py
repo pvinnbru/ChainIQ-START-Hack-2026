@@ -343,6 +343,13 @@ def approve_request(
     _add_audit(db, request_id, current_user.id, "approved", body.notes)
     db.commit()
     db.refresh(req)
+
+    try:
+        from notifications import notify_decision
+        notify_decision(req, req.requester)
+    except Exception:
+        pass
+
     return req
 
 
@@ -368,4 +375,11 @@ def reject_request(
     _add_audit(db, request_id, current_user.id, "rejected", body.notes)
     db.commit()
     db.refresh(req)
+
+    try:
+        from notifications import notify_decision
+        notify_decision(req, req.requester)
+    except Exception:
+        pass
+
     return req
