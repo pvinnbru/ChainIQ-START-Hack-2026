@@ -907,51 +907,26 @@ export default function TransparencyPage() {
             <CardTitle className="text-base">Request Details</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Category</span>
-                <span className="font-medium text-right">{String(snapshot.category_l1 ?? '—')}{snapshot.category_l2 ? ` / ${String(snapshot.category_l2)}` : ''}</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Budget</span>
-                <span className="font-medium text-right">{snapshot.budget != null ? `${Number(snapshot.budget).toLocaleString()} ${String(snapshot.currency ?? '')}` : '—'}</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Quantity</span>
-                <span className="font-medium text-right">{snapshot.quantity != null ? `${String(snapshot.quantity)} ${String(snapshot.amount_unit ?? '')}` : '—'}</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Delivery</span>
-                <span className="font-medium text-right">{String(snapshot.delivery_country ?? '—')}</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Lead time</span>
-                <span className="font-medium text-right">{snapshot.days_until_required != null ? `${String(snapshot.days_until_required)} days` : '—'}</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Preferred</span>
-                <span className="font-medium text-right">{String(snapshot.preferred_supplier_mentioned ?? '—')}</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Incumbent</span>
-                <span className="font-medium text-right">{String(snapshot.incumbent_supplier ?? '—')}</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Data residency</span>
-                <span className="font-medium text-right">{snapshot.data_residency_constraint ? 'Yes' : 'No'}</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">ESG required</span>
-                <span className="font-medium text-right">{snapshot.esg_requirement ? 'Yes' : 'No'}</span>
-              </div>
-              {Object.entries(snapshot)
-                .filter(([key]) => !['category_l1','category_l2','budget','currency','quantity','amount_unit','delivery_country','days_until_required','preferred_supplier_mentioned','incumbent_supplier','data_residency_constraint','esg_requirement'].includes(key))
-                .map(([key, val]) => (
-                  <div key={key} className="flex justify-between gap-4">
-                    <span className="text-muted-foreground">{CONTEXT_LABELS[key] ?? key.replace(/_/g, ' ')}</span>
-                    <span className="font-medium text-right break-words">{String(val)}</span>
-                  </div>
-                ))}
+            <div className="grid grid-cols-2 xl:grid-cols-3 gap-2.5">
+              {[
+                { label: 'Category', value: `${String(snapshot.category_l1 ?? '—')}${snapshot.category_l2 ? ` / ${String(snapshot.category_l2)}` : ''}` },
+                { label: 'Budget', value: snapshot.budget != null ? `${Number(snapshot.budget).toLocaleString()} ${String(snapshot.currency ?? '')}` : '—' },
+                { label: 'Quantity', value: snapshot.quantity != null ? `${String(snapshot.quantity)} ${String(snapshot.amount_unit ?? '')}` : '—' },
+                { label: 'Delivery', value: String(snapshot.delivery_country ?? '—') },
+                { label: 'Lead time', value: snapshot.days_until_required != null ? `${String(snapshot.days_until_required)} days` : '—' },
+                { label: 'Preferred', value: String(snapshot.preferred_supplier_mentioned ?? '—') },
+                { label: 'Incumbent', value: String(snapshot.incumbent_supplier ?? '—') },
+                { label: 'Data residency', value: snapshot.data_residency_constraint ? 'Yes' : 'No' },
+                { label: 'ESG required', value: snapshot.esg_requirement ? 'Yes' : 'No' },
+                ...Object.entries(snapshot)
+                  .filter(([key]) => !['category_l1','category_l2','budget','currency','quantity','amount_unit','delivery_country','days_until_required','preferred_supplier_mentioned','incumbent_supplier','data_residency_constraint','esg_requirement'].includes(key))
+                  .map(([key, val]) => ({ label: CONTEXT_LABELS[key] ?? key.replace(/_/g, ' '), value: String(val) }))
+              ].map((item, idx) => (
+                <div key={idx} className="flex flex-col gap-0.5 p-2.5 rounded-lg bg-muted/40 border border-border/50 transition-colors hover:bg-muted/60 hover:border-border/80">
+                  <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">{item.label}</span>
+                  <span className="font-medium text-sm text-foreground break-words">{item.value}</span>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
