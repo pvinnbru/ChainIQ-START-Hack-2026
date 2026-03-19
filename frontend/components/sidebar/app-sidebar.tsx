@@ -2,8 +2,10 @@
 
 import * as React from "react"
 import { useEffect, useState } from "react"
-import { Command, FileCheck, Bell, LogOut } from "lucide-react"
+import { Command, FileCheck, Bell, LogOut, Sun, Moon } from "lucide-react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useTheme } from "next-themes"
 import { NavMain } from "@/components/sidebar/nav-main"
 import { useAuth } from "@/context/auth-context"
 import { Badge } from "@/components/ui/badge"
@@ -39,6 +41,9 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, logout } = useAuth()
   const [escalationCount, setEscalationCount] = useState(0)
+  const { resolvedTheme, setTheme } = useTheme()
+
+  const pathname = usePathname()
 
   useEffect(() => {
     if (!user) return
@@ -46,7 +51,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       .then((r) => r.json())
       .then((data: unknown[]) => setEscalationCount(data.length))
       .catch(() => {})
-  }, [user])
+  }, [user, pathname])
 
   const navMain = [
     {
@@ -120,15 +125,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </Link>
               )}
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
-              onClick={logout}
-            >
-              <LogOut className="h-4 w-4" />
-              Sign out
-            </Button>
+            <div className="flex gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex-1 justify-start gap-2 text-muted-foreground hover:text-foreground"
+                onClick={logout}
+              >
+                <LogOut className="h-4 w-4" />
+                Sign out
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="px-2 text-muted-foreground hover:text-foreground"
+                onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                title="Toggle theme"
+              >
+                {resolvedTheme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </Button>
+            </div>
           </>
         )}
       </SidebarFooter>

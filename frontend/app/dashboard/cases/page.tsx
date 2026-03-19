@@ -7,7 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, ArrowUpRight, ArrowUp, ArrowDown } from 'lucide-react';
+import { ActionDialog } from '@/components/ui/action-dialog';
+import { Search, ArrowUpRight, ArrowUp, ArrowDown, PackageSearch, Undo2, Download } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Request {
   id: string;
@@ -60,6 +62,9 @@ export default function CasesPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<SortBy>('date');
   const [order, setOrder] = useState<Order>('asc');
+  const [withdrawTarget, setWithdrawTarget] = useState<Request | null>(null);
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   const fetchRequests = async (sb: SortBy, ord: Order) => {
     setLoading(true);
@@ -80,7 +85,10 @@ export default function CasesPage() {
     fetchRequests(sortBy, order);
   }, [sortBy, order]);
 
+  useEffect(() => { setPage(1); }, [search, statusFilter]);
+
   const toggleSort = (sb: SortBy) => {
+    setPage(1);
     if (sortBy === sb) {
       setOrder((o) => (o === 'asc' ? 'desc' : 'asc'));
     } else {
@@ -107,6 +115,59 @@ export default function CasesPage() {
     router.push(`/dashboard/analysis?id=${req.id}`);
   };
 
+  const handleWithdraw = async (notes: string) => {
+    if (!withdrawTarget) return;
+    const req = withdrawTarget;
+    setWithdrawTarget(null);
+    try {
+      const res = await fetch(`${API}/requests/${req.id}/withdraw`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ notes: notes || null }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success('Request withdrawn');
+      fetchRequests(sortBy, order);
+    } catch {
+      toast.error('Failed to withdraw request');
+    }
+  };
+
+  const exportCsv = () => {
+    const headers = ['ID', 'Title', 'Status', 'Category L1', 'Category L2', 'Business Unit', 'Country', 'Site', 'Budget', 'Currency', 'Required By', 'Created At'];
+    const rows = filtered.map((r) => [
+      r.id,
+      r.title ?? r.plain_text?.slice(0, 80) ?? '',
+      r.status,
+      r.category_l1 ?? '',
+      r.category_l2 ?? '',
+      r.business_unit ?? '',
+      r.country ?? '',
+      r.site ?? '',
+      r.budget_amount ?? '',
+      r.currency ?? '',
+      r.required_by_date ?? '',
+      r.created_at,
+    ]);
+    const csv = [headers, ...rows].map((row) => row.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `cases-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const statusCounts = requests.reduce<Record<string, number>>((acc, r) => {
+    acc[r.status] = (acc[r.status] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+
   if (loading) {
     return (
       <div className="flex h-[80vh] w-full flex-col items-center justify-center space-y-4">
@@ -125,31 +186,44 @@ export default function CasesPage() {
           </h1>
           <p className="text-muted-foreground mt-1">{requests.length} procurement requests</p>
         </div>
-        <div className="relative w-full max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search by title, unit, site…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
-          />
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="relative flex-1 sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by title, unit, site…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <Button variant="outline" size="sm" className="gap-1.5 shrink-0" onClick={exportCsv}>
+            <Download className="h-4 w-4" />
+            <span className="hidden sm:inline">Export</span>
+          </Button>
         </div>
       </div>
 
       {/* Status filter */}
       <div className="flex flex-wrap gap-2 items-center">
         <span className="text-xs text-muted-foreground">Status:</span>
-        {['all', 'new', 'pending_review', 'escalated', 'reviewed', 'approved', 'rejected'].map((s) => (
-          <Button
-            key={s}
-            size="sm"
-            variant={statusFilter === s ? 'default' : 'outline'}
-            className="h-7 px-2.5 text-xs"
-            onClick={() => setStatusFilter(s)}
-          >
-            {s === 'all' ? 'All' : s.replace(/_/g, ' ')}
-          </Button>
-        ))}
+        {['all', 'new', 'pending_review', 'escalated', 'reviewed', 'approved', 'rejected', 'withdrawn'].map((s) => {
+          const count = s === 'all' ? requests.length : (statusCounts[s] ?? 0);
+          if (s !== 'all' && count === 0) return null;
+          return (
+            <Button
+              key={s}
+              size="sm"
+              variant={statusFilter === s ? 'default' : 'outline'}
+              className="h-7 px-2.5 text-xs gap-1"
+              onClick={() => setStatusFilter(s)}
+            >
+              {s === 'all' ? 'All' : s.replace(/_/g, ' ')}
+              <span className={`text-[10px] font-mono ${statusFilter === s ? 'opacity-80' : 'text-muted-foreground'}`}>
+                {count}
+              </span>
+            </Button>
+          );
+        })}
       </div>
 
       {/* Sort controls — approvers/managers only */}
@@ -176,14 +250,81 @@ export default function CasesPage() {
       )}
 
       <Card>
-        <CardHeader className="border-b pb-4">
+        <CardHeader className="border-b pb-4 flex-row items-center justify-between">
           <CardTitle className="text-base">
             {filtered.length} {filtered.length === 1 ? 'result' : 'results'}
             {search && <span className="text-muted-foreground font-normal"> for "{search}"</span>}
           </CardTitle>
+          {totalPages > 1 && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <button
+                className="px-2 py-0.5 rounded border text-xs disabled:opacity-40"
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+              >
+                ←
+              </button>
+              <span className="text-xs">{page} / {totalPages}</span>
+              <button
+                className="px-2 py-0.5 rounded border text-xs disabled:opacity-40"
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                →
+              </button>
+            </div>
+          )}
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
+          {/* Mobile card list */}
+          <div className="md:hidden divide-y">
+            {paginated.map((req) => {
+              const title = req.title ?? (req.plain_text ? req.plain_text.slice(0, 60) + (req.plain_text.length > 60 ? '…' : '') : '(untitled)');
+              return (
+                <div key={req.id} className="p-4 hover:bg-muted/30 transition-colors cursor-pointer" onClick={() => handleView(req)}>
+                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                    <p className="font-medium text-sm leading-snug flex-1">{title}</p>
+                    <Badge variant="outline" className={`text-xs shrink-0 ${getStatusColor(req.status)}`}>
+                      {req.status.replace(/_/g, ' ')}
+                    </Badge>
+                  </div>
+                  <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-muted-foreground mb-2">
+                    {req.category_l2 && <span>{req.category_l2}</span>}
+                    {req.site && <span>{req.site}{req.country ? `, ${req.country}` : ''}</span>}
+                    {req.budget_amount != null && (
+                      <span className="font-mono">{req.currency} {req.budget_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                    )}
+                  </div>
+                  <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                    <Button size="sm" variant="outline" className="h-7 px-2 text-xs gap-1" onClick={() => handleView(req)}>
+                      View <ArrowUpRight className="h-3 w-3" />
+                    </Button>
+                    {isRequester && !['approved', 'rejected', 'withdrawn'].includes(req.status) && (
+                      <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive" onClick={() => setWithdrawTarget(req)}>
+                        <Undo2 className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+            {filtered.length === 0 && requests.length === 0 && isRequester && (
+              <div className="px-4 py-16 text-center">
+                <div className="flex flex-col items-center gap-3 text-muted-foreground">
+                  <PackageSearch className="h-10 w-10 opacity-30" />
+                  <p className="font-medium">No requests yet</p>
+                  <p className="text-sm">Submit your first procurement request to get started.</p>
+                  <Button size="sm" className="mt-1" onClick={() => router.push('/dashboard/create')}>New Request</Button>
+                </div>
+              </div>
+            )}
+            {filtered.length === 0 && (requests.length > 0 || !isRequester) && (
+              <div className="px-4 py-12 text-center text-muted-foreground text-sm">No requests match your search.</div>
+            )}
+          </div>
+
+          {/* Desktop table */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-muted-foreground uppercase bg-muted/50 border-b">
                 <tr>
@@ -199,7 +340,7 @@ export default function CasesPage() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((req) => (
+                {paginated.map((req) => (
                   <tr
                     key={req.id}
                     className="border-b last:border-0 hover:bg-muted/30 transition-colors cursor-pointer"
@@ -240,19 +381,34 @@ export default function CasesPage() {
                       {req.required_by_date ?? '—'}
                     </td>
                     <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-7 px-2 text-xs gap-1"
-                        onClick={() => handleView(req)}
-                      >
-                        View
-                        <ArrowUpRight className="h-3 w-3" />
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs gap-1" onClick={() => handleView(req)}>
+                          View <ArrowUpRight className="h-3 w-3" />
+                        </Button>
+                        {isRequester && !['approved', 'rejected', 'withdrawn'].includes(req.status) && (
+                          <Button size="sm" variant="ghost" className="h-7 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive" onClick={() => setWithdrawTarget(req)}>
+                            <Undo2 className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
-                {filtered.length === 0 && (
+                {filtered.length === 0 && requests.length === 0 && isRequester && (
+                  <tr>
+                    <td colSpan={9} className="px-4 py-16 text-center">
+                      <div className="flex flex-col items-center gap-3 text-muted-foreground">
+                        <PackageSearch className="h-10 w-10 opacity-30" />
+                        <p className="font-medium">No requests yet</p>
+                        <p className="text-sm">Submit your first procurement request to get started.</p>
+                        <Button size="sm" className="mt-1" onClick={() => router.push('/dashboard/create')}>
+                          New Request
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+                {filtered.length === 0 && (requests.length > 0 || !isRequester) && (
                   <tr>
                     <td colSpan={9} className="px-4 py-12 text-center text-muted-foreground">
                       No requests match your search.
@@ -263,7 +419,36 @@ export default function CasesPage() {
             </table>
           </div>
         </CardContent>
+        {totalPages > 1 && (
+          <div className="border-t px-4 py-3 flex items-center justify-between text-sm text-muted-foreground">
+            <span className="text-xs">
+              Showing {(page - 1) * PER_PAGE + 1}–{Math.min(page * PER_PAGE, filtered.length)} of {filtered.length}
+            </span>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`h-7 w-7 rounded text-xs font-medium transition-colors
+                    ${p === page ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </Card>
+      <ActionDialog
+        open={!!withdrawTarget}
+        onOpenChange={(v) => !v && setWithdrawTarget(null)}
+        title="Withdraw Request"
+        description="This will withdraw your request. It can be resubmitted later if needed."
+        confirmLabel="Withdraw"
+        confirmClassName="bg-destructive hover:bg-destructive/90 text-white"
+        notesLabel="Reason for withdrawal (optional)"
+        onConfirm={handleWithdraw}
+      />
     </div>
   );
 }

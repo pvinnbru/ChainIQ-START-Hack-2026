@@ -94,7 +94,27 @@ class RequestOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+# ── Audit ─────────────────────────────────────────────────────────────────────
+
+class AuditEntryOut(BaseModel):
+    id: str
+    request_id: str
+    actor_id: str
+    action: str
+    notes: Optional[str] = None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+# ── Action with optional notes ─────────────────────────────────────────────────
+
+class ActionRequest(BaseModel):
+    notes: Optional[str] = None
+
+
 # ── Clarification ─────────────────────────────────────────────────────────────
 
 class ClarificationCreate(BaseModel):
     fields: dict
+    notes: Optional[str] = None

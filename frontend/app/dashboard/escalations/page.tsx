@@ -6,6 +6,7 @@ import { useAuth } from '@/context/auth-context';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { ActionDialog } from '@/components/ui/action-dialog';
 import { AlertCircle, ArrowUpRight, CheckCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -17,6 +18,8 @@ interface Escalation {
   message: string | null;
   created_at: string;
 }
+
+type DialogAction = 'approve' | 'reject' | 'review' | null;
 
 const TYPE_LABELS: Record<string, string> = {
   requester_clarification: 'Clarification Needed',
@@ -30,7 +33,8 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
 export default function EscalationsPage() {
   const [escalations, setEscalations] = useState<Escalation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [acting, setActing] = useState<string | null>(null);
+  const [activeEsc, setActiveEsc] = useState<Escalation | null>(null);
+  const [dialogAction, setDialogAction] = useState<DialogAction>(null);
   const { user } = useAuth();
   const router = useRouter();
   const isRequester = user?.role === 'requester';
@@ -45,35 +49,37 @@ export default function EscalationsPage() {
 
   useEffect(() => { load(); }, []);
 
-  const markReviewed = async (esc: Escalation) => {
-    setActing(esc.id);
-    try {
-      const res = await fetch(`${API}/requests/${esc.request_id}/review`, {
-        method: 'POST', credentials: 'include',
-      });
-      if (!res.ok) throw new Error();
-      toast.success('Request marked as reviewed');
-      load();
-    } catch {
-      toast.error('Failed to mark as reviewed');
-    } finally {
-      setActing(null);
-    }
+  const openDialog = (esc: Escalation, action: DialogAction) => {
+    setActiveEsc(esc);
+    setDialogAction(action);
   };
 
-  const approveOrReject = async (esc: Escalation, action: 'approve' | 'reject') => {
-    setActing(esc.id + action);
+  const handleConfirm = async (notes: string) => {
+    if (!activeEsc || !dialogAction) return;
+    const action = dialogAction;
+    const esc = activeEsc;
+    setDialogAction(null);
+    setActiveEsc(null);
+
     try {
-      const res = await fetch(`${API}/requests/${esc.request_id}/${action}`, {
-        method: 'POST', credentials: 'include',
+      const url = action === 'review'
+        ? `${API}/requests/${esc.request_id}/review`
+        : `${API}/requests/${esc.request_id}/${action}`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ notes: notes || null }),
       });
       if (!res.ok) throw new Error();
-      toast.success(`Request ${action === 'approve' ? 'approved' : 'rejected'} successfully`);
+      toast.success(
+        action === 'approve' ? 'Request approved' :
+        action === 'reject'  ? 'Request rejected' :
+        'Request marked as reviewed'
+      );
       load();
     } catch {
-      toast.error(`Failed to ${action} request`);
-    } finally {
-      setActing(null);
+      toast.error('Action failed. Please try again.');
     }
   };
 
@@ -122,59 +128,29 @@ export default function EscalationsPage() {
                 {esc.message && (
                   <p className="text-sm text-muted-foreground leading-relaxed">{esc.message}</p>
                 )}
-
                 <div className="flex flex-wrap gap-2">
                   {isRequester ? (
-                    /* Requester: provide clarification */
-                    <Button
-                      size="sm"
-                      className="gap-1"
-                      onClick={() => router.push(`/dashboard/clarify/${esc.request_id}`)}
-                    >
-                      Provide Clarification
-                      <ArrowUpRight className="h-3 w-3" />
+                    <Button size="sm" className="gap-1"
+                      onClick={() => router.push(`/dashboard/clarify/${esc.request_id}`)}>
+                      Provide Clarification <ArrowUpRight className="h-3 w-3" />
                     </Button>
                   ) : (
-                    /* Other roles: view, approve, reject, or mark reviewed */
                     <>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="gap-1"
-                        onClick={() => router.push(`/dashboard/analysis?id=${esc.request_id}`)}
-                      >
-                        View Request
-                        <ArrowUpRight className="h-3 w-3" />
+                      <Button size="sm" variant="outline" className="gap-1"
+                        onClick={() => router.push(`/dashboard/analysis?id=${esc.request_id}`)}>
+                        View Request <ArrowUpRight className="h-3 w-3" />
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="default"
-                        className="gap-1 bg-emerald-600 hover:bg-emerald-700"
-                        disabled={acting === esc.id + 'approve'}
-                        onClick={() => approveOrReject(esc, 'approve')}
-                      >
-                        <ThumbsUp className="h-3 w-3" />
-                        Approve
+                      <Button size="sm" className="gap-1 bg-emerald-600 hover:bg-emerald-700"
+                        onClick={() => openDialog(esc, 'approve')}>
+                        <ThumbsUp className="h-3 w-3" /> Approve
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        className="gap-1"
-                        disabled={acting === esc.id + 'reject'}
-                        onClick={() => approveOrReject(esc, 'reject')}
-                      >
-                        <ThumbsDown className="h-3 w-3" />
-                        Reject
+                      <Button size="sm" variant="destructive" className="gap-1"
+                        onClick={() => openDialog(esc, 'reject')}>
+                        <ThumbsDown className="h-3 w-3" /> Reject
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="gap-1 text-muted-foreground"
-                        disabled={acting === esc.id}
-                        onClick={() => markReviewed(esc)}
-                      >
-                        <CheckCircle className="h-3 w-3" />
-                        Mark Reviewed
+                      <Button size="sm" variant="ghost" className="gap-1 text-muted-foreground"
+                        onClick={() => openDialog(esc, 'review')}>
+                        <CheckCircle className="h-3 w-3" /> Mark Reviewed
                       </Button>
                     </>
                   )}
@@ -184,6 +160,39 @@ export default function EscalationsPage() {
           ))}
         </div>
       )}
+
+      {/* Approve dialog */}
+      <ActionDialog
+        open={dialogAction === 'approve'}
+        onOpenChange={(v) => !v && setDialogAction(null)}
+        title="Approve Request"
+        description="This will mark the request as approved. Add an optional note to explain your decision."
+        confirmLabel="Approve"
+        confirmClassName="bg-emerald-600 hover:bg-emerald-700 text-white"
+        onConfirm={handleConfirm}
+      />
+
+      {/* Reject dialog */}
+      <ActionDialog
+        open={dialogAction === 'reject'}
+        onOpenChange={(v) => !v && setDialogAction(null)}
+        title="Reject Request"
+        description="This will mark the request as rejected. Please provide a reason so the requester knows what to fix."
+        confirmLabel="Reject"
+        confirmClassName="bg-destructive hover:bg-destructive/90 text-white"
+        notesLabel="Reason for rejection (recommended)"
+        onConfirm={handleConfirm}
+      />
+
+      {/* Mark reviewed dialog */}
+      <ActionDialog
+        open={dialogAction === 'review'}
+        onOpenChange={(v) => !v && setDialogAction(null)}
+        title="Mark as Reviewed"
+        description="This will mark the request as reviewed. The request will not be approved or rejected."
+        confirmLabel="Mark Reviewed"
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }

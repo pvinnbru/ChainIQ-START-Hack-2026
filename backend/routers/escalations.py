@@ -5,6 +5,15 @@ from auth import get_current_user
 import models
 import schemas
 
+
+def _add_audit(db: Session, request_id: str, actor_id: str, action: str, notes: str | None = None):
+    db.add(models.AuditEntry(
+        request_id=request_id,
+        actor_id=actor_id,
+        action=action,
+        notes=notes,
+    ))
+
 router = APIRouter(prefix="/escalations", tags=["escalations"])
 
 
@@ -61,6 +70,7 @@ def create_escalation(
     db.add(escalation)
 
     request.status = "escalated"
+    _add_audit(db, body.request_id, current_user.id, "escalated", body.message)
     db.commit()
     db.refresh(escalation)
     return escalation

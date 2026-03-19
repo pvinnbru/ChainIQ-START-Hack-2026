@@ -22,18 +22,40 @@ def _order_column(sort_by: str, order: str):
     return asc(col) if order == "asc" else desc(col)
 
 
+def _add_audit(db: Session, request_id: str, actor_id: str, action: str, notes: str | None = None):
+    db.add(models.AuditEntry(
+        request_id=request_id,
+        actor_id=actor_id,
+        action=action,
+        notes=notes,
+    ))
+
+
 @router.get("", response_model=list[schemas.RequestOut])
 def list_requests(
     sort_by: str = Query("date", pattern="^(date|l1|l2|country)$"),
     order: str = Query("asc", pattern="^(asc|desc)$"),
+    page: int = Query(1, ge=1),
+    per_page: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
+    offset = (page - 1) * per_page
     return (
         db.query(models.Request)
         .order_by(_order_column(sort_by, order))
+        .offset(offset)
+        .limit(per_page)
         .all()
     )
+
+
+@router.get("/count")
+def count_requests(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    return {"total": db.query(models.Request).count()}
 
 
 @router.get("/mine", response_model=list[schemas.RequestOut])
@@ -80,6 +102,8 @@ def create_request(
         esg_requirement=body.esg_requirement,
     )
     db.add(req)
+    db.flush()  # get req.id before audit entry
+    _add_audit(db, req.id, current_user.id, "submitted")
     db.commit()
     db.refresh(req)
     return req
@@ -97,6 +121,20 @@ def get_request(
     return req
 
 
+@router.get("/{request_id}/audit", response_model=list[schemas.AuditEntryOut])
+def get_audit_trail(
+    request_id: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return (
+        db.query(models.AuditEntry)
+        .filter(models.AuditEntry.request_id == request_id)
+        .order_by(asc(models.AuditEntry.created_at))
+        .all()
+    )
+
+
 @router.post("/{request_id}/clarify", response_model=schemas.RequestOut)
 def clarify_request(
     request_id: str,
@@ -110,7 +148,6 @@ def clarify_request(
     if req.requester_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not your request")
 
-    # Apply clarification fields to the request
     allowed_fields = {
         "title", "category_l1", "category_l2", "currency", "budget_amount",
         "quantity", "unit_of_measure", "required_by_date",
@@ -120,14 +157,10 @@ def clarify_request(
         if field in allowed_fields and value is not None:
             setattr(req, field, value)
 
-    # Store the clarification record
-    clarification = models.Clarification(
+    db.add(models.Clarification(
         request_id=request_id,
         submitted_fields=json.dumps(body.fields),
-    )
-    db.add(clarification)
-
-    # Resolve all pending requester_clarification escalations for this request
+    ))
     db.query(models.Escalation).filter(
         models.Escalation.request_id == request_id,
         models.Escalation.type == "requester_clarification",
@@ -136,6 +169,29 @@ def clarify_request(
 
     req.status = "pending_review"
     req.updated_at = datetime.utcnow()
+    _add_audit(db, request_id, current_user.id, "clarified", body.notes)
+    db.commit()
+    db.refresh(req)
+    return req
+
+
+@router.post("/{request_id}/withdraw", response_model=schemas.RequestOut)
+def withdraw_request(
+    request_id: str,
+    body: schemas.ActionRequest = schemas.ActionRequest(),
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    req = db.query(models.Request).filter(models.Request.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found")
+    if req.requester_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not your request")
+    if req.status in ("approved", "rejected"):
+        raise HTTPException(status_code=400, detail="Cannot withdraw a finalised request")
+    req.status = "withdrawn"
+    req.updated_at = datetime.utcnow()
+    _add_audit(db, request_id, current_user.id, "withdrawn", body.notes)
     db.commit()
     db.refresh(req)
     return req
@@ -144,6 +200,7 @@ def clarify_request(
 @router.post("/{request_id}/review", response_model=schemas.RequestOut)
 def review_request(
     request_id: str,
+    body: schemas.ActionRequest = schemas.ActionRequest(),
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -159,6 +216,7 @@ def review_request(
         models.Escalation.target_user_id == current_user.id,
         models.Escalation.status == "pending",
     ).update({"status": "resolved"})
+    _add_audit(db, request_id, current_user.id, "reviewed", body.notes)
     db.commit()
     db.refresh(req)
     return req
@@ -167,6 +225,7 @@ def review_request(
 @router.post("/{request_id}/approve", response_model=schemas.RequestOut)
 def approve_request(
     request_id: str,
+    body: schemas.ActionRequest = schemas.ActionRequest(),
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -177,12 +236,12 @@ def approve_request(
         raise HTTPException(status_code=404, detail="Request not found")
     req.status = "approved"
     req.updated_at = datetime.utcnow()
-    # Resolve all pending escalations targeting this user
     db.query(models.Escalation).filter(
         models.Escalation.request_id == request_id,
         models.Escalation.target_user_id == current_user.id,
         models.Escalation.status == "pending",
     ).update({"status": "resolved"})
+    _add_audit(db, request_id, current_user.id, "approved", body.notes)
     db.commit()
     db.refresh(req)
     return req
@@ -191,6 +250,7 @@ def approve_request(
 @router.post("/{request_id}/reject", response_model=schemas.RequestOut)
 def reject_request(
     request_id: str,
+    body: schemas.ActionRequest = schemas.ActionRequest(),
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -206,6 +266,7 @@ def reject_request(
         models.Escalation.target_user_id == current_user.id,
         models.Escalation.status == "pending",
     ).update({"status": "resolved"})
+    _add_audit(db, request_id, current_user.id, "rejected", body.notes)
     db.commit()
     db.refresh(req)
     return req

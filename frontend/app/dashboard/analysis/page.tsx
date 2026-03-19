@@ -8,6 +8,9 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/auth-context';
+import { ActionDialog } from '@/components/ui/action-dialog';
+
+type DialogAction = 'approve' | 'reject' | 'review' | null;
 
 const MOCK_OUTPUT = {
   "request_id": "REQ-000004",
@@ -213,16 +216,13 @@ export default function AnalysisPage() {
   const [loading, setLoading] = useState(true);
   const [sentEscalations, setSentEscalations] = useState<Record<string, boolean>>({});
   const [myEscalation, setMyEscalation] = useState<MyEscalation | null>(null);
-  const [acting, setActing] = useState(false);
+  const [dialogAction, setDialogAction] = useState<DialogAction>(null);
   const searchParams = useSearchParams();
   const requestId = searchParams.get('id');
   const { user } = useAuth();
   const isReviewer = user && user.role !== 'requester';
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
+  useEffect(() => { setLoading(false); }, []);
 
   useEffect(() => {
     if (!requestId || !isReviewer) return;
@@ -235,23 +235,27 @@ export default function AnalysisPage() {
       .catch(() => {});
   }, [requestId, isReviewer]);
 
-  const handleAction = async (action: 'approve' | 'reject' | 'resolve') => {
-    if (!requestId) return;
-    setActing(true);
+  const handleConfirm = async (notes: string) => {
+    if (!requestId || !dialogAction) return;
+    const action = dialogAction;
+    setDialogAction(null);
     try {
-      const url = `${API}/requests/${requestId}/${action === 'resolve' ? 'review' : action}`;
-      const res = await fetch(url, { method: 'POST', credentials: 'include' });
+      const endpoint = action === 'review' ? 'review' : action;
+      const res = await fetch(`${API}/requests/${requestId}/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ notes: notes || null }),
+      });
       if (!res.ok) throw new Error();
       toast.success(
         action === 'approve' ? 'Request approved' :
         action === 'reject'  ? 'Request rejected' :
-        'Escalation marked as reviewed'
+        'Request marked as reviewed'
       );
       setMyEscalation(null);
     } catch {
       toast.error('Action failed');
-    } finally {
-      setActing(false);
     }
   };
 
@@ -315,13 +319,13 @@ export default function AnalysisPage() {
             <p className="text-sm text-amber-700 mt-0.5">Approve, reject, or mark as reviewed without changing the request status.</p>
           </div>
           <div className="flex gap-2 shrink-0">
-            <Button size="sm" className="gap-1 bg-emerald-600 hover:bg-emerald-700" disabled={acting} onClick={() => handleAction('approve')}>
+            <Button size="sm" className="gap-1 bg-emerald-600 hover:bg-emerald-700" onClick={() => setDialogAction('approve')}>
               <ThumbsUp className="h-3 w-3" /> Approve
             </Button>
-            <Button size="sm" variant="destructive" className="gap-1" disabled={acting} onClick={() => handleAction('reject')}>
+            <Button size="sm" variant="destructive" className="gap-1" onClick={() => setDialogAction('reject')}>
               <ThumbsDown className="h-3 w-3" /> Reject
             </Button>
-            <Button size="sm" variant="outline" className="gap-1" disabled={acting} onClick={() => handleAction('resolve')}>
+            <Button size="sm" variant="outline" className="gap-1" onClick={() => setDialogAction('review')}>
               <CheckCircle className="h-3 w-3" /> Mark Reviewed
             </Button>
           </div>
@@ -636,6 +640,34 @@ export default function AnalysisPage() {
 
         </div>
       </div>
+
+      <ActionDialog
+        open={dialogAction === 'approve'}
+        onOpenChange={(v) => !v && setDialogAction(null)}
+        title="Approve Request"
+        description="This will mark the request as approved. Add an optional note to explain your decision."
+        confirmLabel="Approve"
+        confirmClassName="bg-emerald-600 hover:bg-emerald-700 text-white"
+        onConfirm={handleConfirm}
+      />
+      <ActionDialog
+        open={dialogAction === 'reject'}
+        onOpenChange={(v) => !v && setDialogAction(null)}
+        title="Reject Request"
+        description="This will mark the request as rejected. Please provide a reason so the requester knows what to fix."
+        confirmLabel="Reject"
+        confirmClassName="bg-destructive hover:bg-destructive/90 text-white"
+        notesLabel="Reason for rejection (recommended)"
+        onConfirm={handleConfirm}
+      />
+      <ActionDialog
+        open={dialogAction === 'review'}
+        onOpenChange={(v) => !v && setDialogAction(null)}
+        title="Mark as Reviewed"
+        description="This will mark the request as reviewed without approving or rejecting it."
+        confirmLabel="Mark Reviewed"
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }

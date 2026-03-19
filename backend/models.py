@@ -73,6 +73,17 @@ class Escalation(Base):
     target_user = relationship("User", back_populates="escalations")
 
 
+class AuditEntry(Base):
+    __tablename__ = "audit_entries"
+
+    id = Column(String, primary_key=True, default=gen_uuid)
+    request_id = Column(String, ForeignKey("requests.id"), nullable=False)
+    actor_id = Column(String, ForeignKey("users.id"), nullable=False)
+    action = Column(String, nullable=False)  # submitted | escalated | clarified | reviewed | approved | rejected | withdrawn
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
 class Clarification(Base):
     __tablename__ = "clarifications"
 
