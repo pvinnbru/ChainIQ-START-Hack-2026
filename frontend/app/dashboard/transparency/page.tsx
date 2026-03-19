@@ -43,7 +43,7 @@ interface SupplierLog {
   pricing_resolved: Record<string, unknown>;
   action_logs: ActionLog[];
   final_state: Record<string, unknown>;
-  normalized_rank: number | null;
+  final_normalized_rank: number | null;
   final_reputation_score: number | null;
 }
 
@@ -143,7 +143,7 @@ function SupplierFunnel({ logs }: { logs: SupplierLog[] }) {
     const total = logs.length;
     const catMatch = logs.filter(s => !s.exclusion_reason?.includes('mismatch')).length;
     const evaluated = logs.filter(s => s.action_logs?.length > 0).length;
-    const shortlisted = logs.filter(s => s.normalized_rank != null).length;
+    const shortlisted = logs.filter(s => s.final_normalized_rank != null).length;
     return [
       { label: 'Suppliers Considered', count: total, bg: 'bg-slate-200 dark:bg-slate-700' },
       { label: 'Category Match', count: catMatch, bg: 'bg-blue-200 dark:bg-blue-900' },
@@ -1009,7 +1009,7 @@ export default function TransparencyPage() {
                     <tbody>
                       {evaluatedSuppliers
                         .slice()
-                        .sort((a, b) => (b.normalized_rank ?? 0) - (a.normalized_rank ?? 0))
+                        .sort((a, b) => (b.final_normalized_rank ?? 0) - (a.final_normalized_rank ?? 0))
                         .map((s, i) => {
                           const rank = i + 1;
                           const m = supplierMetrics(s);
@@ -1070,7 +1070,7 @@ export default function TransparencyPage() {
                               </td>
                               <td className="px-3 print:px-1 py-2.5 print:py-1.5">
                                 <div className="flex flex-col items-center gap-1">
-                                  {scoreBar(s.normalized_rank != null ? s.normalized_rank * 100 : null) ?? <span className="text-xs print:text-[10px] text-muted-foreground">—</span>}
+                                  {scoreBar(s.final_normalized_rank != null ? s.final_normalized_rank * 100 : null) ?? <span className="text-xs print:text-[10px] text-muted-foreground">—</span>}
                                 </div>
                               </td>
                             </tr>
@@ -1143,8 +1143,8 @@ export default function TransparencyPage() {
                         <TabsList className="h-auto flex-wrap gap-1 bg-transparent p-0">
                           {evaluatedSuppliers.map(s => {
                             const key = `${s.supplier_id}-${s.category_l2}`;
-                            const rank = s.normalized_rank != null
-                              ? `#${evaluatedSuppliers.filter(x => x.normalized_rank != null).sort((a, b) => (b.normalized_rank ?? 0) - (a.normalized_rank ?? 0)).findIndex(x => x.supplier_id === s.supplier_id && x.category_l2 === s.category_l2) + 1}`
+                            const rank = s.final_normalized_rank != null
+                              ? `#${evaluatedSuppliers.filter(x => x.final_normalized_rank != null).sort((a, b) => (b.final_normalized_rank ?? 0) - (a.final_normalized_rank ?? 0)).findIndex(x => x.supplier_id === s.supplier_id && x.category_l2 === s.category_l2) + 1}`
                               : null;
                             return (
                               <TabsTrigger key={key} value={key} className="text-xs h-8">
@@ -1159,7 +1159,7 @@ export default function TransparencyPage() {
                         const key = `${s.supplier_id}-${s.category_l2}`;
                         return (
                           <TabsContent key={key} value={key} className="mt-0">
-                            {(Object.keys(s.pricing_resolved).length > 0 || s.normalized_rank != null) && (
+                            {(Object.keys(s.pricing_resolved).length > 0 || s.final_normalized_rank != null) && (
                               <div className="px-4 py-3 border-b flex flex-wrap gap-4 text-xs">
                                 {Object.entries(s.pricing_resolved).map(([k, v]) => (
                                   <div key={k}>
@@ -1167,11 +1167,11 @@ export default function TransparencyPage() {
                                     <span className="font-mono font-medium">{String(v)}</span>
                                   </div>
                                 ))}
-                                {s.normalized_rank != null && (
+                                {s.final_normalized_rank != null && (
                                   <>
                                     <div>
                                       <span className="text-muted-foreground">cost rank score: </span>
-                                      <span className="font-mono font-medium">{s.normalized_rank.toFixed(4)}</span>
+                                      <span className="font-mono font-medium">{s.final_normalized_rank.toFixed(4)}</span>
                                     </div>
                                     <div>
                                       <span className="text-muted-foreground">reputation score: </span>
