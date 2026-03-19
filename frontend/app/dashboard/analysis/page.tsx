@@ -3,9 +3,9 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { FileText, Anchor, Truck, AlertTriangle, ShieldAlert, ClipboardList, Ban, Send, CheckCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { FileText, Anchor, Truck, AlertTriangle, ShieldAlert, ClipboardList, Ban, Send, CheckCircle, ThumbsUp, ThumbsDown, Microscope } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/auth-context';
 import { ActionDialog } from '@/components/ui/action-dialog';
@@ -222,6 +222,7 @@ export default function AnalysisPage() {
   const [dialogAction, setDialogAction] = useState<DialogAction>(null);
   const [auditTrail, setAuditTrail] = useState<AuditEntry[]>([]);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const requestId = searchParams.get('id');
   const { user } = useAuth();
   const isReviewer = user && user.role !== 'requester';
@@ -318,9 +319,16 @@ export default function AnalysisPage() {
           <h1 className="text-3xl font-bold tracking-tight">Analysis Report for {MOCK_OUTPUT.request_id}</h1>
           <p className="text-muted-foreground mt-1">Processed at: {new Date(MOCK_OUTPUT.processed_at).toLocaleString()}</p>
         </div>
-        <Badge variant={recommendation.status === 'cannot_proceed' ? 'destructive' : 'default'} className="text-sm px-3 py-1 uppercase">
-          {recommendation.status.replace('_', ' ')}
-        </Badge>
+        <div className="flex items-center gap-2">
+          {requestId && (
+            <Button variant="outline" size="sm" className="gap-2" onClick={() => router.push(`/dashboard/transparency?id=${requestId}`)}>
+              <Microscope className="h-4 w-4" /> View AI Reasoning
+            </Button>
+          )}
+          <Badge variant={recommendation.status === 'cannot_proceed' ? 'destructive' : 'default'} className="text-sm px-3 py-1 uppercase">
+            {recommendation.status.replace('_', ' ')}
+          </Badge>
+        </div>
       </div>
 
       {/* Action panel for reviewers with a pending escalation on this request */}

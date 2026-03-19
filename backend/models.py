@@ -50,6 +50,7 @@ class Request(Base):
     data_residency_constraint = Column(Boolean, default=False)
     esg_requirement = Column(Boolean, default=False)
     ai_output = Column(Text, nullable=True)  # JSON string, set by AI step
+    execution_log_id = Column(String, nullable=True)  # e.g. "REQ-000004" → stores/execution_logs/{id}.json
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

@@ -1,5 +1,9 @@
 import json
+import os
+import pathlib
+from functools import lru_cache
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import asc, desc, func
 from datetime import datetime
@@ -9,6 +13,31 @@ import models
 import schemas
 
 router = APIRouter(prefix="/requests", tags=["requests"])
+
+USE_FILE_DATA = os.environ.get("USE_FILE_DATA", "false").lower() == "true"
+_REQUESTS_FILE = pathlib.Path(__file__).parent.parent.parent / "data" / "requests.json"
+
+
+@lru_cache(maxsize=1)
+def _load_requests_json() -> tuple:
+    """Load and parse requests.json; returns a tuple of dicts (hashable for lru_cache)."""
+    data = json.loads(_REQUESTS_FILE.read_text())
+    return tuple(data)
+
+
+def _normalize(r: dict) -> dict:
+    """Map requests.json fields to the shape the frontend expects."""
+    item = dict(r)
+    # request_id → id
+    item["id"] = item.pop("request_id", item.get("id", ""))
+    # request_text → plain_text
+    item["plain_text"] = item.pop("request_text", item.get("plain_text", ""))
+    # requester_id may not exist in file data
+    item.setdefault("requester_id", item.get("requester_id", ""))
+    # updated_at not present in file data
+    item.setdefault("updated_at", item.get("created_at", ""))
+    item.setdefault("escalations", [])
+    return item
 
 
 def _order_column(sort_by: str, order: str):
@@ -31,7 +60,7 @@ def _add_audit(db: Session, request_id: str, actor_id: str, action: str, notes: 
     ))
 
 
-@router.get("", response_model=list[schemas.RequestOut])
+@router.get("")
 def list_requests(
     sort_by: str = Query("date", pattern="^(date|l1|l2|country)$"),
     order: str = Query("asc", pattern="^(asc|desc)$"),
@@ -40,6 +69,16 @@ def list_requests(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
+    if USE_FILE_DATA:
+        raw = list(_load_requests_json())
+        # Sort
+        sort_key = {"date": "created_at", "l1": "category_l1", "l2": "category_l2", "country": "country"}.get(sort_by, "created_at")
+        raw.sort(key=lambda r: (r.get(sort_key) or ""), reverse=(order == "desc"))
+        # Paginate
+        offset = (page - 1) * per_page
+        page_data = raw[offset: offset + per_page]
+        return [_normalize(r) for r in page_data]
+
     offset = (page - 1) * per_page
     return (
         db.query(models.Request)
@@ -55,6 +94,8 @@ def count_requests(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
+    if USE_FILE_DATA:
+        return {"total": len(_load_requests_json())}
     return {"total": db.query(models.Request).count()}
 
 
@@ -63,6 +104,13 @@ def request_stats(
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    if USE_FILE_DATA:
+        raw = list(_load_requests_json())
+        by_status: dict = {}
+        for r in raw:
+            s = r.get("status", "new")
+            by_status[s] = by_status.get(s, 0) + 1
+        return {"by_status": by_status, "total": sum(by_status.values())}
     query = db.query(models.Request)
     if current_user.role == "requester":
         query = query.filter(models.Request.requester_id == current_user.id)
@@ -154,12 +202,18 @@ def create_request(
     return req
 
 
-@router.get("/{request_id}", response_model=schemas.RequestOut)
+@router.get("/{request_id}")
 def get_request(
     request_id: str,
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    if USE_FILE_DATA:
+        raw = _load_requests_json()
+        match = next((r for r in raw if r.get("request_id") == request_id or r.get("id") == request_id), None)
+        if not match:
+            raise HTTPException(status_code=404, detail="Request not found")
+        return _normalize(match)
     req = db.query(models.Request).filter(models.Request.id == request_id).first()
     if not req:
         raise HTTPException(status_code=404, detail="Request not found")

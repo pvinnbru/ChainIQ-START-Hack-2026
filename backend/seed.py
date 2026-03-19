@@ -1,8 +1,15 @@
-"""Run once to populate the database with demo users and sample requests."""
+"""Run once to populate the database with demo users and sample requests.
+Set SEED_DATA=false in .env to skip seeding (use file-based data instead)."""
 import json
+import os
+import sys
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+load_dotenv()
 from database import engine, SessionLocal, Base
 import models  # noqa: F401
+
+SEED_DATA = os.environ.get("SEED_DATA", "true").lower() == "true"
 
 Base.metadata.create_all(bind=engine)
 
@@ -420,5 +427,8 @@ def seed():
 
 
 if __name__ == "__main__":
+    if not SEED_DATA:
+        print("SEED_DATA=false — skipping seed (using file-based data from requests.json)")
+        sys.exit(0)
     seed()
     db.close()

@@ -200,3 +200,17 @@
     font-family: var(--font-roboto-mono);
   }
 }
+
+@media print {
+  [data-sidebar],
+  nav,
+  .no-print {
+    display: none !important;
+  }
+  .print-break {
+    page-break-before: always;
+  }
+  body {
+    font-size: 12px;
+  }
+}
