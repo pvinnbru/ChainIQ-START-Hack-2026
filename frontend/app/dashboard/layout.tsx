@@ -32,9 +32,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <AppSidebar className="print:hidden" />
-      <SidebarInset className="flex flex-col h-screen overflow-hidden print:block print:h-auto print:overflow-visible">
-        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 bg-background border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 print:hidden">
+      <AppSidebar />
+      <SidebarInset className="flex flex-col h-screen overflow-hidden">
+        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 bg-background border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator
@@ -44,7 +44,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <BreadcrumbNav />
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-auto print:block print:h-auto print:overflow-visible">
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-auto">
           {children}
         </div>
       </SidebarInset>
