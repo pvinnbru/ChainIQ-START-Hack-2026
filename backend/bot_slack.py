@@ -16,6 +16,8 @@ import models
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
 
 _APP_URL = os.environ.get("CHAINIQ_APP_URL", "http://localhost:3000")
+_PROCURE_KEYWORDS = ["procure", "order", "buy", "request", "need", "get", "/need"]
+
 _STATUS_ICON = {
     "new": "🔵", "escalated": "🟡", "pending_review": "🟠",
     "reviewed": "🔶", "approved": "✅", "rejected": "❌", "withdrawn": "⬜",
@@ -52,8 +54,9 @@ def handle_message(event, say, client):
             )
             return
 
-        if low.startswith("procure "):
-            _handle_new_request(say, text[8:].strip(), user, db)
+        _kw = next((k for k in _PROCURE_KEYWORDS if low.startswith(k + " ")), None)
+        if _kw:
+            _handle_new_request(say, text[len(_kw):].strip(), user, db)
         elif low.startswith("clarify "):
             parts = text[8:].strip().split(" ", 1)
             if len(parts) == 2:
@@ -62,6 +65,8 @@ def handle_message(event, say, client):
                 say("Usage: `clarify REQ-XXXXX <your clarification>`")
         elif low == "status":
             _handle_status(say, user, db)
+        elif low in ("help", "/help"):
+            _send_help(say)
         else:
             _send_help(say)
     finally:
@@ -72,7 +77,7 @@ def handle_message(event, say, client):
 
 def _handle_new_request(say, text: str, user: models.User, db):
     if not text:
-        say("Please describe what you need after `procure`.")
+        say("Please describe what you need after the keyword.")
         return
 
     req = models.Request(requester_id=user.id, plain_text=text, status="new")
@@ -135,7 +140,7 @@ def _handle_status(say, user: models.User, db):
         .limit(5).all()
     )
     if not reqs:
-        say("You have no requests yet. Type `procure <what you need>` to submit one.")
+        say("You have no requests yet. Try: `need <what you need>` to submit one.")
         return
 
     lines = ["*Your 5 most recent requests:*\n"]
@@ -147,11 +152,13 @@ def _handle_status(say, user: models.User, db):
 
 
 def _send_help(say):
+    keywords = " · ".join(f"`{k}`" for k in _PROCURE_KEYWORDS)
     say(
         "👋 *Welcome to ChainIQ Procurement Bot!*\n\n"
-        "• `procure <describe what you need>` — submit a new procurement request\n"
+        f"• {keywords} `<describe what you need>` — submit a new procurement request\n"
         "• `clarify REQ-XXXXX <your answer>` — respond to a clarification request\n"
-        "• `status` — see your 5 most recent requests\n\n"
+        "• `status` — see your 5 most recent requests\n"
+        "• `help` — show this message\n\n"
         "_You'll receive DMs here when escalations need your input or when a decision is made._"
     )
 

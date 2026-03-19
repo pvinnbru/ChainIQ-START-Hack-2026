@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 import { toast } from 'sonner';
+import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Paperclip } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -69,6 +71,57 @@ export default function CreateRequestPage() {
   const [dataResidency, setDataResidency] = useState(false);
   const [esgRequirement, setEsgRequirement] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const parseAndFill = (file: File) => {
+    if (!file.name.endsWith('.json') && file.type !== 'application/json') {
+      toast.error('Please drop a .json file.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const raw = JSON.parse(ev.target?.result as string);
+        const d = raw.global_context_snapshot ?? raw;
+        if (d.plain_text) setPlainText(d.plain_text);
+        if (d.title) setTitle(d.title);
+        if (d.category_l1) setCategoryL1(d.category_l1);
+        if (d.category_l2) setCategoryL2(d.category_l2);
+        if (d.currency) setCurrency(d.currency);
+        const budget = d.budget_amount ?? d.budget;
+        if (budget != null) setBudgetAmount(String(budget));
+        if (d.quantity != null) setQuantity(String(d.quantity));
+        if (d.unit_of_measure) setUnitOfMeasure(d.unit_of_measure);
+        else if (d.amount_unit) setUnitOfMeasure(d.amount_unit);
+        if (d.required_by_date) setRequiredByDate(d.required_by_date);
+        if (d.preferred_supplier_mentioned) setPreferredSupplier(d.preferred_supplier_mentioned);
+        if (d.incumbent_supplier) setIncumbentSupplier(d.incumbent_supplier);
+        if (d.contract_type_requested) setContractType(d.contract_type_requested);
+        const countries = d.delivery_countries ?? d.delivery_country;
+        if (countries) setDeliveryCountries(Array.isArray(countries) ? countries.join(', ') : countries);
+        if (d.data_residency_constraint != null) setDataResidency(!!d.data_residency_constraint);
+        if (d.esg_requirement != null) setEsgRequirement(!!d.esg_requirement);
+        toast.success('JSON imported — review and submit.');
+      } catch {
+        toast.error('Invalid JSON file.');
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleJsonImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) parseAndFill(file);
+    e.target.value = '';
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) parseAndFill(file);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,23 +180,46 @@ export default function CreateRequestPage() {
         </p>
       </div>
 
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json,application/json"
+        className="hidden"
+        onChange={handleJsonImport}
+      />
+
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Plain-text description */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">What do you need?</CardTitle>
-            <CardDescription>
-              Describe your request in plain language. Be as specific as possible.
-            </CardDescription>
+        <Card
+          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={handleDrop}
+          className={dragging ? 'ring-2 ring-primary ring-offset-2 transition-all' : ''}
+        >
+          <CardHeader className="flex flex-row items-start justify-between pb-2">
+            <div>
+              <CardTitle className="text-base">What do you need?</CardTitle>
+              <CardDescription className="mt-1">
+                Describe your request in plain language. Be as specific as possible.
+              </CardDescription>
+            </div>
+            <button
+              type="button"
+              title="Upload JSON"
+              onClick={() => fileInputRef.current?.click()}
+              className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              <Paperclip className="w-4 h-4" />
+            </button>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="e.g. Need 500 laptops for new hires joining next month. Prefer Dell if commercially competitive. Budget around CHF 750k."
+              placeholder={dragging ? 'Drop JSON here…' : 'e.g. Need 500 laptops for new hires joining next month. Prefer Dell if commercially competitive. Budget around CHF 750k.'}
               value={plainText}
               onChange={(e) => setPlainText(e.target.value)}
               rows={5}
               required
-              className="resize-none"
+              className={`resize-none transition-colors ${dragging ? 'border-primary bg-primary/5' : ''}`}
             />
           </CardContent>
         </Card>
