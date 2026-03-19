@@ -1,0 +1,69 @@
+{
+  "ruleset_id": "escalation_rules",
+  "data_hash": "4921ef9152a628150dc48adabc12ed9a212b41db347eb0caa8bd0d0ea8a26bbe",
+  "is_low_confidence": false,
+  "created_at": "2026-03-19T06:47:57.955119+00:00",
+  "sorted_actions": [
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_regional_compliance",
+      "WHEN currency = USD"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_marketing_governance",
+      "WHEN brand_safety_review_needed = True"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_sourcing_excellence",
+      "WHEN single_supplier_capacity_risk = True"
+    ],
+    [
+      "ALI",
+      "data_residency_constraint",
+      "True",
+      "=",
+      "escalate_to_security_compliance",
+      "WHEN data_residency_constraint = True"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_head_of_category",
+      "WHEN no_compliant_supplier_found"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_head_of_strategic_sourcing"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_procurement_manager"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_requester"
+    ]
+  ]
+}

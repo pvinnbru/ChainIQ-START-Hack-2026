@@ -26,8 +26,12 @@ POLICIES_PATH = Path("data/policies.json")
 def load_dict_tuples() -> tuple[list[tuple], set[str]]:
     """
     Read start_dict.csv and return:
-      - tuples: list of (name, description, type) for every non-meta entry
-      - fix_in_keys: set of keys whose type is fix_in
+      - tuples: list of (name, description, type) for every non-meta entry,
+                with "[supplier_matrix]" appended to the description for
+                supplier-matrix fields so the LLM knows their scope.
+      - fix_in_keys: set of all fix_in key names (request-level and
+                     supplier_matrix) — both are externally provided and must
+                     not be used as dependency-edge targets in sort_actions.
     """
     tuples: list[tuple] = []
     fix_in_keys: set[str] = set()
@@ -37,8 +41,11 @@ def load_dict_tuples() -> tuple[list[tuple], set[str]]:
             name = row["names"].strip()
             typ = row["type"].strip()
             desc = row["description"].strip()
+            relevance = row.get("relevance", "").strip()
             if typ == "meta":
                 continue
+            if relevance == "supplier_matrix":
+                desc = f"{desc} [supplier_matrix]"
             tuples.append((name, desc, typ))
             if typ == "fix_in":
                 fix_in_keys.add(name)

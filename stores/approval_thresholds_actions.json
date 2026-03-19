@@ -1,0 +1,304 @@
+{
+  "ruleset_id": "approval_thresholds",
+  "data_hash": "4921ef9152a628150dc48adabc12ed9a212b41db347eb0caa8bd0d0ea8a26bbe",
+  "is_low_confidence": false,
+  "created_at": "2026-03-19T06:46:20.614874+00:00",
+  "sorted_actions": [
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_cpo",
+      "WHEN budget >= 5400000 AND currency = USD"
+    ],
+    [
+      "ALI",
+      "_",
+      "3",
+      "=",
+      "min_supplier_quotes",
+      "WHEN budget >= 540000 AND currency = USD"
+    ],
+    [
+      "ALI",
+      "budget",
+      "5400000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = USD"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_head_of_strategic_sourcing",
+      "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD"
+    ],
+    [
+      "ALI",
+      "_",
+      "3",
+      "=",
+      "min_supplier_quotes",
+      "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD"
+    ],
+    [
+      "ALI",
+      "budget",
+      "5400000",
+      "<=",
+      "min_supplier_quotes",
+      "WHEN currency = USD"
+    ],
+    [
+      "ALI",
+      "budget",
+      "540000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = USD"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_head_of_category",
+      "WHEN budget >= 108000 AND budget <= 540000 AND currency = USD"
+    ],
+    [
+      "ALI",
+      "budget",
+      "540000",
+      "<=",
+      "min_supplier_quotes",
+      "WHEN currency = USD"
+    ],
+    [
+      "ALI",
+      "budget",
+      "108000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = USD"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_procurement_manager",
+      "WHEN budget >= 27000 AND budget <= 108000 AND currency = USD"
+    ],
+    [
+      "ALI",
+      "budget",
+      "108000",
+      "<=",
+      "min_supplier_quotes",
+      "WHEN currency = USD"
+    ],
+    [
+      "ALI",
+      "budget",
+      "27000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = USD"
+    ],
+    [
+      "ALI",
+      "_",
+      "1",
+      "=",
+      "min_supplier_quotes",
+      "WHEN budget >= 0 AND budget <= 27000 AND currency = USD"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_cpo",
+      "WHEN budget >= 5000000 AND currency = CHF"
+    ],
+    [
+      "ALI",
+      "budget",
+      "5000000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = CHF"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_head_of_strategic_sourcing",
+      "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF"
+    ],
+    [
+      "ALI",
+      "budget",
+      "500000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN budget <= 4999999.99 AND currency = CHF"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_head_of_category",
+      "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF"
+    ],
+    [
+      "ALI",
+      "budget",
+      "499999.99",
+      "<=",
+      "min_supplier_quotes",
+      "WHEN currency = CHF"
+    ],
+    [
+      "ALI",
+      "budget",
+      "100000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = CHF"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_procurement_manager",
+      "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF"
+    ],
+    [
+      "ALI",
+      "budget",
+      "99999.99",
+      "<=",
+      "min_supplier_quotes",
+      "WHEN currency = CHF"
+    ],
+    [
+      "ALI",
+      "budget",
+      "25000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = CHF"
+    ],
+    [
+      "ALI",
+      "budget",
+      "24999.99",
+      "<=",
+      "min_supplier_quotes",
+      "WHEN budget >= 0 AND currency = CHF"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_cpo",
+      "WHEN budget >= 5000000 AND currency = EUR"
+    ],
+    [
+      "ALI",
+      "budget",
+      "5000000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = EUR"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_head_of_strategic_sourcing",
+      "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR"
+    ],
+    [
+      "ALI",
+      "budget",
+      "4999999.99",
+      "<=",
+      "min_supplier_quotes",
+      "WHEN currency = EUR"
+    ],
+    [
+      "ALI",
+      "budget",
+      "500000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = EUR"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_head_of_category",
+      "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR"
+    ],
+    [
+      "ALI",
+      "budget",
+      "499999.99",
+      "<=",
+      "min_supplier_quotes",
+      "WHEN currency = EUR"
+    ],
+    [
+      "ALI",
+      "budget",
+      "100000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = EUR"
+    ],
+    [
+      "ALI",
+      "_",
+      "True",
+      "=",
+      "escalate_to_procurement_manager",
+      "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR"
+    ],
+    [
+      "ALI",
+      "budget",
+      "99999.99",
+      "<=",
+      "min_supplier_quotes",
+      "WHEN currency = EUR"
+    ],
+    [
+      "ALI",
+      "budget",
+      "25000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = EUR"
+    ],
+    [
+      "ALI",
+      "budget",
+      "24999.99",
+      "<=",
+      "min_supplier_quotes",
+      "WHEN budget >= 0 AND currency = EUR"
+    ]
+  ]
+}

@@ -6,6 +6,13 @@ request_language,meta,Language of request text — not used in rule logic,
 business_unit,meta,Requesting business unit — not used in rule logic,
 request_text,meta,Free-text request description — pre-processed externally,
 scenario_tags,meta,Test scenario classification tags — not used in rule logic,
+supplier_id,meta,Unique supplier identifier — part of supplier identity; not available to rule logic,supplier_matrix
+supplier_name,meta,Supplier display name — part of supplier identity; not available to rule logic,supplier_matrix
+country_hq,meta,Country of supplier headquarters — part of supplier identity; not available to rule logic,supplier_matrix
+service_regions,meta,Semicolon-separated ISO-2 codes of regions the supplier serves — used for delivery-country pre-filtering only; not available to rule logic,supplier_matrix
+is_restricted,meta,True if the supplier is restricted and excluded before rule evaluation — surviving suppliers always have is_restricted=False so rules must not reference this field,supplier_matrix
+restriction_reason,meta,Human-readable restriction rationale — informational only; not available to rule logic,supplier_matrix
+notes,meta,Free-text supplier notes — informational only; not available to rule logic,supplier_matrix
 category_l1,fix_in,L1 procurement category (IT / Facilities / Professional Services / Marketing),
 category_l2,fix_in,L2 procurement subcategory (e.g. Laptops / Cloud Compute / Office Chairs),
 budget,fix_in,Total budget amount available for this request,
@@ -18,7 +25,16 @@ preferred_supplier_mentioned,fix_in,Supplier name explicitly stated by the reque
 incumbent_supplier,fix_in,Current incumbent supplier for this category and requester — null if none,
 data_residency_constraint,fix_in,True if the request involves data that must remain within a specific jurisdiction,
 esg_requirement,fix_in,True if the requester has stated ESG or sustainability requirements,
-rank,fix_out,Supplier ranking score — higher value means higher priority in the shortlist; one value per supplier in the supplier matrix,
+quality_score,fix_in,Supplier quality score 0–100 from supplier master data — higher is better; used as a primary rank input,supplier_matrix
+risk_score,fix_in,Supplier risk score 0–100 from supplier master data — lower is better; high values can trigger SRM penalties or ER-006 escalation,supplier_matrix
+esg_score,fix_in,Supplier ESG / sustainability score 0–100 from supplier master data — higher is better; relevant when esg_requirement is True,supplier_matrix
+preferred_supplier,fix_in,True if this supplier appears on the organisation's preferred supplier list for this category,supplier_matrix
+data_residency_supported,fix_in,True if the supplier can fulfil data-residency requirements for this category and region — cross-referenced with request-level data_residency_constraint,supplier_matrix
+capacity_per_month,fix_in,Maximum units (devices / hours / service days) the supplier can deliver per calendar month — used to detect single-supplier capacity risk (ER-006),supplier_matrix
+contract_status,fix_in,"Current contract status with this supplier — active / expired / pilot; rules should treat non-active suppliers as lower priority",supplier_matrix
+pricing_model,fix_in,"Supplier pricing model — tiered / usage / subscription / day_rate / fixed / performance / blended_rate; used in category-specific rules (e.g. CR-007 requires day_rate for consultants)",supplier_matrix
+serves_delivery_country,fix_in,True if the supplier's service regions include the request's delivery country — computed during supplier pre-filtering and always True for suppliers that reach rule evaluation,supplier_matrix
+rank,fix_out,Supplier ranking score — higher value means higher priority in the shortlist; one value per supplier in the supplier matrix,supplier_matrix
 min_supplier_quotes,fix_out,Minimum number of compliant supplier quotes required by the applicable approval threshold rule (AT-001 through AT-015),
 fast_track_eligible,fix_out,True if category and value rules permit fast-track single-quote approval without a standard competitive process (CR-003),
 requires_security_review,fix_out,True if a security architecture review is mandatory before award (CR-005),

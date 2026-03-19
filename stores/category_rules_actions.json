@@ -1,0 +1,80 @@
+{
+  "ruleset_id": "category_rules",
+  "data_hash": "4921ef9152a628150dc48adabc12ed9a212b41db347eb0caa8bd0d0ea8a26bbe",
+  "is_low_confidence": false,
+  "created_at": "2026-03-19T06:47:07.010577+00:00",
+  "sorted_actions": [
+    [
+      "ALI",
+      "category_l1",
+      "\"Marketing\"",
+      "=",
+      "requires_brand_safety_review",
+      "WHEN category_l2 = \"Influencer Campaign Management\""
+    ],
+    [
+      "ALI",
+      "category_l1",
+      "\"Professional Services\"",
+      "=",
+      "requires_certification_check",
+      "WHEN category_l2 = \"Cybersecurity Advisory\""
+    ],
+    [
+      "ALI",
+      "quantity",
+      "60",
+      ">",
+      "requires_cv_review",
+      "WHEN category_l1 = Professional Services AND category_l2 = Software Development Services"
+    ],
+    [
+      "ALI",
+      "category_l1",
+      "\"Facilities\"",
+      "=",
+      "requires_design_signoff",
+      "WHEN category_l2 = \"Reception and Lounge Furniture\""
+    ],
+    [
+      "ALI",
+      "budget",
+      "250000",
+      ">=",
+      "requires_security_review",
+      "WHEN currency = EUR OR currency = CHF AND category_l1 = IT AND category_l2 = Managed Cloud Platform Services"
+    ],
+    [
+      "OSLM",
+      "data_residency_supported",
+      "data_residency_constraint",
+      "AND",
+      "rank",
+      "WHEN category_l1 = IT AND category_l2 = Cloud Compute"
+    ],
+    [
+      "ALI",
+      "budget",
+      "75000",
+      "<=",
+      "fast_track_eligible",
+      "WHEN currency = EUR OR currency = CHF AND category_l1 = IT AND category_l2 = Replacement / Break-Fix Pool Devices"
+    ],
+    [
+      "ALI",
+      "quantity",
+      "50",
+      ">",
+      "requires_engineering_review",
+      "WHEN category_l1 = IT AND category_l2 = Mobile Workstations"
+    ],
+    [
+      "ALI",
+      "budget",
+      "100000",
+      ">=",
+      "min_supplier_quotes",
+      "WHEN currency = EUR OR currency = CHF AND category_l1 = IT AND category_l2 = Laptops"
+    ]
+  ]
+}
