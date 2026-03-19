@@ -1,10 +1,12 @@
-names,type,description
-request id,meta
-created_at,meta
-request_channel,meta
-request_language,meta
-category_l1,fix in
-category_l2,fix in
-budget,fix in
-amount,fix in
-amount_unit,meta
+names,type,description,relevance
+request id,meta,,
+created_at,meta,,
+request_channel,meta,,
+request_language,meta,,
+category_l1,fix in,Categorisation on Level 1,hoch relevant
+category_l2,fix in,Categorisation on Level 2,
+budget,fix in,Budget available amount,
+amount,fix in,amount of item requested,
+amount_unit,meta,"item unit (e.g. pieces, hours etc)",
+currency,fix in,currency the budget is measured in,
+rank,fix out,vector on each supplier listing that supplieres ranking points (the higher the better),

@@ -1,0 +1,53 @@
+Rule ingestion pipline:
+Call to LLM:
+ Gets: 
+    - the rule in json as had
+    - the current dict schema
+    - possible actions with definitions
+ Returns:
+    - the chosen action(s) + parameter -- can be more then one
+    - (optional) a additional dict entry
+    - relevance evaluation
+ Dscision Criterion:
+    - Try to fullfill the rule with adding a minimal amount of dict entires with "guesses" into the future - ! make sure it doesnt use always just ==
+Action Set to choose from:
+    1. AL (Standard operation of two parameters)
+        Selection of two input parameters a oparand and a goal parameter (could all three be the same parameter)
+        Oprands are + - * / etc und EQULAS AND OR XOR etc
+    2. ALI - same as AL but with immediate instead of second parameter
+    3. OSLM (Ordered Supplier List Modification):
+        Modification of all entires (AL or ALI) in the supplier matrix that follow a seclection patter. Can only depend on top atttributes (those not in the supplier matrix and those in the supplier matri of a higher order)
+    4. SRM (Supplier rank modification) - technically same as as OSLM but with rank being the fixed lowest ordered supplier list attribute
+
+
+
+Construction of Dependencie Graph for AL & ALI:
+ Nodes: dict_names
+ Edges: actions writing to goal node with start node as parameter used
+
+Action exectuion - wierd walk through graph:
+ - defined on ipad :)
+ 
+Walk through OSLM by order:
+ ! can have dependencies only layer up -needs to be reflected in action descion prompt
+
+Walk through rank calculation rules - lots of stuff here :)
+- first dynamic rules from LLM (SRM)
+- then ours
+
+Finaly output
+
+    {
+      "threshold_id": "AT-007",
+      "currency": "CHF",
+      "min_amount": 25000,
+      "max_amount": 99999.99,
+      "min_supplier_quotes": 2,
+      "managed_by": [
+        "business",
+        "procurement"
+      ],
+      "deviation_approval_required_from": [
+        "Procurement Manager"
+      ]
+    },
