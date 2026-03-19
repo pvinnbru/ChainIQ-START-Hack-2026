@@ -1,7 +1,7 @@
 import json
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import asc, desc
+from sqlalchemy import asc, desc, func
 from datetime import datetime
 from database import get_db
 from auth import get_current_user
@@ -56,6 +56,51 @@ def count_requests(
     current_user: models.User = Depends(get_current_user),
 ):
     return {"total": db.query(models.Request).count()}
+
+
+@router.get("/stats")
+def request_stats(
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    query = db.query(models.Request)
+    if current_user.role == "requester":
+        query = query.filter(models.Request.requester_id == current_user.id)
+    rows = (
+        query.with_entities(models.Request.status, func.count(models.Request.id))
+        .group_by(models.Request.status)
+        .all()
+    )
+    by_status = {status: count for status, count in rows}
+    return {"by_status": by_status, "total": sum(by_status.values())}
+
+
+@router.get("/activity")
+def recent_activity(
+    limit: int = Query(10, ge=1, le=50),
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    entries = (
+        db.query(models.AuditEntry, models.Request, models.User)
+        .join(models.Request, models.AuditEntry.request_id == models.Request.id)
+        .join(models.User, models.AuditEntry.actor_id == models.User.id)
+        .order_by(desc(models.AuditEntry.created_at))
+        .limit(limit)
+        .all()
+    )
+    return [
+        {
+            "id": entry.id,
+            "action": entry.action,
+            "notes": entry.notes,
+            "created_at": entry.created_at.isoformat(),
+            "actor_name": user.name,
+            "request_id": request.id,
+            "request_title": request.title or request.plain_text[:60],
+        }
+        for entry, request, user in entries
+    ]
 
 
 @router.get("/mine", response_model=list[schemas.RequestOut])

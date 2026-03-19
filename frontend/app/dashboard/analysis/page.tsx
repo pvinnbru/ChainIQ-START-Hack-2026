@@ -211,12 +211,24 @@ const ESCALATION_TYPE_MAP: Record<string, string> = {
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
 
 interface MyEscalation { id: string; request_id: string; type: string; status: string; }
+interface AuditEntry { id: string; actor_id: string; action: string; notes: string | null; created_at: string; }
+
+const AUDIT_ACTION_COLORS: Record<string, string> = {
+  submitted: 'bg-blue-500',
+  approved: 'bg-emerald-500',
+  rejected: 'bg-red-500',
+  reviewed: 'bg-indigo-500',
+  escalated: 'bg-orange-500',
+  clarified: 'bg-amber-500',
+  withdrawn: 'bg-gray-400',
+};
 
 export default function AnalysisPage() {
   const [loading, setLoading] = useState(true);
   const [sentEscalations, setSentEscalations] = useState<Record<string, boolean>>({});
   const [myEscalation, setMyEscalation] = useState<MyEscalation | null>(null);
   const [dialogAction, setDialogAction] = useState<DialogAction>(null);
+  const [auditTrail, setAuditTrail] = useState<AuditEntry[]>([]);
   const searchParams = useSearchParams();
   const requestId = searchParams.get('id');
   const { user } = useAuth();
@@ -234,6 +246,14 @@ export default function AnalysisPage() {
       })
       .catch(() => {});
   }, [requestId, isReviewer]);
+
+  useEffect(() => {
+    if (!requestId) return;
+    fetch(`${API}/requests/${requestId}/audit`, { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data) => Array.isArray(data) && setAuditTrail(data))
+      .catch(() => {});
+  }, [requestId]);
 
   const handleConfirm = async (notes: string) => {
     if (!requestId || !dialogAction) return;
@@ -508,6 +528,39 @@ export default function AnalysisPage() {
               )}
             </CardContent>
           </Card>
+
+          {/* Request Audit Timeline */}
+          {auditTrail.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <ClipboardList className="h-5 w-5 text-violet-500" />
+                  Request Timeline
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ol className="relative border-l border-border ml-3 space-y-4">
+                  {auditTrail.map((entry, i) => (
+                    <li key={entry.id} className="ml-4">
+                      <span className={`absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-background ${AUDIT_ACTION_COLORS[entry.action] ?? 'bg-gray-400'}`} />
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="text-sm font-medium capitalize">{entry.action}</p>
+                        <time className="text-xs text-muted-foreground whitespace-nowrap">
+                          {new Date(entry.created_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                        </time>
+                      </div>
+                      {entry.notes && (
+                        <p className="text-xs text-muted-foreground mt-1 italic">"{entry.notes}"</p>
+                      )}
+                      {i === auditTrail.length - 1 && (
+                        <p className="text-xs text-muted-foreground mt-0.5">Latest action</p>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </CardContent>
+            </Card>
+          )}
 
         </div>
 

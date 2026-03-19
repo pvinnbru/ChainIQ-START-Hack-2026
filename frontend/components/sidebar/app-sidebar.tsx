@@ -59,6 +59,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: FileCheck,
       isActive: true,
       items: [
+        { title: "Overview", url: "/dashboard" },
         { title: "New Request", url: "/dashboard/create" },
         { title: "All Cases", url: "/dashboard/cases" },
       ],

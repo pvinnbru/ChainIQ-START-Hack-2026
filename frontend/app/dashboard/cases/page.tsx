@@ -31,6 +31,36 @@ interface Request {
 type SortBy = 'date' | 'l1' | 'l2' | 'country';
 type Order = 'asc' | 'desc';
 
+function getDaysUntil(dateStr: string | null): number | null {
+  if (!dateStr) return null;
+  const diff = new Date(dateStr).getTime() - Date.now();
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+}
+
+function UrgencyChip({ dateStr, status }: { dateStr: string | null; status: string }) {
+  if (!dateStr || ['approved', 'rejected', 'withdrawn'].includes(status)) return <span className="text-xs">{dateStr ?? '—'}</span>;
+  const days = getDaysUntil(dateStr);
+  if (days === null) return <span className="text-xs">—</span>;
+  if (days < 0) return (
+    <span className="text-xs font-medium text-red-600 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded">
+      overdue
+    </span>
+  );
+  if (days <= 3) return (
+    <div>
+      <p className="text-xs">{dateStr}</p>
+      <p className="text-xs font-medium text-red-600">{days}d left</p>
+    </div>
+  );
+  if (days <= 7) return (
+    <div>
+      <p className="text-xs">{dateStr}</p>
+      <p className="text-xs font-medium text-amber-600">{days}d left</p>
+    </div>
+  );
+  return <span className="text-xs">{dateStr}</span>;
+}
+
 function getStatusColor(status: string) {
   switch (status) {
     case 'new': return 'text-blue-700 border-blue-300 bg-blue-50';
@@ -294,6 +324,7 @@ export default function CasesPage() {
                     {req.budget_amount != null && (
                       <span className="font-mono">{req.currency} {req.budget_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     )}
+                    {req.required_by_date && <UrgencyChip dateStr={req.required_by_date} status={req.status} />}
                   </div>
                   <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
                     <Button size="sm" variant="outline" className="h-7 px-2 text-xs gap-1" onClick={() => handleView(req)}>
@@ -377,8 +408,8 @@ export default function CasesPage() {
                         ? `${req.currency} ${req.budget_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}`
                         : <span className="text-muted-foreground">—</span>}
                     </td>
-                    <td className="px-4 py-3 text-xs whitespace-nowrap">
-                      {req.required_by_date ?? '—'}
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <UrgencyChip dateStr={req.required_by_date} status={req.status} />
                     </td>
                     <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-1">
