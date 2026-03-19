@@ -135,6 +135,7 @@ export default function CasesPage() {
 
   const handleView = (req: Request) => {
     sessionStorage.setItem('currentRequest', JSON.stringify(req));
+    // In file mode the backend returns request_id (REQ-XXXXXX) mapped to id; use it directly
     router.push(`/dashboard/analysis?id=${req.id}`);
   };
 
@@ -371,7 +372,7 @@ export default function CasesPage() {
                     onClick={() => handleView(req)}
                   >
                     <td className="px-4 py-3 font-mono text-xs text-muted-foreground whitespace-nowrap">
-                      {req.id.slice(0, 8)}…
+                      {req.id.startsWith('REQ-') ? req.id : `${req.id.slice(0, 8)}…`}
                     </td>
                     <td className="px-4 py-3 max-w-[220px]">
                       <p className="font-medium leading-snug">

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 import models  # noqa: F401 – ensures models are registered before create_all
-from routers import auth, requests, escalations
+from routers import auth, requests, escalations, transparency
 
 Base.metadata.create_all(bind=engine)
 
@@ -19,6 +19,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(requests.router)
 app.include_router(escalations.router)
+app.include_router(transparency.router)
 
 
 @app.get("/")
