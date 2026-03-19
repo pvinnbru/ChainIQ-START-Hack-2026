@@ -1,5 +1,5 @@
 REQUEST: REQ-000286
-Timestamp: 2026-03-19T07:32:21.005814+00:00
+Timestamp: 2026-03-19T14:00:27.690346+00:00
 Context: {'category_l1': 'IT', 'category_l2': 'Laptops', 'budget': 135000, 'currency': 'USD', 'quantity': 150, 'amount_unit': 'units', 'delivery_country': 'AU', 'days_until_required': 8, 'preferred_supplier_mentioned': 'Apple Business Channel', 'incumbent_supplier': None, 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: does not serve delivery country 'AU']

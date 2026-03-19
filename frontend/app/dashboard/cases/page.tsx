@@ -227,51 +227,52 @@ export default function CasesPage() {
         </div>
       </div>
 
-      {/* Status filter */}
-      <div className="flex flex-wrap gap-2 items-center">
-        <span className="text-xs text-muted-foreground">Status:</span>
-        {['all', 'new', 'pending_review', 'escalated', 'reviewed', 'approved', 'rejected', 'withdrawn'].map((s) => {
-          const count = s === 'all' ? requests.length : (statusCounts[s] ?? 0);
-          if (s !== 'all' && count === 0) return null;
-          return (
-            <Button
-              key={s}
-              size="sm"
-              variant={statusFilter === s ? 'default' : 'outline'}
-              className="h-7 px-2.5 text-xs gap-1"
-              onClick={() => setStatusFilter(s)}
-            >
-              {s === 'all' ? 'All' : s.replace(/_/g, ' ')}
-              <span className={`text-[10px] font-mono ${statusFilter === s ? 'opacity-80' : 'text-muted-foreground'}`}>
-                {count}
-              </span>
-            </Button>
-          );
-        })}
-      </div>
-
-      {/* Sort controls — approvers/managers only */}
-      {!isRequester && (
+      {/* Status filter + Sort controls in one row */}
+      <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-xs text-muted-foreground">Sort by:</span>
-          {(Object.keys(SORT_LABELS) as SortBy[]).map((sb) => (
-            <Button
-              key={sb}
-              size="sm"
-              variant={sortBy === sb ? 'default' : 'outline'}
-              className="h-7 px-2.5 text-xs gap-1"
-              onClick={() => toggleSort(sb)}
-            >
-              {SORT_LABELS[sb]}
-              {sortBy === sb && (
-                order === 'asc'
-                  ? <ArrowUp className="h-3 w-3" />
-                  : <ArrowDown className="h-3 w-3" />
-              )}
-            </Button>
-          ))}
+          <span className="text-xs text-muted-foreground">Status:</span>
+          {['all', 'new', 'pending_review', 'escalated', 'reviewed', 'approved', 'rejected', 'withdrawn'].map((s) => {
+            const count = s === 'all' ? requests.length : (statusCounts[s] ?? 0);
+            if (s !== 'all' && count === 0) return null;
+            return (
+              <Button
+                key={s}
+                size="sm"
+                variant={statusFilter === s ? 'default' : 'outline'}
+                className="h-7 px-2.5 text-xs gap-1"
+                onClick={() => setStatusFilter(s)}
+              >
+                {s === 'all' ? 'All' : s.replace(/_/g, ' ')}
+                <span className={`text-[10px] font-mono ${statusFilter === s ? 'opacity-80' : 'text-muted-foreground'}`}>
+                  {count}
+                </span>
+              </Button>
+            );
+          })}
         </div>
-      )}
+
+        {!isRequester && (
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="text-xs text-muted-foreground">Sort by:</span>
+            {(Object.keys(SORT_LABELS) as SortBy[]).map((sb) => (
+              <Button
+                key={sb}
+                size="sm"
+                variant={sortBy === sb ? 'default' : 'outline'}
+                className="h-7 px-2.5 text-xs gap-1"
+                onClick={() => toggleSort(sb)}
+              >
+                {SORT_LABELS[sb]}
+                {sortBy === sb && (
+                  order === 'asc'
+                    ? <ArrowUp className="h-3 w-3" />
+                    : <ArrowDown className="h-3 w-3" />
+                )}
+              </Button>
+            ))}
+          </div>
+        )}
+      </div>
 
       <Card>
         <CardHeader className="border-b pb-4 flex-row items-center justify-between">

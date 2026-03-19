@@ -2,15 +2,15 @@
   "ruleset_id": "escalation_rules",
   "data_hash": "4921ef9152a628150dc48adabc12ed9a212b41db347eb0caa8bd0d0ea8a26bbe",
   "is_low_confidence": false,
-  "created_at": "2026-03-19T07:28:29.413560+00:00",
+  "created_at": "2026-03-19T14:00:14.854138+00:00",
   "sorted_actions": [
     [
       "ALI",
-      "currency",
-      "\"USD\"",
+      "_",
+      "True",
       "=",
       "escalate_to_regional_compliance",
-      "WHEN currency = \"USD\""
+      "WHEN currency = USD"
     ],
     [
       "ALI",
@@ -31,7 +31,8 @@
       "_",
       "True",
       "=",
-      "escalate_to_security_compliance"
+      "escalate_to_security_compliance",
+      "WHEN data_residency_constraint = True AND data_residency_supported = False"
     ],
     [
       "ALI",
@@ -45,7 +46,8 @@
       "_",
       "True",
       "=",
-      "escalate_to_head_of_strategic_sourcing"
+      "escalate_to_head_of_strategic_sourcing",
+      "WHEN budget > threshold_value"
     ],
     [
       "ALI",
@@ -65,11 +67,11 @@
   "attribution": {
     "0": {
       "rule_id": "ER-008",
-      "rule_description": "Escalate to Regional Compliance Lead if supplier is not registered or sanctioned-screened in the delivery country and the currency is USD"
+      "rule_description": "Escalates to Regional Compliance Lead if the supplier is not registered or sanctioned-screened in the delivery country and the currency is USD"
     },
     "1": {
       "rule_id": "ER-007",
-      "rule_description": "Escalates to Marketing Governance Lead when a brand safety review is needed."
+      "rule_description": "Escalates to Marketing Governance Lead for brand safety concerns"
     },
     "2": {
       "rule_id": "ER-006",
@@ -77,7 +79,7 @@
     },
     "3": {
       "rule_id": "ER-005",
-      "rule_description": "Escalates to Security and Compliance Review due to data residency constraint conflict."
+      "rule_description": "Escalates to Security and Compliance Review when there is a data residency constraint conflict."
     },
     "4": {
       "rule_id": "ER-004",
@@ -85,15 +87,15 @@
     },
     "5": {
       "rule_id": "ER-003",
-      "rule_description": "Escalates to Head of Strategic Sourcing when value exceeds threshold."
+      "rule_description": "Escalates to Head of Strategic Sourcing when the value exceeds the threshold."
     },
     "6": {
       "rule_id": "ER-002",
-      "rule_description": "Escalate to Procurement Manager when preferred supplier is restricted."
+      "rule_description": "Escalates to Procurement Manager when preferred supplier is restricted"
     },
     "7": {
       "rule_id": "ER-001",
-      "rule_description": "Escalates to requester clarification due to missing required information."
+      "rule_description": "Escalates to requester clarification when required information is missing"
     }
   }
 }

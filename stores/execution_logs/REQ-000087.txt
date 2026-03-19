@@ -1,5 +1,5 @@
 REQUEST: REQ-000087
-Timestamp: 2026-03-19T07:32:19.793295+00:00
+Timestamp: 2026-03-19T14:00:26.622281+00:00
 Context: {'category_l1': 'Facilities', 'category_l2': 'Reception and Lounge Furniture', 'budget': 180000.0, 'currency': 'CHF', 'quantity': 6000, 'amount_unit': 'project', 'delivery_country': 'CH', 'days_until_required': 17, 'preferred_supplier_mentioned': 'Kinnarps Workplace', 'incumbent_supplier': 'Herman Miller Contract', 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Facilities')]

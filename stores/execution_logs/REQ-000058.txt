@@ -1,5 +1,5 @@
 REQUEST: REQ-000058
-Timestamp: 2026-03-19T07:32:19.580516+00:00
+Timestamp: 2026-03-19T14:00:26.422751+00:00
 Context: {'category_l1': 'IT', 'category_l2': 'Rugged Devices', 'budget': 162468.67, 'currency': 'CHF', 'quantity': 150, 'amount_unit': 'device', 'delivery_country': 'CH', 'days_until_required': 0, 'preferred_supplier_mentioned': None, 'incumbent_supplier': 'Samsung Knox Devices', 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l2 mismatch ('Laptops' != 'Rugged Devices')]

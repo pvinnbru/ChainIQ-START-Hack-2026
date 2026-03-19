@@ -2,7 +2,7 @@
   "ruleset_id": "approval_thresholds",
   "data_hash": "4921ef9152a628150dc48adabc12ed9a212b41db347eb0caa8bd0d0ea8a26bbe",
   "is_low_confidence": false,
-  "created_at": "2026-03-19T07:27:33.142189+00:00",
+  "created_at": "2026-03-19T13:58:53.354751+00:00",
   "sorted_actions": [
     [
       "ALI",
@@ -26,7 +26,7 @@
       "True",
       "=",
       "escalate_to_head_of_strategic_sourcing",
-      "WHEN budget > 540000 AND budget <= 5400000 AND currency = USD"
+      "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD"
     ],
     [
       "ALI",
@@ -34,7 +34,7 @@
       "3",
       "=",
       "min_supplier_quotes",
-      "WHEN budget > 540000 AND budget <= 5400000 AND currency = USD"
+      "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD"
     ],
     [
       "ALI",
@@ -222,25 +222,17 @@
     ]
   ],
   "attribution": {
-    "0": {
-      "rule_id": "AT-015",
-      "rule_description": "Escalate to CPO for budgets above 5,400,000 USD"
-    },
     "1": {
       "rule_id": "AT-015",
-      "rule_description": "Set minimum supplier quotes to 3 for budgets above 5,400,000 USD"
-    },
-    "2": {
-      "rule_id": "AT-014",
-      "rule_description": "Escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000"
+      "rule_description": "Set minimum supplier quotes and CPO escalation for budgets exceeding $5,400,000 in USD"
     },
     "3": {
       "rule_id": "AT-014",
-      "rule_description": "Set minimum supplier quotes and escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000"
+      "rule_description": "Set minimum supplier quotes and escalate to Head of Strategic Sourcing for budgets between 540,000 and 5,400,000 USD"
     },
     "5": {
       "rule_id": "AT-013",
-      "rule_description": "Set minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000"
+      "rule_description": "Sets minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000"
     },
     "6": {
       "rule_id": "AT-012",
@@ -252,11 +244,15 @@
     },
     "8": {
       "rule_id": "AT-011",
-      "rule_description": "Sets minimum supplier quotes to 1 for budgets up to 27,000 USD"
+      "rule_description": "Sets single quote requirement for USD budgets up to 27,000"
+    },
+    "9": {
+      "rule_id": "AT-010",
+      "rule_description": "Escalate to CPO for contracts exceeding CHF 5,000,000"
     },
     "10": {
       "rule_id": "AT-010",
-      "rule_description": "Set minimum supplier quotes and escalate to CPO for very high-value contracts in CHF currency"
+      "rule_description": "Set minimum supplier quotes and escalate to CPO for high-value contracts in CHF currency"
     },
     "11": {
       "rule_id": "AT-009",
@@ -264,23 +260,27 @@
     },
     "12": {
       "rule_id": "AT-009",
-      "rule_description": "Set minimum supplier quotes and escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency."
+      "rule_description": "Set minimum supplier quotes and escalation to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency."
     },
     "14": {
       "rule_id": "AT-008",
       "rule_description": "Set minimum supplier quotes and escalation to Head of Category for mid-value thresholds in CHF currency"
     },
+    "15": {
+      "rule_id": "AT-007",
+      "rule_description": "Escalate to Procurement Manager for mid-value thresholds in CHF currency"
+    },
     "16": {
       "rule_id": "AT-007",
-      "rule_description": "Set minimum supplier quotes and escalate to Procurement Manager for mid-value thresholds in CHF currency"
+      "rule_description": "Set minimum supplier quotes to 2 for mid-value thresholds in CHF currency"
     },
     "17": {
       "rule_id": "AT-006",
-      "rule_description": "Sets minimum supplier quotes to 1 for budgets up to 24,999.99 CHF."
+      "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF."
     },
     "18": {
       "rule_id": "AT-005",
-      "rule_description": "Escalate to CPO for approval for budgets >= 5,000,000 EUR."
+      "rule_description": "Escalate to CPO for budgets >= 5,000,000 EUR."
     },
     "19": {
       "rule_id": "AT-005",
@@ -312,7 +312,7 @@
     },
     "26": {
       "rule_id": "AT-001",
-      "rule_description": "Sets the minimum number of supplier quotes required for budgets between 0 and 24,999.99 EUR."
+      "rule_description": "Sets the minimum number of supplier quotes to 1 for requests with a budget between 0 and 24,999.99 EUR."
     }
   }
 }

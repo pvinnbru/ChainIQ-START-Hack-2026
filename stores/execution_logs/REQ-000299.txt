@@ -1,5 +1,5 @@
 REQUEST: REQ-000299
-Timestamp: 2026-03-19T07:32:21.065756+00:00
+Timestamp: 2026-03-19T14:00:27.742668+00:00
 Context: {'category_l1': 'Marketing', 'category_l2': 'Marketing Analytics Services', 'budget': 290000, 'currency': 'USD', 'quantity': 18, 'amount_unit': 'months', 'delivery_country': 'IN', 'days_until_required': 45, 'preferred_supplier_mentioned': 'Dentsu International', 'incumbent_supplier': None, 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]

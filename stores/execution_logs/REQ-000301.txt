@@ -1,5 +1,5 @@
 REQUEST: REQ-000301
-Timestamp: 2026-03-19T07:32:21.073766+00:00
+Timestamp: 2026-03-19T14:00:27.749215+00:00
 Context: {'category_l1': 'Marketing', 'category_l2': 'Influencer Campaign Management', 'budget': 45000, 'currency': 'USD', 'quantity': 1, 'amount_unit': 'campaign', 'delivery_country': 'AU', 'days_until_required': 43, 'preferred_supplier_mentioned': 'Havas Group Americas', 'incumbent_supplier': None, 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]

@@ -1,5 +1,5 @@
 REQUEST: REQ-000294
-Timestamp: 2026-03-19T07:32:21.041248+00:00
+Timestamp: 2026-03-19T14:00:27.721648+00:00
 Context: {'category_l1': 'IT', 'category_l2': 'Laptops', 'budget': 355000, 'currency': 'USD', 'quantity': 300, 'amount_unit': 'units', 'delivery_country': 'AU', 'days_until_required': 9, 'preferred_supplier_mentioned': 'Insight Technology Group', 'incumbent_supplier': None, 'data_residency_constraint': False, 'esg_requirement': True}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: does not serve delivery country 'AU']

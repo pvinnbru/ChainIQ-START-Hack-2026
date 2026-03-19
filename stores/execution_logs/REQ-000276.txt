@@ -1,5 +1,5 @@
 REQUEST: REQ-000276
-Timestamp: 2026-03-19T07:32:20.966955+00:00
+Timestamp: 2026-03-19T14:00:27.657561+00:00
 Context: {'category_l1': 'Professional Services', 'category_l2': 'Data Engineering Services', 'budget': 100200, 'currency': 'USD', 'quantity': 200, 'amount_unit': 'days', 'delivery_country': 'SG', 'days_until_required': 54, 'preferred_supplier_mentioned': 'Infosys Consulting', 'incumbent_supplier': None, 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Professional Services')]

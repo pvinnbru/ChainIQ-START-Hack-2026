@@ -1,5 +1,5 @@
 REQUEST: REQ-000035
-Timestamp: 2026-03-19T07:32:19.442160+00:00
+Timestamp: 2026-03-19T14:00:26.308891+00:00
 Context: {'category_l1': 'IT', 'category_l2': 'Smartphones', 'budget': 76800, 'currency': 'EUR', 'quantity': 80, 'amount_unit': 'device', 'delivery_country': 'CH', 'days_until_required': 34, 'preferred_supplier_mentioned': 'Boutique Creator Network', 'incumbent_supplier': 'Samsung Knox Devices', 'data_residency_constraint': False, 'esg_requirement': True}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l2 mismatch ('Laptops' != 'Smartphones')]

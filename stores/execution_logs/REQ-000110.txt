@@ -1,5 +1,5 @@
 REQUEST: REQ-000110
-Timestamp: 2026-03-19T07:32:19.929021+00:00
+Timestamp: 2026-03-19T14:00:26.739073+00:00
 Context: {'category_l1': 'IT', 'category_l2': 'Replacement / Break-Fix Pool Devices', 'budget': 83200, 'currency': 'CHF', 'quantity': 80, 'amount_unit': 'device', 'delivery_country': 'CH', 'days_until_required': 3, 'preferred_supplier_mentioned': 'Dell Enterprise Europe', 'incumbent_supplier': 'Panasonic Toughbook Europe', 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l2 mismatch ('Laptops' != 'Replacement / Break-Fix Pool Devices')]
