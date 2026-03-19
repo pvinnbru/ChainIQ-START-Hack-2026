@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -37,14 +38,16 @@ from supplier_matrix import (
 # Paths
 # ---------------------------------------------------------------------------
 
-DATA_DIR = Path("data")
-STORE_DIR = Path("stores")
+_ROOT = Path(__file__).parent.parent  # project root
+_MODULE_DIR = Path(__file__).parent   # request-evaluation/
+DATA_DIR = _ROOT / "data"
+STORE_DIR = _ROOT / "stores"
 LOGS_DIR = STORE_DIR / "execution_logs"
-SCHEMA_PATH = Path("start_dict.csv")
+SCHEMA_PATH = _MODULE_DIR / "start_dict.csv"
 SUPPLIERS_PATH = DATA_DIR / "suppliers.csv"
 PRICING_PATH = DATA_DIR / "pricing.csv"
 RANKING_STORE_PATH = STORE_DIR / "ranking_actions.json"
-EXAMPLE_REQUEST_PATH = Path("examples/example_request.json")
+EXAMPLE_REQUEST_PATH = _HERE / "examples/example_request.json"
 
 
 # ---------------------------------------------------------------------------
@@ -303,9 +306,7 @@ def test_example_request_full_pipeline(pipeline):
     save_log(exec_log, log_path)
 
     json_log = Path(log_path + ".json")
-    txt_log  = Path(log_path + ".txt")
     assert json_log.exists(), f"JSON log not written: {json_log}"
-    assert txt_log.exists(),  f"TXT log not written: {txt_log}"
 
     # Validate JSON log is parseable
     with open(json_log, encoding="utf-8") as fh:
@@ -320,7 +321,6 @@ def test_example_request_full_pipeline(pipeline):
     print(f"  global_outputs:  {outcome['global_outputs']}")
     print(f"  supplier_logs:   {len(exec_log.supplier_logs)}")
     print(f"  log written:     {json_log}")
-    print(f"  log written:     {txt_log}")
 
     if supplier_results:
         print(f"\n  Ranked suppliers:")
@@ -332,6 +332,105 @@ def test_example_request_full_pipeline(pipeline):
             )
     else:
         print("  No suppliers matched (may be expected given contradictory scenario tags)")
+
+
+# ---------------------------------------------------------------------------
+# Batch processing
+# ---------------------------------------------------------------------------
+
+def run_batch(
+    requests_path: str | Path,
+    pipeline: dict,
+    logs_dir: Path = LOGS_DIR,
+    max_workers: int = 50,
+) -> list[dict]:
+    """
+    Load a JSON list of raw requests from *requests_path* and evaluate as many
+    as possible in parallel.
+
+    Each request is normalised with :func:`normalize_request`; requests that
+    fail normalisation are skipped and recorded with ``status="skipped"``.
+
+    Results are returned as a list of dicts with keys:
+      - ``request_id``
+      - ``status``          — ``"ok"`` | ``"skipped"`` | ``"error"``
+      - ``skip_reason``     — set when status is ``"skipped"``
+      - ``error``           — set when status is ``"error"``
+      - ``supplier_count``
+      - ``ranking``         — list of top supplier dicts
+      - ``global_outputs``
+
+    Parameters
+    ----------
+    requests_path:
+        Path to a JSON file containing a list of raw request dicts (same
+        schema as ``data/requests.json``).
+    pipeline:
+        Pre-built pipeline dict as returned by the ``pipeline`` fixture.
+    logs_dir:
+        Directory where per-request ``.json`` log files are written.
+    max_workers:
+        Maximum number of parallel worker threads.
+    """
+    with open(requests_path, encoding="utf-8") as fh:
+        raw_requests: list[dict] = json.load(fh)
+
+    logs_dir.mkdir(parents=True, exist_ok=True)
+
+    def _process_one(raw: dict) -> dict:
+        request_id = raw.get("request_id", "<unknown>")
+        request = normalize_request(raw)
+        if request is None:
+            return {"request_id": request_id, "status": "skipped",
+                    "skip_reason": "failed normalization", "supplier_count": 0,
+                    "ranking": [], "global_outputs": {}}
+        try:
+            outcome, exec_log = run_procurement_evaluation(
+                request=request,
+                schema=pipeline["schema"],
+                sorted_actions=pipeline["sorted_actions"],
+                suppliers=pipeline["suppliers"],
+                fix_in_keys=pipeline["fix_in_keys"],
+                pricing_index=pipeline["pricing_index"],
+                attribution=pipeline.get("attribution"),
+            )
+            log_path = str(logs_dir / request_id)
+            save_log(exec_log, log_path)
+
+            supplier_results = outcome.get("supplier_results", [])
+            ranking = [
+                {
+                    "position": pos + 1,
+                    "supplier_id": identity.get("supplier_id"),
+                    "supplier_name": identity.get("supplier_name"),
+                    "normalized_rank": _safe_round(fs.get("normalized_rank")),
+                    "cost_total": _safe_round(fs.get("cost_total")),
+                }
+                for pos, (identity, _, fs) in enumerate(supplier_results)
+            ]
+            return {
+                "request_id": request_id,
+                "status": "ok",
+                "supplier_count": len(supplier_results),
+                "ranking": ranking,
+                "global_outputs": outcome.get("global_outputs", {}),
+            }
+        except Exception as exc:  # noqa: BLE001
+            return {"request_id": request_id, "status": "error",
+                    "error": str(exc), "supplier_count": 0,
+                    "ranking": [], "global_outputs": {}}
+
+    results: list[dict] = [None] * len(raw_requests)  # type: ignore[list-item]
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_to_idx = {
+            executor.submit(_process_one, raw): idx
+            for idx, raw in enumerate(raw_requests)
+        }
+        for future in as_completed(future_to_idx):
+            idx = future_to_idx[future]
+            results[idx] = future.result()
+
+    return results
 
 
 if __name__ == "__main__":

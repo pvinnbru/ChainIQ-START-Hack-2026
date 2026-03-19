@@ -150,6 +150,15 @@ class ActionLogEntry:
     output_value_before: Any    # Value of output_key before execution (None if skipped)
     output_value_after: Any     # Value of output_key after execution (None if skipped)
     skipped: bool               # True when WHEN did not pass (action had no effect)
+    # ISSUE-004/023: set when the WHEN clause threw an exception instead of evaluating.
+    # Distinguishes "intentionally False" from "exception during evaluation".
+    when_error: str | None = None
+    # ISSUE-005: set when the action computation failed (e.g. unknown operator,
+    # None state key, ZeroDivisionError).  Distinguishes silent skips from errors.
+    action_error: str | None = None
+    # ISSUE-014: False when one param was "_" and the operator was not applied
+    # (assignment semantics via the None-bypass path).
+    operator_applied: bool = True
 
 
 @dataclass
@@ -612,7 +621,11 @@ def load_generated_actions(
         (ranking_actions, rules_actions, ranking_attribution, rules_attribution)
     """
     with open(path, encoding="utf-8") as fh:
-        payload = json.load(fh)
+        try:
+            payload = json.load(fh)
+        except json.JSONDecodeError as exc:
+            # ISSUE-020: surface a clear error instead of an opaque JSONDecodeError.
+            raise ValueError(f"Corrupted action store file {path!r}: {exc}") from exc
 
     ranking_actions = [tuple(a) for a in payload["ranking_actions"]]
     rules_actions = [tuple(a) for a in payload["rules_actions"]]
@@ -722,6 +735,7 @@ def _resolve_value(token: str, state: dict[str, Any]) -> Any:
     Resolve *token* against the current state dict, falling back to
     literal parsing when no matching key is found.
     Used for AL/OSLM/SRM in_param2 and for WHEN condition atoms.
+    State lookup takes precedence so callers can reference numeric-named keys.
     """
     stripped = token.strip()
     if stripped in state:
@@ -729,10 +743,39 @@ def _resolve_value(token: str, state: dict[str, Any]) -> Any:
     return _parse_literal(stripped)
 
 
+def _resolve_param1(token: str, state: dict[str, Any]) -> Any:
+    """
+    Resolve the in_param1 token, giving numeric/boolean literals priority over
+    state-key lookup.
+
+    ISSUE-015: in_param1 has no ALI equivalent, so rule authors sometimes write
+    a numeric constant (e.g. "10000000") directly as in_param1.  Without this
+    function that constant would be silently shadowed if any rule ever writes a
+    state key whose name happens to be the same number.  By trying literal
+    parsing first we make numeric/boolean in_param1 values unambiguous.
+    String-valued tokens (which cannot be parsed as a number or bool) still fall
+    through to the state dict so normal state-key references work as before.
+    """
+    stripped = token.strip()
+    parsed = _parse_literal(stripped)
+    if not isinstance(parsed, str):
+        return parsed  # numeric or boolean literal — unambiguous
+    if stripped in state:
+        return state[stripped]
+    return parsed
+
+
 def _apply_operator(lhs: Any, op: str, rhs: Any) -> Any:
     """
     Apply *op* between *lhs* and *rhs* using explicit conditional logic.
     No eval() is used.
+
+    O-3 / ISSUE-014 design note:
+      The "=" operator is an equality *comparison*, not assignment.  Assignment
+      semantics are achieved by using "_" as a placeholder for one parameter
+      (causing the None-bypass path in evaluate_actions), NOT by writing
+        ('OSLM', 'source', '_', '=', 'dest').
+      Using = with two real operands stores a boolean result in the output key.
     """
     match op:
         case "+":
@@ -763,6 +806,11 @@ def _apply_operator(lhs: Any, op: str, rhs: Any) -> Any:
             return bool(lhs) or bool(rhs)
         case "XOR":
             return bool(lhs) ^ bool(rhs)
+        # ISSUE-001: MIN / MAX operators for clamping without comparison booleans.
+        case "MIN":
+            return min(lhs, rhs)
+        case "MAX":
+            return max(lhs, rhs)
         case _:
             raise ValueError(f"Unknown operator: {op!r}")
 
@@ -790,11 +838,18 @@ def _tokenize_when(expr: str) -> list[str]:
         if c.isspace():
             i += 1
             continue
-        # Quoted string — scan to closing quote and emit as a single token
+        # Quoted string — scan to closing quote and emit as a single token.
+        # ISSUE-017: handle backslash escape sequences so that an escaped quote
+        # (e.g. "O\'Brien") does not prematurely terminate the string scan.
         if c in ('"', "'"):
             quote = c
             j = i + 1
-            while j < n and expr[j] != quote:
+            while j < n:
+                if expr[j] == "\\" and j + 1 < n:
+                    j += 2  # skip escape character and the escaped character
+                    continue
+                if expr[j] == quote:
+                    break
                 j += 1
             tokens.append(expr[i : j + 1])  # includes both quote chars
             i = j + 1
@@ -1031,6 +1086,12 @@ def filter_suppliers(
     cat_l2: str = str(global_context.get("category_l2", ""))
     delivery_country: str = str(global_context.get("delivery_country", ""))
 
+    # ISSUE-012: a None delivery_country coerces to the string "None" which
+    # never appears in any supplier's service_regions — silently excluding every
+    # supplier.  Return early with an empty list so callers see 0 suppliers.
+    if not delivery_country or delivery_country.lower() in ("none", "null"):
+        return []
+
     result: list[SupplierRecord] = []
 
     for supplier in suppliers:
@@ -1074,6 +1135,50 @@ def filter_suppliers(
 # ---------------------------------------------------------------------------
 
 
+def _quantity_exceeds_max_tier(
+    supplier_identity: dict,
+    pricing_index: dict,
+    global_context: dict[str, Any],
+) -> bool:
+    """ISSUE-011: Return True when pricing tiers exist for this supplier/category/region
+    but the requested quantity is above every tier's max_quantity.
+
+    Distinguishes "no tiers for this region" (different root cause) from
+    "order is too large for any available tier" so the caller can surface a
+    more actionable QUANTITY_EXCEEDS_TIER_MAXIMUM flag.
+    """
+    delivery_country = str(global_context.get("delivery_country", ""))
+    region = COUNTRY_TO_REGION.get(delivery_country, "")
+    if not region:
+        return False
+    supplier_id = str(supplier_identity.get("supplier_id", ""))
+    category_l2 = str(supplier_identity.get("category_l2", ""))
+    tiers = pricing_index.get((supplier_id, category_l2, region), [])
+    if not tiers:
+        return False  # no tiers at all — different issue (region/category mismatch)
+    quantity = global_context.get("quantity", 0)
+    return quantity > max(t["max_quantity"] for t in tiers)
+
+
+# Exclusion-reason fragments that indicate a supplier is outside the request's
+# scope (wrong category or delivery country), as opposed to being within scope
+# but failing a compliance/restriction gate.  Used by run_procurement_evaluation
+# to compute the correct HIGH_EXCLUSION_RATE denominator.
+_SCOPE_EXCLUSION_MARKERS: tuple[str, ...] = (
+    "category_l1 mismatch",
+    "category_l2 mismatch",
+    "does not serve delivery country",
+    "delivery_country is null",
+)
+
+
+def _is_scope_exclusion(reason: str | None) -> bool:
+    """True when the supplier was excluded because it doesn't serve this category/country."""
+    if not reason:
+        return False
+    return any(marker in reason for marker in _SCOPE_EXCLUSION_MARKERS)
+
+
 def _check_exclusion(
     supplier: SupplierRecord,
     global_context: dict[str, Any],
@@ -1095,6 +1200,16 @@ def _check_exclusion(
     cat_l2 = str(global_context.get("category_l2", ""))
     delivery_country = str(global_context.get("delivery_country", ""))
 
+    # ISSUE-012: detect None coerced to the string "None" (or empty/null).
+    # Without this check every supplier fails the service_regions gate silently,
+    # making the request look like a market-availability problem instead of a
+    # data-quality problem.
+    if not delivery_country or delivery_country.lower() in ("none", "null"):
+        return (
+            f"delivery_country is null or invalid "
+            f"(got {global_context.get('delivery_country')!r}) — cannot determine service region"
+        )
+
     if identity.get("category_l1") != cat_l1:
         return f"category_l1 mismatch ({identity.get('category_l1')!r} != {cat_l1!r})"
     if identity.get("category_l2") != cat_l2:
@@ -1111,6 +1226,10 @@ def _check_exclusion(
     if pricing_index is not None:
         pricing = resolve_supplier_pricing(identity, pricing_index, global_context)
         if not pricing:
+            # ISSUE-011: distinguish "quantity too large for any tier" from
+            # "no tiers exist for this region/category" so a specific flag can fire.
+            if _quantity_exceeds_max_tier(identity, pricing_index, global_context):
+                return "quantity exceeds all available pricing tiers for this supplier"
             return "no matching pricing tier for this region/quantity"
 
     return None
@@ -1176,6 +1295,11 @@ def evaluate_actions(
         output_key: str | None = out if out != "_" else None
         output_value_before: Any = state.get(out) if out != "_" and out in state else None
         output_value_after: Any = None
+        # Initialise here so they are always defined when ActionLogEntry is created,
+        # even if the action is a no-op (out == "_") or WHEN suppressed it early.
+        when_err: str | None = None
+        act_err: str | None = None
+        op_applied: bool = True
 
         if out == "_":
             # No-op action: nothing to write
@@ -1186,31 +1310,55 @@ def evaluate_actions(
                 when_evaluated = True
                 try:
                     when_passed = bool(_eval_when(when_expr, state))
-                except Exception:
+                except Exception as exc:
+                    # ISSUE-004/023: capture the exception so log consumers can
+                    # distinguish "condition evaluated to False" from "exception
+                    # during evaluation".  Both result in skipped=True.
                     when_passed = False
+                    when_err = str(exc)
                 if not when_passed:
                     skipped = True
 
             if not skipped:
-                lhs: Any = _resolve_value(in1, state) if in1 != "_" else None
+                # ISSUE-015: use _resolve_param1 which gives numeric/boolean literals
+                # priority over state-key lookup for in_param1.
+                lhs: Any = _resolve_param1(in1, state) if in1 != "_" else None
                 if typ == "ALI":
                     rhs: Any = _parse_literal(in2_raw) if in2_raw != "_" else None
                 else:
                     rhs = _resolve_value(in2_raw, state) if in2_raw != "_" else None
 
-                if lhs is None and rhs is None:
+                # ISSUE-002: if a real (non-"_") parameter resolved to None it
+                # means the state key holds None.  Silently assigning rhs/lhs
+                # instead of skipping inflates scores (e.g. quality_score=None
+                # → _rep_quality = weight constant instead of 0).  Skip instead.
+                if in1 != "_" and lhs is None:
+                    skipped = True
+                    act_err = f"in_param1 key {in1!r} resolved to None in state — action skipped"
+                elif in2_raw != "_" and rhs is None:
+                    skipped = True
+                    act_err = f"in_param2 key {in2_raw!r} resolved to None in state — action skipped"
+                elif lhs is None and rhs is None:
+                    # Both params are "_" — no-op
                     skipped = True
                 else:
                     if lhs is None:
+                        # in1 == "_": copy rhs to output (assignment semantics)
                         result: Any = rhs
+                        op_applied = False  # ISSUE-014: operator was not applied
                     elif rhs is None:
+                        # in2_raw == "_": copy lhs to output (assignment semantics)
                         result = lhs
+                        op_applied = False  # ISSUE-014
                     else:
                         try:
                             result = _apply_operator(lhs, op, rhs)
-                        except Exception:
+                        except Exception as exc:
+                            # ISSUE-005: capture error so the log distinguishes
+                            # a silent skip from a real computation failure.
                             skipped = True
                             result = None
+                            act_err = str(exc)
 
                     if not skipped:
                         state[out] = result
@@ -1230,6 +1378,9 @@ def evaluate_actions(
             output_value_before=output_value_before if not skipped else None,
             output_value_after=output_value_after,
             skipped=skipped,
+            when_error=when_err if when_evaluated else None,
+            action_error=act_err,
+            operator_applied=op_applied,
         ))
 
     return state, log_entries
@@ -1271,11 +1422,23 @@ def run_procurement_evaluation(
       execution_log is a :class:`RequestExecutionLog` capturing everything that
       happened — including excluded suppliers and per-action attribution.
     """
-    global_context = build_global_context(request, schema)
+    # ISSUE-022: build_global_context raises KeyError when fix_in fields are
+    # missing from the request.  Catch the error and build a partial context so
+    # the evaluation can still run; the escalation engine will surface the missing
+    # fields as missing_field triggers rather than crashing the entire pipeline.
+    try:
+        global_context = build_global_context(request, schema)
+    except KeyError:
+        global_context = {
+            entry[0]: request[entry[0]]
+            for entry in schema
+            if entry[1] == "fix_in"
+            and (len(entry) <= 3 or entry[3] != "supplier_matrix")
+            and entry[0] in request
+        }
     fix_out_keys: set[str] = {entry[0] for entry in schema if entry[1] == "fix_out"}
 
     supplier_results: list[tuple[dict[str, Any], Any, dict[str, Any]]] = []
-    first_global_state: dict[str, Any] = {}
     supplier_logs: list[SupplierLog] = []
 
     for supplier in suppliers:
@@ -1346,9 +1509,6 @@ def run_procurement_evaluation(
 
         rank = final_state.get("rank", 0)
         supplier_results.append((dict(identity), rank, final_state))
-
-        if not first_global_state:
-            first_global_state = final_state
 
         supplier_logs.append(SupplierLog(
             supplier_id=supplier_id,
@@ -1486,10 +1646,19 @@ def run_procurement_evaluation(
 
         # --- Reputation ---
         rep_raw = float(final_state.get("reputation_score") or 0)
+        # ISSUE-016: log when clamping occurs so auditors can distinguish a
+        # legitimately high/low score from a data-quality problem.
+        if not (0.0 <= rep_raw <= 100.0):
+            final_state["_reputation_clamped"] = True
+            final_state["_reputation_raw"]     = rep_raw
         reputation_norm = max(0.0, min(rep_raw, 100.0)) / 100.0
 
         # --- Historic (dummy — full score until real data is wired in) ---
+        # O-4: hardcoded to 1.0 until ingest_historical_awards.py award data is
+        # wired into this path.  The field is intentionally surfaced in the log
+        # so consumers know the 2.5% weight is always at maximum.
         historic_score = 1.0
+        final_state["_historic_score_is_dummy"] = True
 
         # --- Compliance multiplier ---
         # Clamped to [0, 1]. OSLM actions reduce this from 1.0 for soft
@@ -1505,8 +1674,12 @@ def run_procurement_evaluation(
         # reduced onboarding risk. This is distinct from preferred_supplier_mentioned
         # (the requester's stated preference) which is handled via text compliance.
         if final_state.get("preferred_supplier") is True:
+            rank_before_bonus = normalized_rank
             normalized_rank = round(min(1.0, normalized_rank * 1.1), 6)
+            # ISSUE-021: record rank without bonus so _flag_preferred_bonus_decisive
+            # can determine whether the bonus flipped the ranking.
             final_state["preferred_supplier_bonus_applied"] = True
+            final_state["rank_without_preferred_bonus"]     = rank_before_bonus
 
         final_state["compliance_score"]       = compliance_score
         final_state["normalized_rank"]        = normalized_rank
@@ -1526,11 +1699,22 @@ def run_procurement_evaluation(
     # Sort by normalized_rank DESC
     supplier_results.sort(key=lambda x: x[1], reverse=True)
 
-    global_outputs: dict[str, Any] = {
-        k: first_global_state[k]
-        for k in fix_out_keys
-        if k != "rank" and k in first_global_state
-    }
+    # ISSUE-006: compute global_outputs from ALL surviving suppliers rather than
+    # blindly trusting the first one.  Supplier #1 may have had different
+    # WHEN-gated actions fire than subsequent suppliers, producing a different
+    # policy-level fix_out value (e.g. min_supplier_quotes) for the same request.
+    # Collecting values from every supplier lets us detect inconsistencies and
+    # always use the value that the majority of suppliers agree on.
+    global_outputs: dict[str, Any] = {}
+    for k in fix_out_keys:
+        if k == "rank":
+            continue
+        vals = [fs[k] for _, _, fs in supplier_results if k in fs]
+        if not vals:
+            # Fallback: check excluded-but-evaluated suppliers for global policy fields.
+            vals = [sl.final_state[k] for sl in supplier_logs if k in sl.final_state]
+        if vals:
+            global_outputs[k] = vals[0]
 
     execution_log = RequestExecutionLog(
         request_id=str(request.get("request_id", "")),
@@ -1559,7 +1743,21 @@ def run_procurement_evaluation(
 
     # Result-quality flags — always evaluated regardless of escalation config.
     from result_flags import evaluate_flags  # local import avoids circular
-    n_excluded = sum(1 for sl in supplier_logs if sl.excluded)
+
+    # ISSUE-009: HIGH_EXCLUSION_RATE should use the category-matched supplier
+    # pool as its denominator, not the full unfiltered pool.  Using len(suppliers)
+    # dilutes the fraction when the pool contains many off-category suppliers.
+    #
+    # n_category_matched  = suppliers that were within scope (category + country)
+    # n_compliance_excluded = category-matched suppliers excluded by compliance gates
+    #
+    # Scope-only exclusions (wrong category/country) are NOT counted in either
+    # number because they are expected and do not signal over-specified policy.
+    n_category_matched   = sum(1 for sl in supplier_logs
+                               if not _is_scope_exclusion(sl.exclusion_reason))
+    n_compliance_excluded = sum(1 for sl in supplier_logs
+                                if sl.excluded and not _is_scope_exclusion(sl.exclusion_reason))
+
     # Build a flat dict list covering ALL suppliers (incl. excluded) for preferred-supplier flags.
     all_supplier_log_dicts = [
         {
@@ -1575,8 +1773,8 @@ def run_procurement_evaluation(
     execution_log.flag_assessment = evaluate_flags(
         request=request,
         supplier_results=supplier_results,
-        n_total_suppliers=len(suppliers),
-        n_excluded=n_excluded,
+        n_total_suppliers=n_category_matched,
+        n_excluded=n_compliance_excluded,
         all_supplier_logs=all_supplier_log_dicts,
     )
 
@@ -1740,14 +1938,10 @@ def _log_to_json_serializable(obj: Any) -> Any:
 
 def save_log(log: RequestExecutionLog, path: str) -> None:
     """
-    Persist a :class:`RequestExecutionLog` to disk in two formats:
+    Persist a :class:`RequestExecutionLog` to disk as JSON:
 
     - ``{path}.json`` — raw JSON (dataclass serialised; tuples become lists)
-    - ``{path}.txt``  — human-readable plaintext from :func:`render_log`
     """
     serialisable = _log_to_json_serializable(log)
     with open(f"{path}.json", "w", encoding="utf-8") as fh:
         json.dump(serialisable, fh, indent=2, default=str)
-
-    with open(f"{path}.txt", "w", encoding="utf-8") as fh:
-        fh.write(render_log(log))

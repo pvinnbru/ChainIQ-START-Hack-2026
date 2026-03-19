@@ -40,9 +40,11 @@ from sort_actions import sort_actions
 # Defaults
 # ---------------------------------------------------------------------------
 
-DATA_DIR: Path = Path("data")
-STORE_DIR: Path = Path("stores")
-SCHEMA_PATH: Path = Path("start_dict.csv")
+_HERE: Path = Path(__file__).parent.parent  # project root
+_MODULE_DIR: Path = Path(__file__).parent   # request-evaluation/ (schema lives here)
+DATA_DIR: Path = _HERE / "data"
+STORE_DIR: Path = _HERE / "stores"
+SCHEMA_PATH: Path = _MODULE_DIR / "start_dict.csv"
 POLICIES_PATH: Path = DATA_DIR / "policies.json"
 
 # Policy sections that produce executable action tuples.
@@ -86,6 +88,30 @@ def hash_data_folder(data_dir: Path = DATA_DIR) -> str:
     return h.hexdigest()
 
 
+def hash_data_and_schema(data_dir: Path = DATA_DIR, schema_path: Path = SCHEMA_PATH) -> str:
+    """
+    ISSUE-003: return a SHA-256 digest that covers both *data_dir* and the
+    schema file (start_dict.csv).
+
+    The action store caches are keyed against this combined hash so that:
+      - Adding a new fix_in field to start_dict.csv invalidates the store.
+      - Renaming a field in start_dict.csv invalidates the store.
+      - Changing a type annotation in start_dict.csv invalidates the store.
+
+    This function is used by get_or_build_actions_store but NOT by the separate
+    ranking-actions cache in test_example_request.py, which has its own hash
+    strategy and its own regeneration path.
+    """
+    base = hash_data_folder(data_dir)
+    if not schema_path.is_file():
+        return base
+    h = hashlib.sha256()
+    h.update(base.encode("utf-8"))
+    h.update(schema_path.name.encode("utf-8"))
+    h.update(schema_path.read_bytes())
+    return h.hexdigest()
+
+
 # ---------------------------------------------------------------------------
 # Store serialisation
 # ---------------------------------------------------------------------------
@@ -95,12 +121,17 @@ def _store_path(ruleset_id: str, store_dir: Path = STORE_DIR) -> Path:
 
 
 def _load_raw_store(ruleset_id: str, store_dir: Path = STORE_DIR) -> dict | None:
-    """Load the raw JSON payload; returns None when the file does not exist."""
+    """Load the raw JSON payload; returns None when the file does not exist or is corrupted."""
     path = _store_path(ruleset_id, store_dir)
     if not path.exists():
         return None
     with open(path, encoding="utf-8") as fh:
-        return json.load(fh)
+        try:
+            return json.load(fh)
+        except json.JSONDecodeError:
+            # ISSUE-020: treat a corrupted store file as a cache miss so the
+            # store is rebuilt cleanly rather than crashing the pipeline.
+            return None
 
 
 def _save_store(
@@ -274,7 +305,9 @@ def get_or_build_actions_store(
         sorted_actions   (list[tuple])
         cache_hit        (bool)  — True when the store was loaded from disk
     """
-    current_hash = hash_data_folder(data_dir)
+    # ISSUE-003: include start_dict.csv in the hash so schema changes (new
+    # fix_in fields, renamed fields, type annotations) invalidate the store.
+    current_hash = hash_data_and_schema(data_dir)
 
     # Fast path: cache is valid — no lock needed (read-only)
     raw = _load_raw_store(ruleset_id, store_dir)

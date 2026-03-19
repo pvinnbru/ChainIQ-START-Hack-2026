@@ -30,8 +30,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-AWARDS_CSV    = Path("data/historical_awards.csv")
-HISTORICAL_STORE = Path("stores/historical_data.json")
+_HERE         = Path(__file__).parent.parent  # project root
+AWARDS_CSV    = _HERE / "data/historical_awards.csv"
+HISTORICAL_STORE = _HERE / "stores/historical_data.json"
 
 
 # ---------------------------------------------------------------------------

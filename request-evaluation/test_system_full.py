@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -44,95 +44,26 @@ from supplier_matrix import (
     load_pricing_index,
     load_schema,
     load_suppliers,
-    run_procurement_evaluation,
     save_generated_actions,
     load_generated_actions,
-    save_log,
 )
+from test_example_request import run_batch
 
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
 
-DATA_DIR = Path("data")
-STORE_DIR = Path("stores")
+_ROOT = Path(__file__).parent.parent  # project root
+_MODULE_DIR = Path(__file__).parent   # request-evaluation/
+DATA_DIR = _ROOT / "data"
+STORE_DIR = _ROOT / "stores"
 LOGS_DIR = STORE_DIR / "execution_logs"
-SCHEMA_PATH = Path("start_dict.csv")
+SCHEMA_PATH = _MODULE_DIR / "start_dict.csv"
 REQUESTS_PATH = DATA_DIR / "requests.json"
 SUPPLIERS_PATH = DATA_DIR / "suppliers.csv"
 PRICING_PATH = DATA_DIR / "pricing.csv"
 RANKING_STORE_PATH = STORE_DIR / "ranking_actions.json"
 RESULTS_PATH = STORE_DIR / "system_test_results.json"
-
-
-# ---------------------------------------------------------------------------
-# Request normalisation
-# ---------------------------------------------------------------------------
-
-def _days_until(date_str: str | None) -> int:
-    """Convert an ISO-8601 date string to calendar days until that date from today."""
-    if not date_str:
-        return 0
-    try:
-        d = date.fromisoformat(date_str[:10])
-        return max(0, (d - date.today()).days)
-    except ValueError:
-        return 0
-
-
-def normalize_request(raw: dict[str, Any]) -> dict[str, Any] | None:
-    """
-    Map a raw entry from requests.json to the field names expected by the schema
-    fix_in keys:
-        category_l1, category_l2, budget, currency, quantity, amount_unit,
-        delivery_country, days_until_required, preferred_supplier_mentioned,
-        incumbent_supplier, data_residency_constraint, esg_requirement
-
-    Returns None if any mandatory field is absent.
-    """
-    # delivery_country: first element of delivery_countries list
-    delivery_countries: list[str] = raw.get("delivery_countries") or []
-    delivery_country = delivery_countries[0] if delivery_countries else None
-    if not delivery_country:
-        return None
-
-    # Mandatory categorical fields
-    category_l1 = raw.get("category_l1")
-    category_l2 = raw.get("category_l2")
-    if not category_l1 or not category_l2:
-        return None
-
-    # Budget / currency
-    budget = raw.get("budget_amount")
-    currency = raw.get("currency")
-    if budget is None or not currency:
-        return None
-
-    # Quantity — null means the request didn't specify; default to 1 so pricing
-    # tier lookup can still find a match (quantity=1 is within every tier).
-    quantity = raw.get("quantity")
-    if quantity is None:
-        quantity = 1
-
-    return {
-        # Passthrough meta (not in schema, used for result reporting only)
-        "request_id": raw.get("request_id"),
-        # Schema fix_in — request-level
-        "category_l1": category_l1,
-        "category_l2": category_l2,
-        "budget": budget,
-        "currency": currency,
-        "quantity": quantity,
-        "amount_unit": raw.get("unit_of_measure") or "",
-        "delivery_country": delivery_country,
-        "days_until_required": _days_until(raw.get("required_by_date")),
-        "preferred_supplier_mentioned": raw.get("preferred_supplier_mentioned"),
-        "incumbent_supplier": raw.get("incumbent_supplier"),
-        "data_residency_constraint": raw.get("data_residency_constraint", False),
-        "esg_requirement": raw.get("esg_requirement", False),
-        # Passed through for text compliance — not a schema fix_in, never touches the action pipeline
-        "request_text": raw.get("request_text") or "",
-    }
 
 
 # ---------------------------------------------------------------------------
@@ -352,107 +283,30 @@ def test_all_requests(pipeline):
       no matching supplier in the test data).
     - Results are written to stores/system_test_results.json.
     """
-    with open(REQUESTS_PATH, encoding="utf-8") as fh:
-        raw_requests: list[dict] = json.load(fh)
+    results = run_batch(REQUESTS_PATH, pipeline, logs_dir=LOGS_DIR)
 
-    schema        = pipeline["schema"]
-    fix_in_keys   = pipeline["fix_in_keys"]
-    sorted_actions = pipeline["sorted_actions"]
-    suppliers     = pipeline["suppliers"]
-    pricing_index = pipeline["pricing_index"]
-
-    LOGS_DIR.mkdir(parents=True, exist_ok=True)
-
-    results: list[dict] = []
-    skipped      = 0
-    evaluated    = 0
-    with_suppliers = 0
-    errors       = 0
-
-    for raw in raw_requests:
-        request = normalize_request(raw)
-
-        if request is None:
-            skipped += 1
-            results.append({
-                "request_id": raw.get("request_id"),
-                "status": "skipped",
-                "reason": "missing_mandatory_fields",
-            })
-            continue
-
-        evaluated += 1
-        try:
-            outcome, exec_log = run_procurement_evaluation(
-                request=request,
-                schema=schema,
-                sorted_actions=sorted_actions,
-                suppliers=suppliers,
-                fix_in_keys=fix_in_keys,
-                pricing_index=pricing_index,
-                attribution=pipeline.get("attribution"),
-            )
-        except Exception as exc:  # noqa: BLE001
-            errors += 1
-            results.append({
-                "request_id": request["request_id"],
-                "status": "error",
-                "error": str(exc),
-            })
-            continue
-
-        # Persist execution log for this request
-        log_path = str(LOGS_DIR / request["request_id"])
-        save_log(exec_log, log_path)
-
-        supplier_results = outcome["supplier_results"]
-        if supplier_results:
-            with_suppliers += 1
-
-        ranking = [
-            {
-                "position":          pos + 1,
-                "supplier_id":       identity.get("supplier_id"),
-                "supplier_name":     identity.get("supplier_name"),
-                "normalized_rank":   _safe_round(final_state.get("normalized_rank")),
-                "cost_rank_score":   _safe_round(final_state.get("cost_rank_score")),
-                "reputation_score":  _safe_round(final_state.get("reputation_score")),
-                "cost_total":        _safe_round(final_state.get("cost_total")),
-                "unit_price":        _safe_round(final_state.get("unit_price")),
-            }
-            for pos, (identity, rank, final_state) in enumerate(supplier_results)
-        ]
-
-        results.append({
-            "request_id":     request["request_id"],
-            "status":         "ok",
-            "category_l1":    request["category_l1"],
-            "category_l2":    request["category_l2"],
-            "delivery_country": request["delivery_country"],
-            "currency":       request["currency"],
-            "quantity":       request["quantity"],
-            "global_outputs": outcome["global_outputs"],
-            "supplier_count": len(supplier_results),
-            "ranking":        ranking,
-        })
+    skipped        = sum(1 for r in results if r["status"] == "skipped")
+    evaluated      = sum(1 for r in results if r["status"] != "skipped")
+    with_suppliers = sum(1 for r in results if r.get("supplier_count", 0) > 0)
+    errors         = sum(1 for r in results if r["status"] == "error")
 
     # Persist results
     STORE_DIR.mkdir(parents=True, exist_ok=True)
     summary = {
-        "generated_at":    datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
         "pipeline": {
             "data_hash":         pipeline["data_hash"][:16] + "...",
-            "total_actions":     len(sorted_actions),
+            "total_actions":     len(pipeline["sorted_actions"]),
             "is_low_confidence": pipeline["is_low_confidence"],
             "cache_hits":        pipeline["cache_hits"],
         },
         "stats": {
-            "total_requests":  len(raw_requests),
-            "evaluated":       evaluated,
-            "skipped":         skipped,
-            "with_suppliers":  with_suppliers,
-            "errors":          errors,
-            "match_rate":      round(with_suppliers / max(evaluated, 1), 4),
+            "total_requests": len(results),
+            "evaluated":      evaluated,
+            "skipped":        skipped,
+            "with_suppliers": with_suppliers,
+            "errors":         errors,
+            "match_rate":     round(with_suppliers / max(evaluated, 1), 4),
         },
         "results": results,
     }
@@ -461,20 +315,20 @@ def test_all_requests(pipeline):
 
     # Print summary
     print(f"\n[test_all_requests] Summary:")
-    print(f"  total_requests:  {len(raw_requests)}")
+    print(f"  total_requests:  {len(results)}")
     print(f"  evaluated:       {evaluated}")
     print(f"  skipped:         {skipped}")
     print(f"  with_suppliers:  {with_suppliers}  "
           f"({with_suppliers / max(evaluated, 1):.0%} of evaluated)")
     print(f"  errors:          {errors}")
     print(f"  results written: {RESULTS_PATH}")
-    print(f"  logs written:    {LOGS_DIR}/ ({evaluated - errors} × .json + .txt)")
+    print(f"  logs written:    {LOGS_DIR}/ ({evaluated - errors} × .json)")
 
     # Sample: show first 3 results with suppliers
     shown = 0
     for r in results:
         if r.get("status") == "ok" and r.get("supplier_count", 0) > 0:
-            print(f"\n  {r['request_id']} — {r['category_l2']} / {r['delivery_country']}")
+            print(f"\n  {r['request_id']}")
             for s in r["ranking"][:3]:
                 print(f"    #{s['position']} {s['supplier_name']:40s} "
                       f"normalized_rank={s['normalized_rank']:>8}  cost={s['cost_total']}")

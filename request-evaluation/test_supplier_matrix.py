@@ -390,10 +390,15 @@ class TestMissingFixIn:
         assert "request_id" not in ctx
         assert "rank" not in ctx
 
-    def test_missing_fix_in_raised_by_run_procurement_evaluation(self) -> None:
+    def test_missing_fix_in_continues_with_partial_context(self) -> None:
+        # ISSUE-022: run_procurement_evaluation must NOT crash when fix_in fields
+        # are missing.  It should build a partial context and let the evaluation
+        # complete so the escalation engine can surface the missing fields.
         incomplete = {k: v for k, v in BASE_REQUEST.items() if k != "category_l1"}
-        with pytest.raises(KeyError, match="category_l1"):
-            run_procurement_evaluation(incomplete, SCHEMA, [], [], FIX_IN_KEYS)
+        result, log = run_procurement_evaluation(incomplete, SCHEMA, [], [], FIX_IN_KEYS)
+        # Evaluation should succeed and return an empty supplier list (no suppliers
+        # matched because category_l1 is absent from global_context).
+        assert "supplier_results" in result
 
 
 # ===========================================================================

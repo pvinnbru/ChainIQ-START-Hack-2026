@@ -360,6 +360,7 @@ class TestRenderLog:
             final_state={"cost_total": 4900.0},
             final_cost_rank_score=67.5,
             final_reputation_score=72.0,
+            final_compliance_score=None,
             final_normalized_rank=None,
             excluded=False,
             exclusion_reason=None,
@@ -409,13 +410,13 @@ class TestRenderLog:
             supplier_id="SUP-A", supplier_name="Alpha", category_l2="Laptops",
             pricing_resolved={}, action_logs=[], final_state={},
             final_cost_rank_score=None, final_reputation_score=None,
-            final_normalized_rank=None, excluded=False, exclusion_reason=None,
+            final_compliance_score=None, final_normalized_rank=None, excluded=False, exclusion_reason=None,
         )
         sl2 = SupplierLog(
             supplier_id="SUP-B", supplier_name="Beta", category_l2="Laptops",
             pricing_resolved={}, action_logs=[], final_state={},
             final_cost_rank_score=None, final_reputation_score=None,
-            final_normalized_rank=None, excluded=False, exclusion_reason=None,
+            final_compliance_score=None, final_normalized_rank=None, excluded=False, exclusion_reason=None,
         )
         log = RequestExecutionLog(
             request_id="REQ-999",
@@ -434,7 +435,7 @@ class TestRenderLog:
             supplier_id="SUP-BAD", supplier_name="Blocked Corp", category_l2="Laptops",
             pricing_resolved={}, action_logs=[], final_state={},
             final_cost_rank_score=None, final_reputation_score=None,
-            final_normalized_rank=None, excluded=True, exclusion_reason="supplier is restricted",
+            final_compliance_score=None, final_normalized_rank=None, excluded=True, exclusion_reason="supplier is restricted",
         )
         log = RequestExecutionLog(
             request_id="REQ-EXC", timestamp="2026-03-19T00:00:00+00:00",
@@ -485,6 +486,7 @@ class TestJsonRoundTrip:
             final_state={"rank": 7500.0, "cost_total": 4900.0},
             final_cost_rank_score=67.5,
             final_reputation_score=72.0,
+            final_compliance_score=None,
             final_normalized_rank=0.512,
             excluded=False,
             exclusion_reason=None,
@@ -497,12 +499,12 @@ class TestJsonRoundTrip:
             global_action_logs=[],
         )
 
-    def test_save_log_creates_json_and_txt(self, tmp_path: pathlib.Path) -> None:
+    def test_save_log_creates_json(self, tmp_path: pathlib.Path) -> None:
         log = self._build_minimal_log()
         path = str(tmp_path / "test_log")
         save_log(log, path)
         assert (tmp_path / "test_log.json").exists()
-        assert (tmp_path / "test_log.txt").exists()
+        assert not (tmp_path / "test_log.txt").exists()
 
     def test_json_round_trip_request_id(self, tmp_path: pathlib.Path) -> None:
         log = self._build_minimal_log()
@@ -580,21 +582,6 @@ class TestJsonRoundTrip:
 
         assert payload["global_context_snapshot"]["quantity"] == 5
 
-    def test_txt_file_contains_request_id(self, tmp_path: pathlib.Path) -> None:
-        log = self._build_minimal_log()
-        path = str(tmp_path / "log")
-        save_log(log, path)
-
-        txt = (tmp_path / "log.txt").read_text(encoding="utf-8")
-        assert "REQ-RT-001" in txt
-
-    def test_txt_file_contains_rule_id(self, tmp_path: pathlib.Path) -> None:
-        log = self._build_minimal_log()
-        path = str(tmp_path / "log")
-        save_log(log, path)
-
-        txt = (tmp_path / "log.txt").read_text(encoding="utf-8")
-        assert "AT-001" in txt
 
 
 # ===========================================================================

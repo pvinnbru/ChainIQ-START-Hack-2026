@@ -127,14 +127,30 @@ def _flag_budget_insufficient(
     if budget <= 0 or not supplier_results:
         return None
 
-    all_over = all(
-        float(fs.get("cost_total") or 0) > budget * (1 + BUDGET_OVERAGE_THRESHOLD)
-        for _, _, fs in supplier_results
-    )
+    # ISSUE-013: only count suppliers where cost_total was actually computed
+    # (positive, non-None value).  A zero/None cost_total means the action
+    # pipeline failed to compute it — treating those as 0 would make all
+    # suppliers appear to be within budget, suppressing the flag.
+    valid_costs: list[float] = []
+    for _, _, fs in supplier_results:
+        raw = fs.get("cost_total")
+        if raw is None:
+            continue
+        try:
+            v = float(raw)
+            if v > 0:
+                valid_costs.append(v)
+        except (TypeError, ValueError):
+            pass
+
+    if not valid_costs:
+        return None  # cannot determine budget status without computed costs
+
+    all_over = all(c > budget * (1 + BUDGET_OVERAGE_THRESHOLD) for c in valid_costs)
     if not all_over:
         return None
 
-    min_cost = min(float(fs.get("cost_total") or 0) for _, _, fs in supplier_results)
+    min_cost = min(valid_costs)
     pct_over = round((min_cost - budget) / budget * 100, 1)
     return ResultFlag(
         flag_id="BUDGET_INSUFFICIENT",
@@ -307,11 +323,24 @@ def _normalize_name(name: str) -> str:
     return name.lower().strip()
 
 
+# ISSUE-008: minimum character length to guard against false positives from
+# short or common name fragments (e.g. "tech" matching "supertech").
+_MIN_MATCH_LEN: int = 4
+
+
 def _names_match(mentioned: str, candidate: str) -> bool:
-    """Case-insensitive substring match in either direction."""
+    """Case-insensitive substring match: *mentioned* must appear in *candidate*.
+
+    Uses a unidirectional check (mentioned ⊆ candidate) to prevent spurious
+    matches where a short candidate name happens to be a substring of the
+    mentioned name.  Very short mentions (< _MIN_MATCH_LEN chars) require an
+    exact match to prevent single-character or common-word false positives.
+    """
     a = _normalize_name(mentioned)
     b = _normalize_name(candidate)
-    return a in b or b in a
+    if len(a) < _MIN_MATCH_LEN:
+        return a == b  # require exact match for very short names
+    return a in b
 
 
 def _flag_preferred_supplier_restricted(
@@ -350,8 +379,16 @@ def _flag_preferred_supplier_restricted(
             details={"mentioned": mentioned},
         )
 
-    # Use the first name match (names should be unique)
-    sl = matches[0]
+    # ISSUE-010: check ALL matches — if any matching supplier survived evaluation,
+    # the preferred supplier was not actually excluded.  Only report EXCLUDED when
+    # every matching supplier was excluded (e.g. two subsidiaries both failed gates).
+    surviving_matches = [s for s in matches if not s.get("excluded")]
+    if surviving_matches:
+        # At least one match is active — use the first surviving one for further checks
+        sl = surviving_matches[0]
+    else:
+        # All matches were excluded — report the first excluded match
+        sl = matches[0]
     supplier_name = sl.get("supplier_name", mentioned)
 
     if sl.get("excluded"):
@@ -386,6 +423,68 @@ def _flag_preferred_supplier_restricted(
         )
 
     return None
+
+
+# ---------------------------------------------------------------------------
+# Additional flag assessors
+# ---------------------------------------------------------------------------
+
+def _flag_quantity_exceeds_tier(all_supplier_logs: list[dict]) -> ResultFlag | None:
+    """ISSUE-011: Fire when suppliers were excluded because the order quantity exceeds
+    every available pricing tier.  Without this flag the requester only sees
+    INSUFFICIENT_SUPPLIERS with no explanation of the root cause."""
+    tier_exceeded = [
+        sl for sl in all_supplier_logs
+        if sl.get("excluded")
+        and "quantity exceeds all available pricing tiers" in (sl.get("exclusion_reason") or "")
+    ]
+    if not tier_exceeded:
+        return None
+    return ResultFlag(
+        flag_id="QUANTITY_EXCEEDS_TIER_MAXIMUM",
+        severity="warning",
+        description=(
+            f"{len(tier_exceeded)} supplier(s) were excluded because the requested quantity "
+            f"exceeds all available pricing tiers. Consider reducing the order size or "
+            f"splitting the order across multiple requests."
+        ),
+        details={"n_excluded": len(tier_exceeded)},
+    )
+
+
+def _flag_preferred_bonus_decisive(supplier_results: list[tuple]) -> ResultFlag | None:
+    """ISSUE-021: Fire when the preferred-supplier 10% bonus was the deciding factor
+    in placing a supplier at rank #1 — i.e. they would have ranked lower without it."""
+    if len(supplier_results) < 2:
+        return None
+
+    top_identity, _, top_state = supplier_results[0]
+    if not top_state.get("preferred_supplier_bonus_applied"):
+        return None
+
+    rank_with    = float(top_state.get("normalized_rank") or 0)
+    rank_without = float(top_state.get("rank_without_preferred_bonus") or rank_with)
+    second_rank  = float(supplier_results[1][2].get("normalized_rank") or 0)
+
+    if rank_without >= second_rank:
+        return None  # would have won anyway — bonus not decisive
+
+    return ResultFlag(
+        flag_id="PREFERRED_BONUS_DECISIVE",
+        severity="info",
+        description=(
+            f"The preferred-supplier 10% bonus elevated "
+            f"'{top_identity.get('supplier_name', '?')}' from rank {rank_without:.4f} "
+            f"to {rank_with:.4f}, above the next-ranked supplier at {second_rank:.4f}. "
+            f"Without the bonus this supplier would not have ranked #1."
+        ),
+        details={
+            "top_supplier":        top_identity.get("supplier_name"),
+            "rank_with_bonus":     rank_with,
+            "rank_without_bonus":  rank_without,
+            "second_rank":         second_rank,
+        },
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -438,7 +537,17 @@ def evaluate_flags(
         _flag_all_compliance_penalized(supplier_results),
         _flag_high_exclusion_rate(n_total_suppliers, n_excluded),
         _flag_preferred_supplier_restricted(request, supplier_results, logs),
+        _flag_quantity_exceeds_tier(logs),
+        _flag_preferred_bonus_decisive(supplier_results),
     ]
+
+    # ISSUE-018: deduplicate LOW_RANK_CLUSTER and INDISTINGUISHABLE_RANKS.
+    # When INDISTINGUISHABLE_RANKS fires (spread < 0.05), LOW_RANK_CLUSTER is a
+    # strict subset of that information (spread < 0.10 is already implied).
+    # Suppress LOW_RANK_CLUSTER to avoid confusing reviewers with overlapping flags.
+    fired_ids = {f.flag_id for f in candidates if f is not None}
+    if "INDISTINGUISHABLE_RANKS" in fired_ids:
+        candidates = [f for f in candidates if f is None or f.flag_id != "LOW_RANK_CLUSTER"]
 
     for f in candidates:
         if f is not None:

@@ -427,15 +427,23 @@ def _apply_context_adjustments(
         )
 
     # --- Urgency flag ---
+    # ISSUE-007: Only suppress for requests that are upcoming (0 ≤ days ≤ threshold).
+    # Overdue requests (negative days) are NOT suppressed — they may still need remediation.
     is_urgent: bool = (
         days_until_required is not None
-        and days_until_required <= URGENT_DAYS_THRESHOLD
+        and 0 <= days_until_required <= URGENT_DAYS_THRESHOLD
     )
     if is_urgent:
         notes.append(
             f"Urgency suppression active: days_until_required={days_until_required} "
             f"≤ {URGENT_DAYS_THRESHOLD}. Missing-field and min-quotes-gap escalations "
             f"suppressed — no time to collect additional information."
+        )
+    elif days_until_required is not None and days_until_required < 0:
+        notes.append(
+            f"Request is overdue by {abs(days_until_required)} day(s) "
+            f"(days_until_required={days_until_required}). Escalations are NOT suppressed — "
+            f"overdue requests may still require remediation."
         )
 
     # --- Apply to each trigger ---
@@ -515,7 +523,10 @@ def evaluate_escalations(
     # --- Min quotes gap ---
     supplier_results = outcome.get("supplier_results", [])
     global_outputs   = outcome.get("global_outputs", {})
-    min_quotes = int(global_outputs.get("min_supplier_quotes") or 1)
+    # O-6: use `or 1` only when the value is absent (None), not when it is 0.
+    # A deliberately-set 0 means "no minimum" and should not be overridden to 1.
+    _min_quotes_raw = global_outputs.get("min_supplier_quotes")
+    min_quotes = int(_min_quotes_raw) if _min_quotes_raw is not None else 1
     triggers.extend(
         assess_min_quotes_gap(supplier_results, min_quotes, escalation_rules)
     )
