@@ -360,6 +360,7 @@ class TestRenderLog:
             final_state={"cost_total": 4900.0},
             final_cost_rank_score=67.5,
             final_reputation_score=72.0,
+            final_normalized_rank=None,
             excluded=False,
             exclusion_reason=None,
         )
@@ -408,13 +409,13 @@ class TestRenderLog:
             supplier_id="SUP-A", supplier_name="Alpha", category_l2="Laptops",
             pricing_resolved={}, action_logs=[], final_state={},
             final_cost_rank_score=None, final_reputation_score=None,
-            excluded=False, exclusion_reason=None,
+            final_normalized_rank=None, excluded=False, exclusion_reason=None,
         )
         sl2 = SupplierLog(
             supplier_id="SUP-B", supplier_name="Beta", category_l2="Laptops",
             pricing_resolved={}, action_logs=[], final_state={},
             final_cost_rank_score=None, final_reputation_score=None,
-            excluded=False, exclusion_reason=None,
+            final_normalized_rank=None, excluded=False, exclusion_reason=None,
         )
         log = RequestExecutionLog(
             request_id="REQ-999",
@@ -433,7 +434,7 @@ class TestRenderLog:
             supplier_id="SUP-BAD", supplier_name="Blocked Corp", category_l2="Laptops",
             pricing_resolved={}, action_logs=[], final_state={},
             final_cost_rank_score=None, final_reputation_score=None,
-            excluded=True, exclusion_reason="supplier is restricted",
+            final_normalized_rank=None, excluded=True, exclusion_reason="supplier is restricted",
         )
         log = RequestExecutionLog(
             request_id="REQ-EXC", timestamp="2026-03-19T00:00:00+00:00",
@@ -484,6 +485,7 @@ class TestJsonRoundTrip:
             final_state={"rank": 7500.0, "cost_total": 4900.0},
             final_cost_rank_score=67.5,
             final_reputation_score=72.0,
+            final_normalized_rank=0.512,
             excluded=False,
             exclusion_reason=None,
         )

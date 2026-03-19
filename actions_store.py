@@ -22,11 +22,18 @@ import csv
 import hashlib
 import json
 import re
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from rule_ingestion_prompt import ingest_rule, parse_rule_attribution
+from rule_ingestion_prompt import (
+    MAX_CONCURRENT_LLM_CALLS,
+    ingest_rule,
+    ingest_escalation_rules,
+    parse_rule_attribution,
+)
 from sort_actions import sort_actions
 
 # ---------------------------------------------------------------------------
@@ -38,10 +45,24 @@ STORE_DIR: Path = Path("stores")
 SCHEMA_PATH: Path = Path("start_dict.csv")
 POLICIES_PATH: Path = DATA_DIR / "policies.json"
 
-# Policy sections that can be ingested as rulesets.
+# Policy sections that produce executable action tuples.
 SUPPORTED_RULESETS: frozenset[str] = frozenset(
-    {"approval_thresholds", "category_rules", "escalation_rules"}
+    {"approval_thresholds", "category_rules"}
 )
+
+# Policy sections that are stored as natural-language escalation conditions.
+ESCALATION_RULESETS: frozenset[str] = frozenset({"escalation_rules"})
+
+# ---------------------------------------------------------------------------
+# Per-ruleset rebuild locks
+# Prevents two concurrent callers from both finding a stale cache and
+# triggering duplicate (expensive) LLM rebuilds for the same ruleset.
+# Different rulesets get different locks so they never block each other.
+# ---------------------------------------------------------------------------
+_rebuild_locks: dict[str, threading.Lock] = {
+    ruleset: threading.Lock()
+    for ruleset in SUPPORTED_RULESETS | ESCALATION_RULESETS
+}
 
 
 # ---------------------------------------------------------------------------
@@ -172,11 +193,17 @@ def _build_rules_actions(
     policies_path: Path = POLICIES_PATH,
 ) -> tuple[list[tuple], dict]:
     """
-    Run LLM ingestion for every rule in the *ruleset_id* section of policies.json.
+    Run LLM ingestion for every rule in the *ruleset_id* section of policies.json,
+    issuing up to MAX_CONCURRENT_LLM_CALLS requests in parallel.
 
-    Returns (all_actions, attribution_dict) where attribution_dict maps
-    original action index → {rule_id, rule_description}.
+    Each rule is ingested independently (actions_so_far is not passed). This is
+    safe because AT rules cover non-overlapping budget bands and CR rules cover
+    non-overlapping categories, so there is no meaningful inter-rule dependency
+    that the actions_so_far context would resolve.
 
+    Results are merged in original rule order after all futures complete.
+
+    Returns (all_actions, attribution_dict).
     Raises ValueError if the section is absent or empty.
     """
     with open(policies_path, encoding="utf-8") as fh:
@@ -189,19 +216,32 @@ def _build_rules_actions(
             f"Available sections: {list(policies.keys())}"
         )
 
+    def _ingest_one(rule: dict) -> tuple[list[tuple], dict]:
+        llm_output = ingest_rule(tuples=schema_tuples, json_data=rule, actions_so_far=None)
+        return _parse_actions(llm_output), parse_rule_attribution(llm_output)
+
+    # Submit all rules in parallel; collect results keyed by original position
+    results_by_idx: dict[int, tuple[list[tuple], dict]] = {}
+    with ThreadPoolExecutor(max_workers=MAX_CONCURRENT_LLM_CALLS) as executor:
+        future_to_idx = {
+            executor.submit(_ingest_one, rule): idx
+            for idx, rule in enumerate(rules)
+        }
+        for future in as_completed(future_to_idx):
+            idx = future_to_idx[future]
+            try:
+                results_by_idx[idx] = future.result()
+            except Exception as exc:
+                rule_id = rules[idx].get("rule_id", rules[idx].get("threshold_id", f"index-{idx}"))
+                print(f"[WARNING] LLM ingestion failed for rule {rule_id}: {exc}")
+                results_by_idx[idx] = ([], {})
+
+    # Merge in original order so topological sort sees a stable sequence
     all_actions: list[tuple] = []
     all_attribution: dict = {}
-
-    for rule in rules:
-        llm_output = ingest_rule(
-            tuples=schema_tuples,
-            json_data=rule,
-            actions_so_far=all_actions,
-        )
+    for idx in sorted(results_by_idx):
+        new_actions, rule_attribution = results_by_idx[idx]
         offset = len(all_actions)
-        new_actions = _parse_actions(llm_output)
-        rule_attribution = parse_rule_attribution(llm_output)
-        # Offset attribution indices to reflect position in the global list
         for k, v in rule_attribution.items():
             all_attribution[k + offset] = v
         all_actions.extend(new_actions)
@@ -236,33 +276,46 @@ def get_or_build_actions_store(
     """
     current_hash = hash_data_folder(data_dir)
 
+    # Fast path: cache is valid — no lock needed (read-only)
     raw = _load_raw_store(ruleset_id, store_dir)
     if raw is not None and raw.get("data_hash") == current_hash:
         raw["sorted_actions"] = [tuple(a) for a in raw["sorted_actions"]]
-        # Convert string keys back to int for attribution dict
         raw["attribution"] = {
             int(k): v for k, v in raw.get("attribution", {}).items()
         }
         raw["cache_hit"] = True
         return raw
 
-    # Rebuild
-    schema_tuples, fix_in_keys = _load_schema_tuples(schema_path)
-    raw_actions, raw_attribution = _build_rules_actions(
-        ruleset_id, schema_tuples, fix_in_keys, policies_path
-    )
-    sorted_acts, is_low_confidence, attribution = sort_actions(
-        raw_actions, fix_in_keys, attribution=raw_attribution
-    )
+    # Slow path: rebuild under a per-ruleset lock so that concurrent callers
+    # (e.g. from build_all_stores_parallel) don't both issue expensive LLM
+    # calls for the same ruleset.
+    with _rebuild_locks[ruleset_id]:
+        # Re-check inside the lock in case another thread just finished building
+        raw = _load_raw_store(ruleset_id, store_dir)
+        if raw is not None and raw.get("data_hash") == current_hash:
+            raw["sorted_actions"] = [tuple(a) for a in raw["sorted_actions"]]
+            raw["attribution"] = {
+                int(k): v for k, v in raw.get("attribution", {}).items()
+            }
+            raw["cache_hit"] = True
+            return raw
 
-    _save_store(
-        ruleset_id=ruleset_id,
-        sorted_actions=sorted_acts,
-        data_hash=current_hash,
-        is_low_confidence=is_low_confidence,
-        store_dir=store_dir,
-        attribution=attribution,
-    )
+        schema_tuples, fix_in_keys = _load_schema_tuples(schema_path)
+        raw_actions, raw_attribution = _build_rules_actions(
+            ruleset_id, schema_tuples, fix_in_keys, policies_path
+        )
+        sorted_acts, is_low_confidence, attribution = sort_actions(
+            raw_actions, fix_in_keys, attribution=raw_attribution
+        )
+
+        _save_store(
+            ruleset_id=ruleset_id,
+            sorted_actions=sorted_acts,
+            data_hash=current_hash,
+            is_low_confidence=is_low_confidence,
+            store_dir=store_dir,
+            attribution=attribution,
+        )
 
     return {
         "ruleset_id": ruleset_id,
@@ -273,3 +326,139 @@ def get_or_build_actions_store(
         "attribution": attribution,
         "cache_hit": False,
     }
+
+
+# ---------------------------------------------------------------------------
+# Escalation rule store
+# ---------------------------------------------------------------------------
+
+def _escalation_store_path(store_dir: Path = STORE_DIR) -> Path:
+    return store_dir / "escalation_rules_store.json"
+
+
+def _load_raw_escalation_store(store_dir: Path = STORE_DIR) -> dict | None:
+    path = _escalation_store_path(store_dir)
+    if not path.exists():
+        return None
+    with open(path, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def _save_escalation_store(
+    rules: list[dict],
+    data_hash: str,
+    store_dir: Path = STORE_DIR,
+) -> None:
+    store_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "ruleset_id": "escalation_rules",
+        "data_hash": data_hash,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "rules": rules,
+    }
+    with open(_escalation_store_path(store_dir), "w", encoding="utf-8") as fh:
+        json.dump(payload, fh, indent=2)
+
+
+def get_or_build_escalation_store(
+    data_dir: Path = DATA_DIR,
+    store_dir: Path = STORE_DIR,
+    policies_path: Path = POLICIES_PATH,
+) -> dict[str, Any]:
+    """
+    Return the escalation rules store, rebuilding it when stale or absent.
+
+    Each entry in ``rules`` has keys:
+        rule_id          (str)
+        trigger_condition (str)  — natural language description of the trigger
+        escalate_to      (str)  — target role or team
+        applies_when     (str)  — scope constraint or "always"
+
+    Returns a dict with keys: ruleset_id, data_hash, created_at, rules, cache_hit.
+    """
+    current_hash = hash_data_folder(data_dir)
+
+    # Fast path — no lock needed
+    raw = _load_raw_escalation_store(store_dir)
+    if raw is not None and raw.get("data_hash") == current_hash:
+        raw["cache_hit"] = True
+        return raw
+
+    with _rebuild_locks["escalation_rules"]:
+        # Re-check inside lock
+        raw = _load_raw_escalation_store(store_dir)
+        if raw is not None and raw.get("data_hash") == current_hash:
+            raw["cache_hit"] = True
+            return raw
+
+        with open(policies_path, encoding="utf-8") as fh:
+            policies = json.load(fh)
+
+        raw_rules: list[dict] = policies.get("escalation_rules", [])
+        if not raw_rules:
+            raise ValueError(
+                f"No escalation_rules section found in {policies_path}."
+            )
+
+        structured_rules = ingest_escalation_rules(raw_rules)
+
+        _save_escalation_store(
+            rules=structured_rules,
+            data_hash=current_hash,
+            store_dir=store_dir,
+        )
+
+    return {
+        "ruleset_id": "escalation_rules",
+        "data_hash": current_hash,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "rules": structured_rules,
+        "cache_hit": False,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Cross-section parallel bootstrap
+# ---------------------------------------------------------------------------
+
+def build_all_stores_parallel(
+    data_dir: Path = DATA_DIR,
+    store_dir: Path = STORE_DIR,
+    schema_path: Path = SCHEMA_PATH,
+    policies_path: Path = POLICIES_PATH,
+) -> dict[str, dict[str, Any]]:
+    """
+    Build (or load from cache) all action stores and the escalation rule store
+    concurrently.
+
+    The three sections — approval_thresholds, category_rules, escalation_rules —
+    are fully independent and write to separate store files, so they can be built
+    in parallel without any coordination beyond the per-ruleset rebuild locks
+    (which prevent duplicate work when the cache is stale).
+
+    Returns a dict keyed by ruleset_id containing each store's result payload.
+    """
+    tasks: dict[str, Any] = {
+        ruleset: (get_or_build_actions_store, (ruleset, data_dir, store_dir, schema_path, policies_path))
+        for ruleset in SUPPORTED_RULESETS
+    }
+    tasks["escalation_rules"] = (
+        get_or_build_escalation_store,
+        (data_dir, store_dir, policies_path),
+    )
+
+    results: dict[str, dict[str, Any]] = {}
+    with ThreadPoolExecutor(max_workers=len(tasks)) as executor:
+        future_to_id = {
+            executor.submit(fn, *args): ruleset_id
+            for ruleset_id, (fn, args) in tasks.items()
+        }
+        for future in as_completed(future_to_id):
+            ruleset_id = future_to_id[future]
+            try:
+                results[ruleset_id] = future.result()
+            except Exception as exc:
+                print(f"[ERROR] Failed to build store for {ruleset_id}: {exc}")
+                raise
+
+    return results

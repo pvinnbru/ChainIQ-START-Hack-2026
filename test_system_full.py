@@ -130,6 +130,8 @@ def normalize_request(raw: dict[str, Any]) -> dict[str, Any] | None:
         "incumbent_supplier": raw.get("incumbent_supplier"),
         "data_residency_constraint": raw.get("data_residency_constraint", False),
         "esg_requirement": raw.get("esg_requirement", False),
+        # Passed through for text compliance — not a schema fix_in, never touches the action pipeline
+        "request_text": raw.get("request_text") or "",
     }
 
 
@@ -409,14 +411,14 @@ def test_all_requests(pipeline):
 
         ranking = [
             {
-                "position":         pos + 1,
-                "supplier_id":      identity.get("supplier_id"),
-                "supplier_name":    identity.get("supplier_name"),
-                "rank_score":       _safe_round(final_state.get("rank")),
-                "cost_rank_score":  _safe_round(final_state.get("cost_rank_score")),
-                "reputation_score": _safe_round(final_state.get("reputation_score")),
-                "cost_total":       _safe_round(final_state.get("cost_total")),
-                "unit_price":       _safe_round(final_state.get("unit_price")),
+                "position":          pos + 1,
+                "supplier_id":       identity.get("supplier_id"),
+                "supplier_name":     identity.get("supplier_name"),
+                "normalized_rank":   _safe_round(final_state.get("normalized_rank")),
+                "cost_rank_score":   _safe_round(final_state.get("cost_rank_score")),
+                "reputation_score":  _safe_round(final_state.get("reputation_score")),
+                "cost_total":        _safe_round(final_state.get("cost_total")),
+                "unit_price":        _safe_round(final_state.get("unit_price")),
             }
             for pos, (identity, rank, final_state) in enumerate(supplier_results)
         ]
@@ -475,7 +477,7 @@ def test_all_requests(pipeline):
             print(f"\n  {r['request_id']} — {r['category_l2']} / {r['delivery_country']}")
             for s in r["ranking"][:3]:
                 print(f"    #{s['position']} {s['supplier_name']:40s} "
-                      f"rank={s['rank_score']:>10}  cost={s['cost_total']}")
+                      f"normalized_rank={s['normalized_rank']:>8}  cost={s['cost_total']}")
             shown += 1
             if shown >= 3:
                 break

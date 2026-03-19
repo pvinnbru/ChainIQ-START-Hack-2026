@@ -22,11 +22,14 @@ from __future__ import annotations
 import csv
 import dataclasses
 import json
+import math
 import os
 import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
+
+from ingest_historical_awards import get_historical_stats, load_historical_store
 
 # ---------------------------------------------------------------------------
 # Country-to-region mapping
@@ -161,6 +164,8 @@ class SupplierLog:
     final_state: dict
     final_cost_rank_score: float | None
     final_reputation_score: float | None
+    final_compliance_score: float | None
+    final_normalized_rank: float | None
     excluded: bool
     exclusion_reason: str | None
 
@@ -174,6 +179,8 @@ class RequestExecutionLog:
     global_context_snapshot: dict
     supplier_logs: list[SupplierLog]
     global_action_logs: list[ActionLogEntry]   # Reserved for future global (non-supplier) actions
+    escalation_assessment: Any | None = None   # EscalationAssessment, set post-evaluation
+    flag_assessment:       Any | None = None   # FlagAssessment, set post-evaluation
 
 # ---------------------------------------------------------------------------
 # Schema loader
@@ -331,6 +338,18 @@ def add_ranking_schema_entries(schema: list[tuple]) -> list[tuple]:
             "Inverted cost score 0-100 derived from cost_total; higher = cheaper; NOT a cross-supplier normalisation [level=2] [supplier_matrix]",
             "supplier_matrix",
         ),
+        (
+            "compliance_score",
+            "free",
+            "Compliance multiplier in [0.0, 1.0] applied multiplicatively to normalized_rank. Starts at 1.0; OSLM actions subtract severity penalties (e.g. 0.05 minor, 0.15 moderate, 0.30 significant) when soft compliance requirements are violated. Hard violations use excluded=True instead. [level=1] [supplier_matrix]",
+            "supplier_matrix",
+        ),
+        (
+            "excluded",
+            "free",
+            "Boolean flag set to True by OSLM actions when a supplier violates a hard compliance requirement (e.g. data residency, category gate). Suppliers where excluded=True are removed from the shortlist after action evaluation. [level=1] [supplier_matrix]",
+            "supplier_matrix",
+        ),
     ]
     result = list(schema)
     for entry in new_entries:
@@ -379,6 +398,17 @@ Generate OSLM and SRM actions (in dependency order, producers before consumers) 
    Weighted composite: 0.5 * quality_score  +  0.3 * (100 - risk_score)  +  0.2 * esg_score
    Decompose into intermediate steps using free keys (prefix with '_rep_').
    quality_score and esg_score are higher = better; risk_score is lower = better.
+
+   CRITICAL — subtraction operand order:
+   (TYPE, in_param1, in_param2, -, out) computes in_param1 − in_param2.
+   You CANNOT write (OSLM, risk_score, 100, -, x) to get 100−risk_score; that gives
+   risk_score−100 (WRONG for low risk_score values, produces large negatives).
+   To compute  100 − risk_score  use two steps:
+     Step A: OSLM(risk_score, -0.3, *, _rep_risk_neg)  →  −0.3 × risk_score
+     Step B: OSLM(_rep_risk_neg, 30, +, _rep_risk)     →  30 − 0.3×risk_score = 0.3×(100−risk_score)
+   Never write the same key as both in_param1 and out_param in the same action —
+   self-referential actions (e.g. "_rep_risk = _rep_risk * 0.3") are unreliable
+   because the topological sort cannot correctly order them.
 
 3. cost_rank_score  (free, level=2)
    LIMITATION: Actions run per-supplier, so true cross-supplier normalisation
@@ -744,12 +774,50 @@ def _apply_operator(lhs: Any, op: str, rhs: Any) -> Any:
 def _tokenize_when(expr: str) -> list[str]:
     """
     Split a WHEN expression into a flat token list.
-    Inserts whitespace around operators and parentheses so identifiers/literals
-    don't fuse with them.  Two-char operators are listed first in the
-    alternation so they are matched before their single-char prefixes.
+
+    Handles:
+    - Quoted strings (single or double quotes) as single tokens even when
+      they contain spaces, e.g. "Cloud Compute" → one token '"Cloud Compute"'
+    - Two-char operators before single-char: >=, <=, !=
+    - Single-char operators and parens: > < = ( )
+    - Identifiers, keywords, and numeric literals
     """
-    spaced = re.sub(r"(>=|<=|!=|[><=()])", r" \1 ", expr)
-    return [t for t in spaced.split() if t]
+    tokens: list[str] = []
+    i = 0
+    n = len(expr)
+    while i < n:
+        c = expr[i]
+        if c.isspace():
+            i += 1
+            continue
+        # Quoted string — scan to closing quote and emit as a single token
+        if c in ('"', "'"):
+            quote = c
+            j = i + 1
+            while j < n and expr[j] != quote:
+                j += 1
+            tokens.append(expr[i : j + 1])  # includes both quote chars
+            i = j + 1
+            continue
+        # Two-char operators must be checked before single-char
+        if i + 1 < n and expr[i : i + 2] in (">=", "<=", "!="):
+            tokens.append(expr[i : i + 2])
+            i += 2
+            continue
+        # Single-char operators / parens
+        if c in (">", "<", "=", "(", ")"):
+            tokens.append(c)
+            i += 1
+            continue
+        # Identifier, keyword, or number
+        j = i
+        while j < n and not expr[j].isspace() and expr[j] not in (
+            ">", "<", "=", "(", ")", '"', "'"
+        ):
+            j += 1
+        tokens.append(expr[i:j])
+        i = j
+    return tokens
 
 
 def _eval_when(expr: str, state: dict[str, Any]) -> bool:
@@ -1113,8 +1181,8 @@ def evaluate_actions(
             # No-op action: nothing to write
             skipped = True
         else:
-            # WHEN gate — applies to OSLM and SRM
-            if typ in ("OSLM", "SRM") and when_expr is not None:
+            # WHEN gate — applies to all action types
+            if when_expr is not None:
                 when_evaluated = True
                 try:
                     when_passed = bool(_eval_when(when_expr, state))
@@ -1179,6 +1247,8 @@ def run_procurement_evaluation(
     fix_in_keys: set[str],
     pricing_index: dict | None = None,
     attribution: dict | None = None,
+    field_impact_map: dict | None = None,
+    escalation_rules: list[dict] | None = None,
 ) -> tuple[dict[str, Any], RequestExecutionLog]:
     """
     End-to-end procurement evaluation with full execution logging.
@@ -1226,6 +1296,8 @@ def run_procurement_evaluation(
                 final_state={},
                 final_cost_rank_score=None,
                 final_reputation_score=None,
+                final_compliance_score=None,
+                final_normalized_rank=None,
                 excluded=True,
                 exclusion_reason=exclusion_reason,
             ))
@@ -1234,6 +1306,11 @@ def run_procurement_evaluation(
         # Build supplier attrs with pricing injected
         new_attrs: dict[str, Any] = dict(attrs)
         new_attrs["serves_delivery_country"] = True
+        # Compliance fields — initialized here so OSLM actions can modify them.
+        # compliance_score is a multiplicative penalty applied to normalized_rank.
+        # excluded signals hard gate violations detected by the action pipeline.
+        new_attrs["compliance_score"] = 1.0
+        new_attrs["excluded"] = False
         pricing_resolved: dict = {}
         if pricing_index is not None:
             pricing = resolve_supplier_pricing(identity, pricing_index, global_context)
@@ -1248,6 +1325,25 @@ def run_procurement_evaluation(
             fix_in_keys,
             attribution,
         )
+
+        # Check if the action pipeline excluded this supplier (hard compliance gate)
+        if final_state.get("excluded") is True:
+            supplier_logs.append(SupplierLog(
+                supplier_id=supplier_id,
+                supplier_name=supplier_name,
+                category_l2=category_l2,
+                pricing_resolved=pricing_resolved,
+                action_logs=action_logs,
+                final_state=final_state,
+                final_cost_rank_score=None,
+                final_reputation_score=None,
+                final_compliance_score=None,
+                final_normalized_rank=None,
+                excluded=True,
+                exclusion_reason="Excluded by compliance rule (action pipeline)",
+            ))
+            continue
+
         rank = final_state.get("rank", 0)
         supplier_results.append((dict(identity), rank, final_state))
 
@@ -1263,18 +1359,172 @@ def run_procurement_evaluation(
             final_state=final_state,
             final_cost_rank_score=final_state.get("cost_rank_score"),
             final_reputation_score=final_state.get("reputation_score"),
+            final_compliance_score=final_state.get("compliance_score"),
+            final_normalized_rank=None,  # set after cross-supplier normalization below
             excluded=False,
             exclusion_reason=None,
         ))
 
-    # Primary sort: (cost_rank_score DESC, reputation_score DESC)
-    supplier_results.sort(
-        key=lambda x: (
-            x[2].get("cost_rank_score", 0),
-            x[2].get("reputation_score", 0),
-        ),
-        reverse=True,
+    # ---------------------------------------------------------------------------
+    # Text compliance: check free-text request for explicit/implicit directives.
+    # One LLM call covers all suppliers; returns hard exclusions and soft scores.
+    request_text: str | None = str(request.get("request_text") or "").strip() or None
+    if request_text:
+        from text_compliance import update_compliance_scores  # local import avoids startup cost
+        text_excluded_ids = update_compliance_scores(request_text, supplier_results)
+
+        if text_excluded_ids:
+            # Move text-excluded suppliers out of supplier_results.
+            # Update their SupplierLog entry to reflect the new exclusion status.
+            _log_by_id = {sl.supplier_id: sl for sl in supplier_logs if not sl.excluded}
+            remaining: list[tuple[dict[str, Any], Any, dict[str, Any]]] = []
+            for identity, rank, final_state in supplier_results:
+                sid = identity.get("supplier_id", "")
+                if sid in text_excluded_ids:
+                    reason = final_state.get(
+                        "text_exclusion_reason", "Excluded by text compliance check"
+                    )
+                    sl = _log_by_id.get(sid)
+                    if sl is not None:
+                        sl.excluded = True
+                        sl.exclusion_reason = reason
+                        sl.final_compliance_score = None
+                        sl.final_normalized_rank  = None
+                else:
+                    remaining.append((identity, rank, final_state))
+            supplier_results = remaining
+
+    # ---------------------------------------------------------------------------
+    # Compute normalized_rank (0–1, cross-request comparable) for each supplier.
+    #
+    # Weights:
+    #   95.0%  cost_score       — z-score sigmoid against blended market average,
+    #                             scaled by historical std_dev so tight-price categories
+    #                             spread scores further than high-variance ones; with
+    #                             exponential budget penalty hitting 0 at 5 % over budget
+    #    2.5%  reputation_norm  — weighted quality/risk/ESG composite, capped to [0,1]
+    #    2.5%  historic_score   — TODO: replace dummy with real historic data
+    #
+    # Cost score detail
+    # -----------------
+    #   z = (blended_avg - unit_price) / hist_std_dev
+    #   base_cost_score = sigmoid(k * z) = 1 / (1 + exp(-k * z))
+    #     → 0.50 when unit_price = blended_avg  (market-average supplier)
+    #     → → 1.0 as unit_price falls below avg (cheaper → better)
+    #     → → 0.0 as unit_price rises above avg (more expensive → worse)
+    #   k = 1.5 (steepness); low hist_std_dev amplifies z → wider score spread
+    #
+    #   Fallback when hist_std_dev unavailable: min(1.0, blended_avg / unit_price)
+    #
+    #   budget_penalty = 1.0                           if cost_total ≤ budget
+    #                  = exp(-10 * overage / 0.05)     if 0 < overage < 5 %
+    #                  = 0.0                           if overage ≥ 5 %
+    #     where overage = (cost_total - budget) / budget
+    #
+    #   cost_score = base_cost_score * budget_penalty
+    # ---------------------------------------------------------------------------
+    _BUDGET_OVERAGE_CAP = 0.05   # fraction: 5 % over budget → penalty = 0
+    _PENALTY_K          = 10     # exp(-10) ≈ 4.5e-5 at cap → effectively 0
+    _SIGMOID_K          = 1.5    # steepness of sigmoid; higher = sharper spread
+
+    # Historical stats + blended average
+    category_l1 = str(global_context.get("category_l1", ""))
+    category_l2 = str(global_context.get("category_l2", ""))
+    hist_store  = load_historical_store()
+    hist_avg, hist_std_dev, n_hist = get_historical_stats(
+        category_l1, category_l2, hist_store
     )
+
+    current_unit_prices = [
+        float(fs.get("unit_price"))
+        for _, _, fs in supplier_results
+        if fs.get("unit_price") is not None and float(fs.get("unit_price") or 0) > 0
+    ]
+
+    if hist_avg is not None and current_unit_prices:
+        blended_avg: float | None = (
+            (hist_avg * n_hist + sum(current_unit_prices))
+            / (n_hist + len(current_unit_prices))
+        )
+    elif hist_avg is not None:
+        blended_avg = hist_avg
+    elif current_unit_prices:
+        blended_avg = sum(current_unit_prices) / len(current_unit_prices)
+    else:
+        blended_avg = None
+
+    budget = float(global_context.get("budget") or 0)
+
+    for i, (identity, _raw_rank, final_state) in enumerate(supplier_results):
+        # --- Base cost deviation score ---
+        unit_price = float(final_state.get("unit_price") or 0)
+        if blended_avg is not None and unit_price > 0:
+            if hist_std_dev:
+                # Z-score sigmoid: amplifies differences more in tight-price categories
+                z = (blended_avg - unit_price) / hist_std_dev
+                base_cost_score = 1.0 / (1.0 + math.exp(-_SIGMOID_K * z))
+            else:
+                # Fallback: simple ratio (no variance data)
+                base_cost_score = min(1.0, blended_avg / unit_price)
+        else:
+            base_cost_score = 0.5  # neutral when no price data at all
+
+        # --- Exponential budget penalty ---
+        cost_total = float(final_state.get("cost_total") or 0)
+        if budget > 0 and cost_total > 0:
+            overage = (cost_total - budget) / budget
+            if overage <= 0:
+                penalty = 1.0
+            elif overage >= _BUDGET_OVERAGE_CAP:
+                penalty = 0.0
+            else:
+                penalty = math.exp(-_PENALTY_K * overage / _BUDGET_OVERAGE_CAP)
+        else:
+            penalty = 1.0
+
+        cost_score = base_cost_score * penalty
+
+        # --- Reputation ---
+        rep_raw = float(final_state.get("reputation_score") or 0)
+        reputation_norm = max(0.0, min(rep_raw, 100.0)) / 100.0
+
+        # --- Historic (dummy — full score until real data is wired in) ---
+        historic_score = 1.0
+
+        # --- Compliance multiplier ---
+        # Clamped to [0, 1]. OSLM actions reduce this from 1.0 for soft
+        # violations. Hard violations set excluded=True and are handled above.
+        compliance_score = max(0.0, min(1.0, float(final_state.get("compliance_score") or 1.0)))
+
+        raw_rank = 0.95 * cost_score + 0.025 * reputation_norm + 0.025 * historic_score
+        normalized_rank = round(raw_rank * compliance_score, 6)
+
+        # --- Preferred supplier bonus ---
+        # A supplier on the org's preferred list (preferred_supplier=True in master
+        # data) receives a 10 % boost, capped at 1.0, to reflect existing trust and
+        # reduced onboarding risk. This is distinct from preferred_supplier_mentioned
+        # (the requester's stated preference) which is handled via text compliance.
+        if final_state.get("preferred_supplier") is True:
+            normalized_rank = round(min(1.0, normalized_rank * 1.1), 6)
+            final_state["preferred_supplier_bonus_applied"] = True
+
+        final_state["compliance_score"]       = compliance_score
+        final_state["normalized_rank"]        = normalized_rank
+        final_state["blended_avg_unit_price"] = round(blended_avg, 6) if blended_avg is not None else None
+        final_state["budget_penalty"]         = round(penalty, 6)
+        supplier_results[i] = (identity, normalized_rank, final_state)
+
+    # Back-fill final_normalized_rank on SupplierLog entries (matched by supplier_id)
+    rank_by_id = {
+        identity.get("supplier_id"): final_state.get("normalized_rank")
+        for identity, _, final_state in supplier_results
+    }
+    for sl in supplier_logs:
+        if not sl.excluded:
+            sl.final_normalized_rank = rank_by_id.get(sl.supplier_id)
+
+    # Sort by normalized_rank DESC
+    supplier_results.sort(key=lambda x: x[1], reverse=True)
 
     global_outputs: dict[str, Any] = {
         k: first_global_state[k]
@@ -1290,10 +1540,52 @@ def run_procurement_evaluation(
         global_action_logs=[],
     )
 
+    # Run escalation assessment if the necessary inputs are available.
+    # field_impact_map and escalation_rules are optional so callers that haven't
+    # wired them up yet still work without changes.
+    if field_impact_map is not None:
+        from escalation_engine import evaluate_escalations  # local import avoids circular
+        outcome_for_esc = {
+            "supplier_results": supplier_results,
+            "global_outputs":   global_outputs,
+        }
+        execution_log.escalation_assessment = evaluate_escalations(
+            request=request,
+            outcome=outcome_for_esc,
+            fix_in_keys=fix_in_keys,
+            field_impact_map=field_impact_map,
+            escalation_rules=escalation_rules or [],
+        )
+
+    # Result-quality flags — always evaluated regardless of escalation config.
+    from result_flags import evaluate_flags  # local import avoids circular
+    n_excluded = sum(1 for sl in supplier_logs if sl.excluded)
+    # Build a flat dict list covering ALL suppliers (incl. excluded) for preferred-supplier flags.
+    all_supplier_log_dicts = [
+        {
+            "supplier_name":         sl.supplier_name,
+            "supplier_id":           sl.supplier_id,
+            "excluded":              sl.excluded,
+            "exclusion_reason":      sl.exclusion_reason,
+            "normalized_rank":       sl.final_normalized_rank,
+            "text_compliance_score": sl.final_state.get("text_compliance_score"),
+        }
+        for sl in supplier_logs
+    ]
+    execution_log.flag_assessment = evaluate_flags(
+        request=request,
+        supplier_results=supplier_results,
+        n_total_suppliers=len(suppliers),
+        n_excluded=n_excluded,
+        all_supplier_logs=all_supplier_log_dicts,
+    )
+
     return (
         {
-            "global_outputs": global_outputs,
-            "supplier_results": supplier_results,
+            "global_outputs":         global_outputs,
+            "supplier_results":       supplier_results,
+            "escalation_assessment":  execution_log.escalation_assessment,
+            "flag_assessment":        execution_log.flag_assessment,
         },
         execution_log,
     )
@@ -1354,8 +1646,10 @@ def render_log(log: RequestExecutionLog) -> str:
             f"Pricing: {unit_price} {currency} x {quantity} units = {cost_total}"
         )
         lines.append(
-            f"Final scores: cost_rank={sl.final_cost_rank_score},"
-            f" reputation={sl.final_reputation_score}"
+            f"Final scores: normalized_rank={sl.final_normalized_rank},"
+            f" cost_rank={sl.final_cost_rank_score},"
+            f" reputation={sl.final_reputation_score},"
+            f" compliance={sl.final_compliance_score}"
         )
         lines.append("")
 
@@ -1389,6 +1683,41 @@ def render_log(log: RequestExecutionLog) -> str:
                     f" {entry.output_value_before} → {entry.output_value_after}"
                 )
             lines.append("")
+
+    # Result-quality flags
+    flags = log.flag_assessment
+    if flags is not None and flags.flags:
+        lines.append("=" * 60)
+        lines.append("RESULT FLAGS")
+        lines.append("=" * 60)
+        for f in flags.flags:
+            icon = "⚠  WARNING" if f.severity == "warning" else "ℹ  INFO"
+            lines.append(f"  [{icon}] [{f.flag_id}]")
+            lines.append(f"    {f.description}")
+            lines.append("")
+
+    # Escalation assessment summary
+    esc = log.escalation_assessment
+    if esc is not None and (esc.triggers or esc.context_notes):
+        lines.append("=" * 60)
+        lines.append("ESCALATION ASSESSMENT")
+        lines.append("=" * 60)
+        for note in esc.context_notes:
+            lines.append(f"  [CONTEXT] {note}")
+        if esc.context_notes:
+            lines.append("")
+        for t in esc.triggers:
+            flag = "🔴 BLOCKING" if t.severity == "blocking" else "🟡 ADVISORY" if t.severity == "advisory" else "ℹ  LOGGED"
+            lines.append(f"  [{flag}] [{t.trigger_id}] impact={t.rank_impact:.2f}")
+            lines.append(f"    {t.description}")
+            if t.suppression_reason:
+                lines.append(f"    ⚑ {t.suppression_reason}")
+            if t.escalate_to:
+                lines.append(f"    → Escalate to: {t.escalate_to}")
+            lines.append("")
+    elif esc is not None:
+        lines.append("ESCALATION ASSESSMENT: no triggers")
+        lines.append("")
 
     return "\n".join(lines)
 
