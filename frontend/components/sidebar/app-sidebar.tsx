@@ -1,13 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { useEffect, useState } from "react"
 import { Command, FileCheck, Bell, LogOut, Sun, Moon } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 import { NavMain } from "@/components/sidebar/nav-main"
 import { useAuth } from "@/context/auth-context"
+import { useEscalationCount } from "@/context/escalation-count-context"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ROLE_BADGE, ROLE_AVATAR, ROLE_LABELS } from "@/lib/colors"
@@ -24,24 +23,12 @@ import {
 } from "@/components/ui/sidebar"
 
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, logout } = useAuth()
-  const [escalationCount, setEscalationCount] = useState(0)
+  const { count: escalationCount } = useEscalationCount()
   const { resolvedTheme, setTheme } = useTheme()
 
-  const pathname = usePathname()
-
-  useEffect(() => {
-    if (!user) return
-    fetch(`${API}/escalations/me`, { credentials: "include" })
-      .then((r) => r.json())
-      .then((data: unknown[]) => setEscalationCount(data.length))
-      .catch(() => {})
-  }, [user, pathname])
-
-  const navMain = [
+const navMain = [
     {
       title: "Requests",
       icon: FileCheck,
@@ -54,8 +41,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
   ]
 
-  // Add "My Escalations" for non-approver roles
-  if (user && user.role !== "approver") {
+  if (user) {
     navMain.push({
       title: "My Escalations",
       icon: Bell,

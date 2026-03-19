@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
+import { EscalationCountProvider } from '@/context/escalation-count-context';
 import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { BreadcrumbNav } from '@/components/layout/breadcrumb-nav';
 import { Separator } from '@/components/ui/separator';
@@ -31,6 +32,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
+    <EscalationCountProvider>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="flex flex-col h-screen overflow-hidden">
@@ -49,5 +51,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </EscalationCountProvider>
   );
 }
