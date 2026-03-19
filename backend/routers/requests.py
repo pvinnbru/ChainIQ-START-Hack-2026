@@ -1,0 +1,211 @@
+import json
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.orm import Session
+from sqlalchemy import asc, desc
+from datetime import datetime
+from database import get_db
+from auth import get_current_user
+import models
+import schemas
+
+router = APIRouter(prefix="/requests", tags=["requests"])
+
+
+def _order_column(sort_by: str, order: str):
+    col_map = {
+        "date": models.Request.created_at,
+        "l1": models.Request.category_l1,
+        "l2": models.Request.category_l2,
+        "country": models.Request.country,
+    }
+    col = col_map.get(sort_by, models.Request.created_at)
+    return asc(col) if order == "asc" else desc(col)
+
+
+@router.get("", response_model=list[schemas.RequestOut])
+def list_requests(
+    sort_by: str = Query("date", pattern="^(date|l1|l2|country)$"),
+    order: str = Query("asc", pattern="^(asc|desc)$"),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    return (
+        db.query(models.Request)
+        .order_by(_order_column(sort_by, order))
+        .all()
+    )
+
+
+@router.get("/mine", response_model=list[schemas.RequestOut])
+def my_requests(
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return (
+        db.query(models.Request)
+        .filter(models.Request.requester_id == current_user.id)
+        .order_by(asc(models.Request.created_at))
+        .all()
+    )
+
+
+@router.post("", response_model=schemas.RequestOut)
+def create_request(
+    body: schemas.RequestCreate,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    delivery_countries_json = json.dumps(body.delivery_countries) if body.delivery_countries else None
+
+    req = models.Request(
+        requester_id=current_user.id,
+        plain_text=body.plain_text,
+        status="new",
+        title=body.title,
+        business_unit=current_user.business_unit,
+        country=current_user.country,
+        site=current_user.site,
+        category_l1=body.category_l1,
+        category_l2=body.category_l2,
+        currency=body.currency,
+        budget_amount=body.budget_amount,
+        quantity=body.quantity,
+        unit_of_measure=body.unit_of_measure,
+        required_by_date=body.required_by_date,
+        preferred_supplier_mentioned=body.preferred_supplier_mentioned,
+        incumbent_supplier=body.incumbent_supplier,
+        contract_type_requested=body.contract_type_requested,
+        delivery_countries=delivery_countries_json,
+        data_residency_constraint=body.data_residency_constraint,
+        esg_requirement=body.esg_requirement,
+    )
+    db.add(req)
+    db.commit()
+    db.refresh(req)
+    return req
+
+
+@router.get("/{request_id}", response_model=schemas.RequestOut)
+def get_request(
+    request_id: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    req = db.query(models.Request).filter(models.Request.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found")
+    return req
+
+
+@router.post("/{request_id}/clarify", response_model=schemas.RequestOut)
+def clarify_request(
+    request_id: str,
+    body: schemas.ClarificationCreate,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    req = db.query(models.Request).filter(models.Request.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found")
+    if req.requester_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not your request")
+
+    # Apply clarification fields to the request
+    allowed_fields = {
+        "title", "category_l1", "category_l2", "currency", "budget_amount",
+        "quantity", "unit_of_measure", "required_by_date",
+        "preferred_supplier_mentioned", "incumbent_supplier",
+    }
+    for field, value in body.fields.items():
+        if field in allowed_fields and value is not None:
+            setattr(req, field, value)
+
+    # Store the clarification record
+    clarification = models.Clarification(
+        request_id=request_id,
+        submitted_fields=json.dumps(body.fields),
+    )
+    db.add(clarification)
+
+    # Resolve all pending requester_clarification escalations for this request
+    db.query(models.Escalation).filter(
+        models.Escalation.request_id == request_id,
+        models.Escalation.type == "requester_clarification",
+        models.Escalation.status == "pending",
+    ).update({"status": "resolved"})
+
+    req.status = "pending_review"
+    req.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(req)
+    return req
+
+
+@router.post("/{request_id}/review", response_model=schemas.RequestOut)
+def review_request(
+    request_id: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if current_user.role not in ("approver", "category_head", "compliance_reviewer"):
+        raise HTTPException(status_code=403, detail="Not authorised to review requests")
+    req = db.query(models.Request).filter(models.Request.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found")
+    req.status = "reviewed"
+    req.updated_at = datetime.utcnow()
+    db.query(models.Escalation).filter(
+        models.Escalation.request_id == request_id,
+        models.Escalation.target_user_id == current_user.id,
+        models.Escalation.status == "pending",
+    ).update({"status": "resolved"})
+    db.commit()
+    db.refresh(req)
+    return req
+
+
+@router.post("/{request_id}/approve", response_model=schemas.RequestOut)
+def approve_request(
+    request_id: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if current_user.role not in ("approver", "category_head", "compliance_reviewer"):
+        raise HTTPException(status_code=403, detail="Not authorised to approve requests")
+    req = db.query(models.Request).filter(models.Request.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found")
+    req.status = "approved"
+    req.updated_at = datetime.utcnow()
+    # Resolve all pending escalations targeting this user
+    db.query(models.Escalation).filter(
+        models.Escalation.request_id == request_id,
+        models.Escalation.target_user_id == current_user.id,
+        models.Escalation.status == "pending",
+    ).update({"status": "resolved"})
+    db.commit()
+    db.refresh(req)
+    return req
+
+
+@router.post("/{request_id}/reject", response_model=schemas.RequestOut)
+def reject_request(
+    request_id: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if current_user.role not in ("approver", "category_head", "compliance_reviewer"):
+        raise HTTPException(status_code=403, detail="Not authorised to reject requests")
+    req = db.query(models.Request).filter(models.Request.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found")
+    req.status = "rejected"
+    req.updated_at = datetime.utcnow()
+    db.query(models.Escalation).filter(
+        models.Escalation.request_id == request_id,
+        models.Escalation.target_user_id == current_user.id,
+        models.Escalation.status == "pending",
+    ).update({"status": "resolved"})
+    db.commit()
+    db.refresh(req)
+    return req
