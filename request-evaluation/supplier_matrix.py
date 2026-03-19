@@ -22,6 +22,7 @@ from __future__ import annotations
 import csv
 import dataclasses
 import json
+import logging
 import math
 import os
 import re
@@ -30,6 +31,8 @@ from datetime import datetime, timezone
 from typing import Any
 
 from ingest_historical_awards import get_historical_stats, get_supplier_historic_score, load_historical_store
+
+_logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Country-to-region mapping
@@ -1415,10 +1418,18 @@ def run_procurement_evaluation(
       (result_dict, execution_log)
 
       result_dict contains:
-        "global_outputs":   dict[str, Any]  — fix_out keys (excl. "rank") from
-                            the first evaluated supplier's final state.
-        "supplier_results": list of (identity_dict, rank, full_state_dict)
-                            sorted by (cost_rank_score DESC, reputation_score DESC).
+        "global_outputs":      dict[str, Any]  — fix_out keys (excl. "rank") from
+                               the first evaluated supplier's final state.
+        "supplier_results":    list of (identity_dict, rank, full_state_dict)
+                               sorted by (cost_rank_score DESC, reputation_score DESC).
+                               Suppliers where action errors occurred have
+                               final_state["is_low_confidence"] = True.
+        "evaluation_warnings": list[dict] — one entry per action error (WHEN clause
+                               exception or operator exception) across all evaluated
+                               suppliers.  Each dict has keys: supplier_id,
+                               supplier_name, action_index, rule_id,
+                               rule_description, warning_type ("when_error" |
+                               "action_error"), message.  Empty list when clean.
 
       execution_log is a :class:`RequestExecutionLog` capturing everything that
       happened — including excluded suppliers and per-action attribution.
@@ -1441,6 +1452,7 @@ def run_procurement_evaluation(
 
     supplier_results: list[tuple[dict[str, Any], Any, dict[str, Any]]] = []
     supplier_logs: list[SupplierLog] = []
+    evaluation_warnings: list[dict] = []
 
     for supplier in suppliers:
         identity = supplier["identity"]
@@ -1489,6 +1501,36 @@ def run_procurement_evaluation(
             fix_in_keys,
             attribution,
         )
+
+        # --- Surface action errors as evaluation warnings ---
+        # Scan every ActionLogEntry for WHEN clause exceptions (when_error) and
+        # operator/state exceptions (action_error).  Both result in skipped=True
+        # but represent unexpected failures — not intentional condition gates —
+        # and must not be silently absorbed as ordinary skips.
+        # Runs before the compliance gate so errors in pipeline-excluded suppliers
+        # are captured too.
+        _supplier_had_errors = False
+        for _entry in action_logs:
+            for _wtype, _wmsg in (
+                ("when_error",   _entry.when_error),
+                ("action_error", _entry.action_error),
+            ):
+                if _wmsg:
+                    _supplier_had_errors = True
+                    evaluation_warnings.append({
+                        "supplier_id":      supplier_id,
+                        "supplier_name":    supplier_name,
+                        "action_index":     _entry.action_index,
+                        "rule_id":          _entry.rule_id,
+                        "rule_description": _entry.rule_description,
+                        "warning_type":     _wtype,
+                        "message":          _wmsg,
+                    })
+        if _supplier_had_errors:
+            # Flag this supplier's state so downstream consumers (confidence
+            # scoring, UI) can distinguish a clean result from one where parts
+            # of the rule pipeline silently failed.
+            final_state["is_low_confidence"] = True
 
         # Check if the action pipeline excluded this supplier (hard compliance gate)
         if final_state.get("excluded") is True:
@@ -1559,12 +1601,17 @@ def run_procurement_evaluation(
     # Compute normalized_rank (0–1, cross-request comparable) for each supplier.
     #
     # Weights:
-    #   95.0%  cost_score       — z-score sigmoid against blended market average,
+    #   80.0%  cost_score       — z-score sigmoid against blended market average,
     #                             scaled by historical std_dev so tight-price categories
     #                             spread scores further than high-variance ones; with
     #                             exponential budget penalty hitting 0 at 5 % over budget
-    #    2.5%  reputation_norm  — weighted quality/risk/ESG composite, capped to [0,1]
-    #    2.5%  historic_score   — shrunk Bayesian composite (award rate / rank / savings)
+    #   10.0%  reputation_norm  — weighted quality/risk/ESG composite, capped to [0,1]
+    #   10.0%  historic_score   — shrunk Bayesian composite (award rate / rank / savings)
+    #
+    # Rationale: at 95/2.5/2.5 a 1% cost advantage overwrote a 70-point ESG gap
+    # (~0.0175 maximum reputation contribution).  At 80/10/10 each non-cost
+    # dimension can contribute up to 0.10 to the rank, making quality and track
+    # record meaningfully differentiated while cost remains dominant.
     #
     # Cost score detail
     # -----------------
@@ -1577,16 +1624,31 @@ def run_procurement_evaluation(
     #
     #   Fallback when hist_std_dev unavailable: min(1.0, blended_avg / unit_price)
     #
-    #   budget_penalty = 1.0                           if cost_total ≤ budget
-    #                  = exp(-10 * overage / 0.05)     if 0 < overage < 5 %
-    #                  = 0.0                           if overage ≥ 5 %
-    #     where overage = (cost_total - budget) / budget
+    #   budget_penalty = 1 / (1 + exp(K * (overage − C)))
+    #     where overage = (cost_total − budget) / budget
+    #     K and C are derived from two semantic targets (see constants below):
+    #       overage = 0.00  →  penalty ≈ 0.85  (at budget exactly)
+    #       overage = 0.05  →  penalty ≈ 0.20  (5 % over budget)
+    #       overage ≪ 0     →  penalty → 1.0   (well under budget, asymptotic)
+    #       overage ≫ 0     →  penalty → 0.0   (far over budget, asymptotic)
+    #     No hard cliff: the curve is smooth and continuous across all overages.
     #
     #   cost_score = base_cost_score * budget_penalty
     # ---------------------------------------------------------------------------
-    _BUDGET_OVERAGE_CAP = 0.05   # fraction: 5 % over budget → penalty = 0
-    _PENALTY_K          = 10     # exp(-10) ≈ 4.5e-5 at cap → effectively 0
-    _SIGMOID_K          = 1.5    # steepness of sigmoid; higher = sharper spread
+    # Semantic targets — tune these two values; K and C are derived from them.
+    _PENALTY_AT_BUDGET    = 0.85   # penalty multiplier when cost_total == budget
+    _PENALTY_AT_5PCT_OVER = 0.20   # penalty multiplier when cost_total is 5% over
+    # Logistic parameters derived via logit: K = (logit(P0) - logit(P5)) / 0.05
+    #                                        C = logit(P0) / K
+    _PENALTY_LOGISTIC_K = (
+        math.log(_PENALTY_AT_BUDGET    / (1.0 - _PENALTY_AT_BUDGET))
+        - math.log(_PENALTY_AT_5PCT_OVER / (1.0 - _PENALTY_AT_5PCT_OVER))
+    ) / 0.05
+    _PENALTY_LOGISTIC_C = (
+        math.log(_PENALTY_AT_BUDGET / (1.0 - _PENALTY_AT_BUDGET))
+        / _PENALTY_LOGISTIC_K
+    )
+    _SIGMOID_K          = 1.5    # steepness of cost z-score sigmoid; higher = sharper spread
 
     # Historical stats + blended average
     category_l1 = str(global_context.get("category_l1", ""))
@@ -1615,31 +1677,68 @@ def run_procurement_evaluation(
         blended_avg = None
 
     budget = float(global_context.get("budget") or 0)
+    n_surviving = len(supplier_results)
+
+    # Resolve the std_dev that will be used for z-score cost scoring.
+    # hist_std_dev is None when the category has fewer than 2 historical data
+    # points, and 0.0 when all historical prices are identical — both are falsy
+    # and both produce a degenerate (infinite) z-score.  Estimate 15 % of the
+    # reference average as a conservative spread assumption so the sigmoid path
+    # remains active.  The warning fires once per evaluation, not per supplier.
+    _std_dev_for_zscore: float | None = hist_std_dev if hist_std_dev else None
+    if not hist_std_dev:
+        _ref_for_std_est = hist_avg if hist_avg is not None else blended_avg
+        if _ref_for_std_est is not None:
+            _std_dev_for_zscore = _ref_for_std_est * 0.15
+            _logger.warning(
+                "hist_std_dev is %s for category %r / %r (n_hist=%d); "
+                "estimating std_dev as 15%% of reference avg (%.4f → %.4f). "
+                "Z-score cost scoring will use this estimate — results are less "
+                "precise until more historical data is available.",
+                "0.0" if hist_std_dev == 0.0 else "None",
+                category_l1, category_l2, n_hist,
+                _ref_for_std_est, _std_dev_for_zscore,
+            )
 
     for i, (identity, _raw_rank, final_state) in enumerate(supplier_results):
         # --- Base cost deviation score ---
         unit_price = float(final_state.get("unit_price") or 0)
-        if blended_avg is not None and unit_price > 0:
-            if hist_std_dev:
-                # Z-score sigmoid: amplifies differences more in tight-price categories
-                z = (blended_avg - unit_price) / hist_std_dev
+        if n_surviving < 3 and budget > 0 and unit_price > 0:
+            # Thin-market fallback: with fewer than 3 surviving suppliers the
+            # blended_avg is not a reliable competitive reference — a single
+            # supplier always lands at sigmoid(0) = 0.50, and two suppliers
+            # produce symmetric extremes regardless of their actual prices.
+            # Instead, score against the budget as a price ceiling:
+            #   cost_score = 1 - (unit_price / budget)
+            # A supplier priced at 0 % of budget scores 1.0; at 100 % of budget
+            # scores 0.0.  Clamped to [0, 1] so prices above budget don't go
+            # negative (the exponential penalty below handles over-budget suppliers).
+            base_cost_score = max(0.0, min(1.0, 1.0 - (unit_price / budget)))
+        elif blended_avg is not None and unit_price > 0:
+            if _std_dev_for_zscore:
+                # Z-score sigmoid: amplifies differences more in tight-price categories.
+                # Floor std_dev at 2% of blended_avg to prevent z-score explosion when
+                # all current prices are nearly identical (low-variance categories).
+                # When hist_std_dev was missing/zero, _std_dev_for_zscore holds the
+                # 15%-of-avg estimate computed before this loop.
+                _std_dev_floor = blended_avg * 0.02
+                _effective_std_dev = max(_std_dev_for_zscore, _std_dev_floor)
+                z = (blended_avg - unit_price) / _effective_std_dev
                 base_cost_score = 1.0 / (1.0 + math.exp(-_SIGMOID_K * z))
             else:
-                # Fallback: simple ratio (no variance data)
+                # No variance estimate possible (no hist_avg and no current prices
+                # to form blended_avg) — fall back to simple ratio.
                 base_cost_score = min(1.0, blended_avg / unit_price)
         else:
             base_cost_score = 0.5  # neutral when no price data at all
 
-        # --- Exponential budget penalty ---
+        # --- Logistic budget penalty ---
+        # Smooth curve: no hard cliffs at 0% or 5% overage.
+        # penalty(overage) = 1 / (1 + exp(K * (overage - C)))
         cost_total = float(final_state.get("cost_total") or 0)
         if budget > 0 and cost_total > 0:
             overage = (cost_total - budget) / budget
-            if overage <= 0:
-                penalty = 1.0
-            elif overage >= _BUDGET_OVERAGE_CAP:
-                penalty = 0.0
-            else:
-                penalty = math.exp(-_PENALTY_K * overage / _BUDGET_OVERAGE_CAP)
+            penalty = 1.0 / (1.0 + math.exp(_PENALTY_LOGISTIC_K * (overage - _PENALTY_LOGISTIC_C)))
         else:
             penalty = 1.0
 
@@ -1670,7 +1769,7 @@ def run_procurement_evaluation(
         # violations. Hard violations set excluded=True and are handled above.
         compliance_score = max(0.0, min(1.0, float(final_state.get("compliance_score") or 1.0)))
 
-        raw_rank = 0.95 * cost_score + 0.025 * reputation_norm + 0.025 * historic_score
+        raw_rank = 0.80 * cost_score + 0.10 * reputation_norm + 0.10 * historic_score
         normalized_rank = round(raw_rank * compliance_score, 6)
 
         # --- Preferred supplier bonus ---
@@ -1680,11 +1779,17 @@ def run_procurement_evaluation(
         # (the requester's stated preference) which is handled via text compliance.
         if final_state.get("preferred_supplier") is True:
             rank_before_bonus = normalized_rank
-            normalized_rank = round(min(1.0, normalized_rank * 1.1), 6)
+            # Soft squash instead of hard cap: score + (1 - score) * 0.10
+            # A score of 0.92 → 0.92 + 0.008 = 0.928 (never clamps to 1.0 exactly).
+            normalized_rank = round(normalized_rank + (1.0 - normalized_rank) * 0.10, 6)
             # ISSUE-021: record rank without bonus so _flag_preferred_bonus_decisive
             # can determine whether the bonus flipped the ranking.
             final_state["preferred_supplier_bonus_applied"] = True
             final_state["rank_without_preferred_bonus"]     = rank_before_bonus
+
+        # Soft ceiling: reserve 1.0 for a theoretically "perfect" supplier that
+        # never occurs in practice; prevents scores from saturating at exactly 1.0.
+        normalized_rank = min(0.98, normalized_rank)
 
         final_state["compliance_score"]       = compliance_score
         final_state["normalized_rank"]        = normalized_rank
@@ -1808,6 +1913,7 @@ def run_procurement_evaluation(
             "escalation_assessment":  execution_log.escalation_assessment,
             "flag_assessment":        execution_log.flag_assessment,
             "confidence_assessment":  confidence_assessment,
+            "evaluation_warnings":    evaluation_warnings,
         },
         execution_log,
     )

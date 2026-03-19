@@ -230,6 +230,68 @@ def _to_serializable(obj: Any) -> Any:
 
 
 # ---------------------------------------------------------------------------
+# Input validation
+# ---------------------------------------------------------------------------
+
+_ALLOWED_CURRENCIES: frozenset[str] = frozenset({"EUR", "CHF", "USD"})
+
+
+def _validate_request(request: dict[str, Any]) -> list[dict[str, str]]:
+    """
+    Validate the parsed request dict against the pipeline's field contracts.
+
+    Returns a list of ``{"field": str, "reason": str}`` dicts, one per
+    violation.  An empty list means the request is valid.
+
+    Checks:
+      - budget    must be a number > 0
+      - quantity  must be a number > 0
+      - category_l1 / category_l2  must be non-empty strings
+      - currency  must be one of EUR | CHF | USD
+    """
+    errors: list[dict[str, str]] = []
+
+    # --- budget > 0 ---
+    budget = request.get("budget")
+    if budget is None:
+        errors.append({"field": "budget", "reason": "required field is missing"})
+    elif isinstance(budget, bool) or not isinstance(budget, (int, float)):
+        errors.append({"field": "budget", "reason": f"must be a number, got {type(budget).__name__!r}"})
+    elif budget <= 0:
+        errors.append({"field": "budget", "reason": f"must be > 0, got {budget}"})
+
+    # --- quantity > 0 ---
+    quantity = request.get("quantity")
+    if quantity is None:
+        errors.append({"field": "quantity", "reason": "required field is missing"})
+    elif isinstance(quantity, bool) or not isinstance(quantity, (int, float)):
+        errors.append({"field": "quantity", "reason": f"must be a number, got {type(quantity).__name__!r}"})
+    elif quantity <= 0:
+        errors.append({"field": "quantity", "reason": f"must be > 0, got {quantity}"})
+
+    # --- category_l1 non-empty string ---
+    cat_l1 = request.get("category_l1")
+    if not isinstance(cat_l1, str) or not cat_l1.strip():
+        errors.append({"field": "category_l1", "reason": "must be a non-empty string"})
+
+    # --- category_l2 non-empty string ---
+    cat_l2 = request.get("category_l2")
+    if not isinstance(cat_l2, str) or not cat_l2.strip():
+        errors.append({"field": "category_l2", "reason": "must be a non-empty string"})
+
+    # --- currency in allowed set ---
+    currency = request.get("currency")
+    if not isinstance(currency, str) or currency.upper() not in _ALLOWED_CURRENCIES:
+        allowed = " | ".join(sorted(_ALLOWED_CURRENCIES))
+        errors.append({
+            "field":  "currency",
+            "reason": f"must be one of {allowed}, got {currency!r}",
+        })
+
+    return errors
+
+
+# ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 
@@ -258,10 +320,28 @@ def evaluate_request(request_json: str) -> str:
         request_id = str(request.get("request_id", "<unknown>"))
     except (json.JSONDecodeError, ValueError) as exc:
         return json.dumps({
-            "status":    "error",
-            "request_id": request_id,
-            "timestamp": timestamp,
-            "error":     f"Invalid JSON input: {exc}",
+            "status":            "error",
+            "request_id":        request_id,
+            "timestamp":         timestamp,
+            "error":             f"Invalid JSON input: {exc}",
+            "validation_errors": [],
+            "global_outputs":        {},
+            "ranked_suppliers":       [],
+            "escalation":            None,
+            "flag_assessment":       None,
+            "confidence_assessment": None,
+            "execution_log":         None,
+        }, indent=2)
+
+    validation_errors = _validate_request(request)
+    if validation_errors:
+        fields = ", ".join(e["field"] for e in validation_errors)
+        return json.dumps({
+            "status":            "error",
+            "request_id":        request_id,
+            "timestamp":         timestamp,
+            "error":             f"Request validation failed: {fields}",
+            "validation_errors": validation_errors,
             "global_outputs":        {},
             "ranked_suppliers":       [],
             "escalation":            None,
@@ -320,6 +400,7 @@ def evaluate_request(request_json: str) -> str:
             "request_id":  request_id,
             "timestamp":   exec_log.timestamp,
             "error":       None,
+            "validation_errors": [],
             "global_outputs":    outcome.get("global_outputs", {}),
             "ranked_suppliers":  ranked_suppliers,
             "escalation":        _to_serializable(outcome.get("escalation_assessment")),
@@ -331,10 +412,11 @@ def evaluate_request(request_json: str) -> str:
     except Exception as exc:  # noqa: BLE001
         logger.exception("evaluate_request failed for %s", request_id)
         result = {
-            "status":    "error",
-            "request_id": request_id,
-            "timestamp": timestamp,
-            "error":     f"{type(exc).__name__}: {exc}",
+            "status":            "error",
+            "request_id":        request_id,
+            "timestamp":         timestamp,
+            "error":             f"{type(exc).__name__}: {exc}",
+            "validation_errors": [],
             "global_outputs":        {},
             "ranked_suppliers":       [],
             "escalation":            None,
@@ -362,7 +444,15 @@ def evaluate_request(request_json: str) -> str:
 #
 # error           string | null
 #                          Present and non-null only when status = "error".
-#                          Contains the exception type and message.
+#                          Contains the exception type and message, or a
+#                          summary of which fields failed validation.
+#
+# validation_errors  array  Always present.  Empty list on a clean run.
+#                          When status = "error" due to invalid input, contains
+#                          one object per violation with:
+#                            field   string  Name of the failing request field
+#                            reason  string  Human-readable explanation, including
+#                                            the received value where safe to echo
 #
 # global_outputs  object   Policy-level fix_out fields aggregated across all
 #                          evaluated suppliers.  Keys (all may be absent if no
