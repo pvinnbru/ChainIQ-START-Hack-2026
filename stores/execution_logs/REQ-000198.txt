@@ -1,5 +1,5 @@
 REQUEST: REQ-000198
-Timestamp: 2026-03-19T14:00:27.273093+00:00
+Timestamp: 2026-03-19T14:38:15.803586+00:00
 Context: {'category_l1': 'Facilities', 'category_l2': 'Workstations and Desks', 'budget': 148800.0, 'currency': 'CHF', 'quantity': 5000, 'amount_unit': 'unit', 'delivery_country': 'CH', 'days_until_required': 4, 'preferred_supplier_mentioned': 'Steelcase Europe', 'incumbent_supplier': 'Bene Office Solutions', 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Facilities')]
@@ -303,3 +303,15 @@ SUPPLIER: Havas Group Americas (SUP-0047) — Social Media Advertising  [EXCLUDE
 SUPPLIER: Havas Group Americas (SUP-0047) — Content Production Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'Facilities')]
 
 SUPPLIER: Havas Group Americas (SUP-0047) — Influencer Campaign Management  [EXCLUDED: category_l1 mismatch ('Marketing' != 'Facilities')]
+
+============================================================
+RESULT FLAGS
+============================================================
+  [⚠  WARNING] [HIGH_EXCLUSION_RATE]
+    151 of 151 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.
+
+  [⚠  WARNING] [SINGLE_QUALIFIED_SUPPLIER]
+    Only 0 supplier(s) qualified after evaluation. Competitive pricing cannot be guaranteed without market alternatives.
+
+  [ℹ  INFO] [PREFERRED_SUPPLIER_EXCLUDED]
+    Preferred supplier restricted due to: 'Steelcase Europe' was explicitly requested but excluded — no matching pricing tier for this region/quantity.

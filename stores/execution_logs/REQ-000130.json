@@ -1,6 +1,6 @@
 {
   "request_id": "REQ-000130",
-  "timestamp": "2026-03-19T14:00:26.855143+00:00",
+  "timestamp": "2026-03-19T14:36:22.423320+00:00",
   "global_context_snapshot": {
     "category_l1": "IT",
     "category_l2": "Smartphones",
@@ -25,6 +25,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Smartphones')"
     },
@@ -37,6 +39,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Smartphones')"
     },
@@ -49,6 +53,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Smartphones')"
     },
@@ -61,6 +67,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Smartphones')"
     },
@@ -73,6 +81,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Smartphones')"
     },
@@ -85,6 +95,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Smartphones')"
     },
@@ -97,6 +109,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Smartphones')"
     },
@@ -109,6 +123,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Desktop Workstations' != 'Smartphones')"
     },
@@ -121,6 +137,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Smartphones')"
     },
@@ -133,6 +151,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Smartphones')"
     },
@@ -145,6 +165,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Smartphones')"
     },
@@ -157,6 +179,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Desktop Workstations' != 'Smartphones')"
     },
@@ -169,6 +193,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Smartphones')"
     },
@@ -181,6 +207,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Smartphones')"
     },
@@ -193,6 +221,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Smartphones')"
     },
@@ -211,370 +241,8 @@
       "action_logs": [
         {
           "action_index": 0,
-          "rule_id": "ER-001",
-          "rule_description": "Escalates to requester clarification when required information is missing",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_requester"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_requester",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 1,
-          "rule_id": "ER-002",
-          "rule_description": "Escalates to Procurement Manager when preferred supplier is restricted",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_procurement_manager"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_procurement_manager",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 2,
-          "rule_id": "ER-003",
-          "rule_description": "Escalates to Head of Strategic Sourcing when the value exceeds the threshold.",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_head_of_strategic_sourcing",
-            "WHEN budget > threshold_value"
-          ],
-          "when_condition": "WHEN budget > threshold_value",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_head_of_strategic_sourcing",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 3,
-          "rule_id": "ER-004",
-          "rule_description": "Escalates to Head of Category when no compliant supplier is found.",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_head_of_category"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_head_of_category",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 4,
-          "rule_id": "ER-005",
-          "rule_description": "Escalates to Security and Compliance Review when there is a data residency constraint conflict.",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_security_compliance",
-            "WHEN data_residency_constraint = True AND data_residency_supported = False"
-          ],
-          "when_condition": "WHEN data_residency_constraint = True AND data_residency_supported = False",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_security_compliance",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 5,
-          "rule_id": "ER-006",
-          "rule_description": "Escalates to Sourcing Excellence Lead due to single-supplier capacity risk.",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_sourcing_excellence"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_sourcing_excellence",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 6,
-          "rule_id": "ER-007",
-          "rule_description": "Escalates to Marketing Governance Lead for brand safety concerns",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_marketing_governance"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_marketing_governance",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 7,
-          "rule_id": "ER-008",
-          "rule_description": "Escalates to Regional Compliance Lead if the supplier is not registered or sanctioned-screened in the delivery country and the currency is USD",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_regional_compliance",
-            "WHEN currency = USD"
-          ],
-          "when_condition": "WHEN currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_regional_compliance",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 8,
-          "rule_id": "CR-001",
-          "rule_description": "Ensure at least three compliant supplier options are compared for IT/Laptops category when budget exceeds EUR/CHF 100000",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "budget",
-            "100000",
-            ">=",
-            "min_supplier_quotes",
-            "WHEN currency = EUR OR currency = CHF"
-          ],
-          "when_condition": "WHEN currency = EUR OR currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "budget": 71200,
-            "immediate": 100000
-          },
-          "output_key": "min_supplier_quotes",
-          "output_value_before": null,
-          "output_value_after": false,
-          "skipped": false
-        },
-        {
-          "action_index": 9,
-          "rule_id": "CR-002",
-          "rule_description": "Enforces compatibility review with engineering or CAD lead for mobile workstation requests above 50 units",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "quantity",
-            "50",
-            ">",
-            "requires_engineering_review",
-            "WHEN category_l1 = IT AND category_l2 = Mobile Workstations"
-          ],
-          "when_condition": "WHEN category_l1 = IT AND category_l2 = Mobile Workstations",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "quantity": 80,
-            "immediate": 50
-          },
-          "output_key": "requires_engineering_review",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 10,
-          "rule_id": "CR-004",
-          "rule_description": "Ensures that only suppliers supporting data residency requirements are considered for requests with data residency constraints in the IT > Cloud Compute category",
-          "action_type": "OSLM",
-          "action_tuple": [
-            "OSLM",
-            "data_residency_constraint",
-            "data_residency_supported",
-            "AND",
-            "rank",
-            "WHEN category_l1 = IT AND category_l2 = Cloud Compute"
-          ],
-          "when_condition": "WHEN category_l1 = IT AND category_l2 = Cloud Compute",
-          "when_evaluated": true,
-          "when_passed": false,
-          "input_values": {
-            "data_residency_constraint": false,
-            "data_residency_supported": true
-          },
-          "output_key": "rank",
-          "output_value_before": null,
-          "output_value_after": null,
-          "skipped": true
-        },
-        {
-          "action_index": 11,
-          "rule_id": "CR-006",
-          "rule_description": "Reception and lounge projects require business design sign-off before award",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "category_l1",
-            "\"Facilities\"",
-            "=",
-            "requires_design_signoff",
-            "WHEN category_l2 = \"Reception and Lounge Furniture\""
-          ],
-          "when_condition": "WHEN category_l2 = \"Reception and Lounge Furniture\"",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "category_l1": "IT",
-            "immediate": "Facilities"
-          },
-          "output_key": "requires_design_signoff",
-          "output_value_before": null,
-          "output_value_after": false,
-          "skipped": false
-        },
-        {
-          "action_index": 12,
-          "rule_id": "CR-007",
-          "rule_description": "Enforces CV review requirement for consulting requests exceeding 60 days in Professional Services > Software Development Services",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "quantity",
-            "60",
-            ">",
-            "requires_cv_review",
-            "WHEN category_l1 = \"Professional Services\" AND category_l2 = \"Software Development Services\""
-          ],
-          "when_condition": "WHEN category_l1 = \"Professional Services\" AND category_l2 = \"Software Development Services\"",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "quantity": 80,
-            "immediate": 60
-          },
-          "output_key": "requires_cv_review",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 13,
-          "rule_id": "CR-008",
-          "rule_description": "Cybersecurity advisory suppliers must demonstrate relevant certifications or equivalent references",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "category_l1",
-            "\"Professional Services\"",
-            "=",
-            "requires_certification_check",
-            "WHEN category_l2 = \"Cybersecurity Advisory\""
-          ],
-          "when_condition": "WHEN category_l2 = \"Cybersecurity Advisory\"",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "category_l1": "IT",
-            "immediate": "Professional Services"
-          },
-          "output_key": "requires_certification_check",
-          "output_value_before": null,
-          "output_value_after": false,
-          "skipped": false
-        },
-        {
-          "action_index": 14,
-          "rule_id": "CR-010",
-          "rule_description": "Enforces brand-safety review for influencer campaigns in Marketing category",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "category_l1",
-            "\"Marketing\"",
-            "=",
-            "requires_brand_safety_review",
-            "WHEN category_l2 = \"Influencer Campaign Management\""
-          ],
-          "when_condition": "WHEN category_l2 = \"Influencer Campaign Management\"",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "category_l1": "IT",
-            "immediate": "Marketing"
-          },
-          "output_key": "requires_brand_safety_review",
-          "output_value_before": null,
-          "output_value_after": false,
-          "skipped": false
-        },
-        {
-          "action_index": 15,
           "rule_id": "AT-001",
-          "rule_description": "Sets the minimum number of supplier quotes to 1 for requests with a budget between 0 and 24,999.99 EUR.",
+          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -582,23 +250,23 @@
             "1",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR"
+            "WHEN budget >= 0 AND budget <= 24999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 0 AND budget <= 24999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 1
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": false,
-          "output_value_after": 1,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 16,
+          "action_index": 1,
           "rule_id": "AT-002",
-          "rule_description": "Set minimum supplier quotes to 2 for mid-value thresholds in EUR",
+          "rule_description": "Sets minimum supplier quotes to 2 for EUR budgets between 25,000 and 99,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -606,23 +274,23 @@
             "2",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR"
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR",
-          "when_evaluated": false,
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
           "when_passed": true,
           "input_values": {
             "immediate": 2
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 1,
+          "output_value_before": null,
           "output_value_after": 2,
           "skipped": false
         },
         {
-          "action_index": 17,
+          "action_index": 2,
           "rule_id": "AT-002",
-          "rule_description": "Escalate to Procurement Manager for mid-value thresholds in EUR",
+          "rule_description": "Requires Procurement Manager approval for EUR budgets between 25,000 and 99,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -630,23 +298,23 @@
             "True",
             "=",
             "escalate_to_procurement_manager",
-            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR"
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR",
-          "when_evaluated": false,
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
           "when_passed": true,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_procurement_manager",
-          "output_value_before": true,
+          "output_value_before": null,
           "output_value_after": true,
           "skipped": false
         },
         {
-          "action_index": 18,
+          "action_index": 3,
           "rule_id": "AT-003",
-          "rule_description": "Set minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR",
+          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 100,000 and 499,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -654,23 +322,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR"
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 2,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 19,
+          "action_index": 4,
           "rule_id": "AT-003",
-          "rule_description": "Escalate to Head of Category for budgets between 100,000 and 499,999.99 EUR",
+          "rule_description": "Requires Head of Category escalation for EUR budgets between 100,000 and 499,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -678,23 +346,23 @@
             "True",
             "=",
             "escalate_to_head_of_category",
-            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR"
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_category",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 20,
+          "action_index": 5,
           "rule_id": "AT-004",
-          "rule_description": "Set minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR",
+          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -702,23 +370,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR"
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 21,
+          "action_index": 6,
           "rule_id": "AT-004",
-          "rule_description": "Escalate to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR",
+          "rule_description": "Requires escalation to Head of Strategic Sourcing for EUR budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -726,23 +394,23 @@
             "True",
             "=",
             "escalate_to_head_of_strategic_sourcing",
-            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR"
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_strategic_sourcing",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 22,
+          "action_index": 7,
           "rule_id": "AT-005",
-          "rule_description": "Set minimum supplier quotes to 3 for budgets >= 5,000,000 EUR and escalate to CPO for approval.",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -750,23 +418,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR"
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 23,
+          "action_index": 8,
           "rule_id": "AT-005",
-          "rule_description": "Escalate to CPO for budgets >= 5,000,000 EUR.",
+          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -774,21 +442,21 @@
             "True",
             "=",
             "escalate_to_cpo",
-            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR"
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 24,
+          "action_index": 9,
           "rule_id": "AT-006",
           "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.",
           "action_type": "ALI",
@@ -798,23 +466,23 @@
             "1",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF"
+            "WHEN budget >= 0 AND budget <= 24999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 0 AND budget <= 24999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 1
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 1,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 25,
+          "action_index": 10,
           "rule_id": "AT-007",
-          "rule_description": "Set minimum supplier quotes to 2 for mid-value thresholds in CHF currency",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -822,23 +490,23 @@
             "2",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF"
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 2
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 1,
-          "output_value_after": 2,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 26,
+          "action_index": 11,
           "rule_id": "AT-007",
-          "rule_description": "Escalate to Procurement Manager for mid-value thresholds in CHF currency",
+          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -846,23 +514,23 @@
             "True",
             "=",
             "escalate_to_procurement_manager",
-            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF"
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_procurement_manager",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 27,
+          "action_index": 12,
           "rule_id": "AT-008",
-          "rule_description": "Set minimum supplier quotes and escalation to Head of Category for mid-value thresholds in CHF currency",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -870,23 +538,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF"
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 2,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 28,
-          "rule_id": "UNKNOWN",
-          "rule_description": "",
+          "action_index": 13,
+          "rule_id": "AT-008",
+          "rule_description": "Requires Head of Category escalation for budgets between 100,000 and 499,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -894,23 +562,23 @@
             "True",
             "=",
             "escalate_to_head_of_category",
-            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF"
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_category",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 29,
+          "action_index": 14,
           "rule_id": "AT-009",
-          "rule_description": "Set minimum supplier quotes and escalation to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -918,23 +586,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF"
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 30,
+          "action_index": 15,
           "rule_id": "AT-009",
-          "rule_description": "Escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.",
+          "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -942,23 +610,23 @@
             "True",
             "=",
             "escalate_to_head_of_strategic_sourcing",
-            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF"
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_strategic_sourcing",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 31,
+          "action_index": 16,
           "rule_id": "AT-010",
-          "rule_description": "Set minimum supplier quotes and escalate to CPO for high-value contracts in CHF currency",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -966,23 +634,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF"
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 32,
+          "action_index": 17,
           "rule_id": "AT-010",
-          "rule_description": "Escalate to CPO for contracts exceeding CHF 5,000,000",
+          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -990,23 +658,23 @@
             "True",
             "=",
             "escalate_to_cpo",
-            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF"
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_cpo",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 33,
+          "action_index": 18,
           "rule_id": "AT-011",
-          "rule_description": "Sets single quote requirement for USD budgets up to 27,000",
+          "rule_description": "Sets minimum supplier quotes to 1 for USD budgets between 0 and 27,000",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1014,23 +682,47 @@
             "1",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 0 AND budget <= 27000 AND currency = USD"
+            "WHEN budget >= 0 AND budget <= 27000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget >= 0 AND budget <= 27000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 0 AND budget <= 27000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 1
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 1,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 34,
+          "action_index": 19,
+          "rule_id": "AT-011",
+          "rule_description": "Requires business sign-off for USD budgets between 0 and 27,000",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_requester",
+            "WHEN budget >= 0 AND budget <= 27000 AND currency = \"USD\""
+          ],
+          "when_condition": "WHEN budget >= 0 AND budget <= 27000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_requester",
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
+        },
+        {
+          "action_index": 20,
           "rule_id": "AT-012",
-          "rule_description": "Set minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 27,000 and 108,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1038,23 +730,23 @@
             "2",
             "=",
             "min_supplier_quotes",
-            "WHEN budget > 27000 AND budget <= 108000 AND currency = USD"
+            "WHEN budget >= 27000 AND budget <= 108000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 27000 AND budget <= 108000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 27000 AND budget <= 108000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 2
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 1,
-          "output_value_after": 2,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 35,
+          "action_index": 21,
           "rule_id": "AT-012",
-          "rule_description": "Escalate to Procurement Manager for USD budgets between 27,000 and 108,000",
+          "rule_description": "Requires Procurement Manager escalation for budgets between 27,000 and 108,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1062,23 +754,23 @@
             "True",
             "=",
             "escalate_to_procurement_manager",
-            "WHEN budget > 27000 AND budget <= 108000 AND currency = USD"
+            "WHEN budget >= 27000 AND budget <= 108000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 27000 AND budget <= 108000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 27000 AND budget <= 108000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_procurement_manager",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 36,
+          "action_index": 22,
           "rule_id": "AT-013",
-          "rule_description": "Sets minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 108,000 and 540,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1086,23 +778,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget > 108000 AND budget <= 540000 AND currency = USD"
+            "WHEN budget >= 108000 AND budget <= 540000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 108000 AND budget <= 540000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 108000 AND budget <= 540000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 2,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 37,
-          "rule_id": "UNKNOWN",
-          "rule_description": "",
+          "action_index": 23,
+          "rule_id": "AT-013",
+          "rule_description": "Requires Head of Category approval for budgets between 108,000 and 540,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1110,23 +802,23 @@
             "True",
             "=",
             "escalate_to_head_of_category",
-            "WHEN budget > 108000 AND budget <= 540000 AND currency = USD"
+            "WHEN budget >= 108000 AND budget <= 540000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 108000 AND budget <= 540000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 108000 AND budget <= 540000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_category",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 38,
+          "action_index": 24,
           "rule_id": "AT-014",
-          "rule_description": "Set minimum supplier quotes and escalate to Head of Strategic Sourcing for budgets between 540,000 and 5,400,000 USD",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 540,000 and 5,400,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1134,23 +826,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD"
+            "WHEN budget >= 540000 AND budget <= 5400000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 540000 AND budget <= 5400000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 39,
-          "rule_id": "UNKNOWN",
-          "rule_description": "",
+          "action_index": 25,
+          "rule_id": "AT-014",
+          "rule_description": "Requires Head of Strategic Sourcing approval for budgets between 540,000 and 5,400,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1158,23 +850,23 @@
             "True",
             "=",
             "escalate_to_head_of_strategic_sourcing",
-            "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD"
+            "WHEN budget >= 540000 AND budget <= 5400000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 540000 AND budget <= 5400000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_strategic_sourcing",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 40,
+          "action_index": 26,
           "rule_id": "AT-015",
-          "rule_description": "Set minimum supplier quotes and CPO escalation for budgets exceeding $5,400,000 in USD",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets >= 5,400,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1182,23 +874,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget > 5400000 AND currency = USD"
+            "WHEN budget >= 5400000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 5400000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5400000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 41,
-          "rule_id": "UNKNOWN",
-          "rule_description": "",
+          "action_index": 27,
+          "rule_id": "AT-015",
+          "rule_description": "Requires CPO approval for budgets >= 5,400,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1206,23 +898,23 @@
             "True",
             "=",
             "escalate_to_cpo",
-            "WHEN budget > 5400000 AND currency = USD"
+            "WHEN budget >= 5400000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 5400000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5400000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_cpo",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 42,
+          "action_index": 28,
           "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _rep_esg as 0.2 * esg_score",
+          "rule_description": "Compute intermediate 0.2 * esg_score for reputation_score calculation.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1244,57 +936,9 @@
           "skipped": false
         },
         {
-          "action_index": 43,
+          "action_index": 29,
           "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _rep_risk_base as 100 - risk_score",
-          "action_type": "OSLM",
-          "action_tuple": [
-            "OSLM",
-            "risk_score",
-            "100",
-            "-",
-            "_rep_risk_base"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "risk_score": 23,
-            "100": null
-          },
-          "output_key": "_rep_risk_base",
-          "output_value_before": null,
-          "output_value_after": -77,
-          "skipped": false
-        },
-        {
-          "action_index": 44,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _rep_risk as 0.3 * (100 - risk_score)",
-          "action_type": "OSLM",
-          "action_tuple": [
-            "OSLM",
-            "_rep_risk_base",
-            "0.3",
-            "*",
-            "_rep_risk"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "_rep_risk_base": -77,
-            "0.3": null
-          },
-          "output_key": "_rep_risk",
-          "output_value_before": null,
-          "output_value_after": -23.099999999999998,
-          "skipped": false
-        },
-        {
-          "action_index": 45,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _rep_quality as 0.5 * quality_score",
+          "rule_description": "Compute intermediate 0.5 * quality_score for reputation_score calculation.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1316,9 +960,57 @@
           "skipped": false
         },
         {
-          "action_index": 46,
+          "action_index": 30,
           "rule_id": "RANKING",
-          "rule_description": "Compute reputation_score as the sum of _rep_quality, _rep_risk, and _rep_esg",
+          "rule_description": "Compute intermediate -0.3 * risk_score for reputation_score calculation.",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "risk_score",
+            "-0.3",
+            "*",
+            "_rep_risk_neg"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "risk_score": 23,
+            "-0.3": null
+          },
+          "output_key": "_rep_risk_neg",
+          "output_value_before": null,
+          "output_value_after": -6.8999999999999995,
+          "skipped": false
+        },
+        {
+          "action_index": 31,
+          "rule_id": "RANKING",
+          "rule_description": "Compute intermediate 0.3 * (100 - risk_score) for reputation_score calculation.",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "_rep_risk_neg",
+            "30",
+            "+",
+            "_rep_risk"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "_rep_risk_neg": -6.8999999999999995,
+            "30": null
+          },
+          "output_key": "_rep_risk",
+          "output_value_before": null,
+          "output_value_after": 23.1,
+          "skipped": false
+        },
+        {
+          "action_index": 32,
+          "rule_id": "RANKING",
+          "rule_description": "Sum quality and risk components for reputation_score calculation.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1332,17 +1024,17 @@
           "when_passed": true,
           "input_values": {
             "_rep_quality": 45.0,
-            "_rep_risk": -23.099999999999998
+            "_rep_risk": 23.1
           },
           "output_key": "_rep_quality_risk",
           "output_value_before": null,
-          "output_value_after": 21.900000000000002,
+          "output_value_after": 68.1,
           "skipped": false
         },
         {
-          "action_index": 47,
+          "action_index": 33,
           "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _crs_denom as cost_total + 1",
+          "rule_description": "Add ESG component to compute final reputation_score.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1355,18 +1047,18 @@
           "when_evaluated": false,
           "when_passed": true,
           "input_values": {
-            "_rep_quality_risk": 21.900000000000002,
+            "_rep_quality_risk": 68.1,
             "_rep_esg": 15.200000000000001
           },
           "output_key": "reputation_score",
           "output_value_before": null,
-          "output_value_after": 37.1,
+          "output_value_after": 83.3,
           "skipped": false
         },
         {
-          "action_index": 48,
+          "action_index": 34,
           "rule_id": "RANKING",
-          "rule_description": "Compute cost_total as quantity * unit_price",
+          "rule_description": "Compute total cost (cost_total) as quantity * unit_price.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1388,9 +1080,9 @@
           "skipped": false
         },
         {
-          "action_index": 49,
+          "action_index": 35,
           "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _crs_raw as 10000000 / (cost_total + 1)",
+          "rule_description": "Compute raw cost rank score (_crs_raw) as 10000000 / (cost_total + 1).",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1412,9 +1104,9 @@
           "skipped": false
         },
         {
-          "action_index": 50,
+          "action_index": 36,
           "rule_id": "RANKING",
-          "rule_description": "Compute cost_rank_score as min(_crs_raw, 100)",
+          "rule_description": "Cap cost_rank_score at 100 (or use raw value directly if capping unavailable).",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1436,9 +1128,9 @@
           "skipped": false
         },
         {
-          "action_index": 51,
+          "action_index": 37,
           "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _rank_cost_component as cost_rank_score * 100",
+          "rule_description": "Compute cost component of rank as cost_rank_score * 100.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1460,9 +1152,9 @@
           "skipped": false
         },
         {
-          "action_index": 52,
+          "action_index": 38,
           "rule_id": "RANKING",
-          "rule_description": "Compute rank as cost_rank_score * 100 + reputation_score",
+          "rule_description": "Combine cost component and reputation_score to compute final rank.",
           "action_type": "SRM",
           "action_tuple": [
             "SRM",
@@ -1484,7 +1176,7 @@
           "skipped": false
         },
         {
-          "action_index": 53,
+          "action_index": 39,
           "rule_id": "UNKNOWN",
           "rule_description": "",
           "action_type": "SRM",
@@ -1500,11 +1192,11 @@
           "when_passed": true,
           "input_values": {
             "_rank_cost_component": 0,
-            "reputation_score": 37.1
+            "reputation_score": 83.3
           },
           "output_key": "rank",
           "output_value_before": null,
-          "output_value_after": 37.1,
+          "output_value_after": 83.3,
           "skipped": false
         }
       ],
@@ -1533,40 +1225,35 @@
         "capacity_per_month": 9000,
         "notes": "",
         "serves_delivery_country": true,
+        "compliance_score": 1.0,
+        "excluded": false,
         "unit_price": 1001.0,
         "standard_lead_time_days": 27,
         "expedited_lead_time_days": 23,
         "expedited_unit_price": 1081.08,
-        "escalate_to_requester": true,
+        "min_supplier_quotes": 2,
         "escalate_to_procurement_manager": true,
-        "escalate_to_head_of_strategic_sourcing": true,
-        "escalate_to_head_of_category": true,
-        "escalate_to_security_compliance": true,
-        "escalate_to_sourcing_excellence": true,
-        "escalate_to_marketing_governance": true,
-        "escalate_to_regional_compliance": true,
-        "min_supplier_quotes": 3,
-        "requires_engineering_review": true,
-        "requires_design_signoff": false,
-        "requires_cv_review": true,
-        "requires_certification_check": false,
-        "requires_brand_safety_review": false,
-        "escalate_to_cpo": true,
         "_rep_esg": 15.200000000000001,
-        "_rep_risk_base": -77,
-        "_rep_risk": -23.099999999999998,
         "_rep_quality": 45.0,
-        "_rep_quality_risk": 21.900000000000002,
-        "reputation_score": 37.1,
+        "_rep_risk_neg": -6.8999999999999995,
+        "_rep_risk": 23.1,
+        "_rep_quality_risk": 68.1,
+        "reputation_score": 83.3,
         "cost_total": 80080.0,
         "_crs_denom": 80081.0,
         "_crs_raw": 124.87356551491615,
         "cost_rank_score": false,
         "_rank_cost_component": 0,
-        "rank": 37.1
+        "rank": 83.3,
+        "text_compliance_score": 1.0,
+        "normalized_rank": 0.045825,
+        "blended_avg_unit_price": 941.85,
+        "budget_penalty": 0.0
       },
       "final_cost_rank_score": false,
-      "final_reputation_score": 37.1,
+      "final_reputation_score": 83.3,
+      "final_compliance_score": 1.0,
+      "final_normalized_rank": 0.045825,
       "excluded": false,
       "exclusion_reason": null
     },
@@ -1579,6 +1266,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Smartphones')"
     },
@@ -1591,6 +1280,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Smartphones')"
     },
@@ -1609,370 +1300,8 @@
       "action_logs": [
         {
           "action_index": 0,
-          "rule_id": "ER-001",
-          "rule_description": "Escalates to requester clarification when required information is missing",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_requester"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_requester",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 1,
-          "rule_id": "ER-002",
-          "rule_description": "Escalates to Procurement Manager when preferred supplier is restricted",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_procurement_manager"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_procurement_manager",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 2,
-          "rule_id": "ER-003",
-          "rule_description": "Escalates to Head of Strategic Sourcing when the value exceeds the threshold.",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_head_of_strategic_sourcing",
-            "WHEN budget > threshold_value"
-          ],
-          "when_condition": "WHEN budget > threshold_value",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_head_of_strategic_sourcing",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 3,
-          "rule_id": "ER-004",
-          "rule_description": "Escalates to Head of Category when no compliant supplier is found.",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_head_of_category"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_head_of_category",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 4,
-          "rule_id": "ER-005",
-          "rule_description": "Escalates to Security and Compliance Review when there is a data residency constraint conflict.",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_security_compliance",
-            "WHEN data_residency_constraint = True AND data_residency_supported = False"
-          ],
-          "when_condition": "WHEN data_residency_constraint = True AND data_residency_supported = False",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_security_compliance",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 5,
-          "rule_id": "ER-006",
-          "rule_description": "Escalates to Sourcing Excellence Lead due to single-supplier capacity risk.",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_sourcing_excellence"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_sourcing_excellence",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 6,
-          "rule_id": "ER-007",
-          "rule_description": "Escalates to Marketing Governance Lead for brand safety concerns",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_marketing_governance"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_marketing_governance",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 7,
-          "rule_id": "ER-008",
-          "rule_description": "Escalates to Regional Compliance Lead if the supplier is not registered or sanctioned-screened in the delivery country and the currency is USD",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "_",
-            "True",
-            "=",
-            "escalate_to_regional_compliance",
-            "WHEN currency = USD"
-          ],
-          "when_condition": "WHEN currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "immediate": true
-          },
-          "output_key": "escalate_to_regional_compliance",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 8,
-          "rule_id": "CR-001",
-          "rule_description": "Ensure at least three compliant supplier options are compared for IT/Laptops category when budget exceeds EUR/CHF 100000",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "budget",
-            "100000",
-            ">=",
-            "min_supplier_quotes",
-            "WHEN currency = EUR OR currency = CHF"
-          ],
-          "when_condition": "WHEN currency = EUR OR currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "budget": 71200,
-            "immediate": 100000
-          },
-          "output_key": "min_supplier_quotes",
-          "output_value_before": null,
-          "output_value_after": false,
-          "skipped": false
-        },
-        {
-          "action_index": 9,
-          "rule_id": "CR-002",
-          "rule_description": "Enforces compatibility review with engineering or CAD lead for mobile workstation requests above 50 units",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "quantity",
-            "50",
-            ">",
-            "requires_engineering_review",
-            "WHEN category_l1 = IT AND category_l2 = Mobile Workstations"
-          ],
-          "when_condition": "WHEN category_l1 = IT AND category_l2 = Mobile Workstations",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "quantity": 80,
-            "immediate": 50
-          },
-          "output_key": "requires_engineering_review",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 10,
-          "rule_id": "CR-004",
-          "rule_description": "Ensures that only suppliers supporting data residency requirements are considered for requests with data residency constraints in the IT > Cloud Compute category",
-          "action_type": "OSLM",
-          "action_tuple": [
-            "OSLM",
-            "data_residency_constraint",
-            "data_residency_supported",
-            "AND",
-            "rank",
-            "WHEN category_l1 = IT AND category_l2 = Cloud Compute"
-          ],
-          "when_condition": "WHEN category_l1 = IT AND category_l2 = Cloud Compute",
-          "when_evaluated": true,
-          "when_passed": false,
-          "input_values": {
-            "data_residency_constraint": false,
-            "data_residency_supported": false
-          },
-          "output_key": "rank",
-          "output_value_before": null,
-          "output_value_after": null,
-          "skipped": true
-        },
-        {
-          "action_index": 11,
-          "rule_id": "CR-006",
-          "rule_description": "Reception and lounge projects require business design sign-off before award",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "category_l1",
-            "\"Facilities\"",
-            "=",
-            "requires_design_signoff",
-            "WHEN category_l2 = \"Reception and Lounge Furniture\""
-          ],
-          "when_condition": "WHEN category_l2 = \"Reception and Lounge Furniture\"",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "category_l1": "IT",
-            "immediate": "Facilities"
-          },
-          "output_key": "requires_design_signoff",
-          "output_value_before": null,
-          "output_value_after": false,
-          "skipped": false
-        },
-        {
-          "action_index": 12,
-          "rule_id": "CR-007",
-          "rule_description": "Enforces CV review requirement for consulting requests exceeding 60 days in Professional Services > Software Development Services",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "quantity",
-            "60",
-            ">",
-            "requires_cv_review",
-            "WHEN category_l1 = \"Professional Services\" AND category_l2 = \"Software Development Services\""
-          ],
-          "when_condition": "WHEN category_l1 = \"Professional Services\" AND category_l2 = \"Software Development Services\"",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "quantity": 80,
-            "immediate": 60
-          },
-          "output_key": "requires_cv_review",
-          "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
-        },
-        {
-          "action_index": 13,
-          "rule_id": "CR-008",
-          "rule_description": "Cybersecurity advisory suppliers must demonstrate relevant certifications or equivalent references",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "category_l1",
-            "\"Professional Services\"",
-            "=",
-            "requires_certification_check",
-            "WHEN category_l2 = \"Cybersecurity Advisory\""
-          ],
-          "when_condition": "WHEN category_l2 = \"Cybersecurity Advisory\"",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "category_l1": "IT",
-            "immediate": "Professional Services"
-          },
-          "output_key": "requires_certification_check",
-          "output_value_before": null,
-          "output_value_after": false,
-          "skipped": false
-        },
-        {
-          "action_index": 14,
-          "rule_id": "CR-010",
-          "rule_description": "Enforces brand-safety review for influencer campaigns in Marketing category",
-          "action_type": "ALI",
-          "action_tuple": [
-            "ALI",
-            "category_l1",
-            "\"Marketing\"",
-            "=",
-            "requires_brand_safety_review",
-            "WHEN category_l2 = \"Influencer Campaign Management\""
-          ],
-          "when_condition": "WHEN category_l2 = \"Influencer Campaign Management\"",
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "category_l1": "IT",
-            "immediate": "Marketing"
-          },
-          "output_key": "requires_brand_safety_review",
-          "output_value_before": null,
-          "output_value_after": false,
-          "skipped": false
-        },
-        {
-          "action_index": 15,
           "rule_id": "AT-001",
-          "rule_description": "Sets the minimum number of supplier quotes to 1 for requests with a budget between 0 and 24,999.99 EUR.",
+          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1980,23 +1309,23 @@
             "1",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR"
+            "WHEN budget >= 0 AND budget <= 24999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 0 AND budget <= 24999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 1
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": false,
-          "output_value_after": 1,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 16,
+          "action_index": 1,
           "rule_id": "AT-002",
-          "rule_description": "Set minimum supplier quotes to 2 for mid-value thresholds in EUR",
+          "rule_description": "Sets minimum supplier quotes to 2 for EUR budgets between 25,000 and 99,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2004,23 +1333,23 @@
             "2",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR"
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR",
-          "when_evaluated": false,
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
           "when_passed": true,
           "input_values": {
             "immediate": 2
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 1,
+          "output_value_before": null,
           "output_value_after": 2,
           "skipped": false
         },
         {
-          "action_index": 17,
+          "action_index": 2,
           "rule_id": "AT-002",
-          "rule_description": "Escalate to Procurement Manager for mid-value thresholds in EUR",
+          "rule_description": "Requires Procurement Manager approval for EUR budgets between 25,000 and 99,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2028,23 +1357,23 @@
             "True",
             "=",
             "escalate_to_procurement_manager",
-            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR"
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR",
-          "when_evaluated": false,
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
           "when_passed": true,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_procurement_manager",
-          "output_value_before": true,
+          "output_value_before": null,
           "output_value_after": true,
           "skipped": false
         },
         {
-          "action_index": 18,
+          "action_index": 3,
           "rule_id": "AT-003",
-          "rule_description": "Set minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR",
+          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 100,000 and 499,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2052,23 +1381,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR"
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 2,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 19,
+          "action_index": 4,
           "rule_id": "AT-003",
-          "rule_description": "Escalate to Head of Category for budgets between 100,000 and 499,999.99 EUR",
+          "rule_description": "Requires Head of Category escalation for EUR budgets between 100,000 and 499,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2076,23 +1405,23 @@
             "True",
             "=",
             "escalate_to_head_of_category",
-            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR"
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_category",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 20,
+          "action_index": 5,
           "rule_id": "AT-004",
-          "rule_description": "Set minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR",
+          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2100,23 +1429,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR"
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 21,
+          "action_index": 6,
           "rule_id": "AT-004",
-          "rule_description": "Escalate to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR",
+          "rule_description": "Requires escalation to Head of Strategic Sourcing for EUR budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2124,23 +1453,23 @@
             "True",
             "=",
             "escalate_to_head_of_strategic_sourcing",
-            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR"
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_strategic_sourcing",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 22,
+          "action_index": 7,
           "rule_id": "AT-005",
-          "rule_description": "Set minimum supplier quotes to 3 for budgets >= 5,000,000 EUR and escalate to CPO for approval.",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2148,23 +1477,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR"
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 23,
+          "action_index": 8,
           "rule_id": "AT-005",
-          "rule_description": "Escalate to CPO for budgets >= 5,000,000 EUR.",
+          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2172,21 +1501,21 @@
             "True",
             "=",
             "escalate_to_cpo",
-            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR"
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"EUR\""
           ],
-          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"EUR\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 24,
+          "action_index": 9,
           "rule_id": "AT-006",
           "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.",
           "action_type": "ALI",
@@ -2196,23 +1525,23 @@
             "1",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF"
+            "WHEN budget >= 0 AND budget <= 24999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 0 AND budget <= 24999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 1
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 1,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 25,
+          "action_index": 10,
           "rule_id": "AT-007",
-          "rule_description": "Set minimum supplier quotes to 2 for mid-value thresholds in CHF currency",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2220,23 +1549,23 @@
             "2",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF"
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 2
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 1,
-          "output_value_after": 2,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 26,
+          "action_index": 11,
           "rule_id": "AT-007",
-          "rule_description": "Escalate to Procurement Manager for mid-value thresholds in CHF currency",
+          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2244,23 +1573,23 @@
             "True",
             "=",
             "escalate_to_procurement_manager",
-            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF"
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_procurement_manager",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 27,
+          "action_index": 12,
           "rule_id": "AT-008",
-          "rule_description": "Set minimum supplier quotes and escalation to Head of Category for mid-value thresholds in CHF currency",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2268,23 +1597,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF"
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 2,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 28,
-          "rule_id": "UNKNOWN",
-          "rule_description": "",
+          "action_index": 13,
+          "rule_id": "AT-008",
+          "rule_description": "Requires Head of Category escalation for budgets between 100,000 and 499,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2292,23 +1621,23 @@
             "True",
             "=",
             "escalate_to_head_of_category",
-            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF"
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_category",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 29,
+          "action_index": 14,
           "rule_id": "AT-009",
-          "rule_description": "Set minimum supplier quotes and escalation to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2316,23 +1645,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF"
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 30,
+          "action_index": 15,
           "rule_id": "AT-009",
-          "rule_description": "Escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.",
+          "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2340,23 +1669,23 @@
             "True",
             "=",
             "escalate_to_head_of_strategic_sourcing",
-            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF"
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_strategic_sourcing",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 31,
+          "action_index": 16,
           "rule_id": "AT-010",
-          "rule_description": "Set minimum supplier quotes and escalate to CPO for high-value contracts in CHF currency",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2364,23 +1693,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF"
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 32,
+          "action_index": 17,
           "rule_id": "AT-010",
-          "rule_description": "Escalate to CPO for contracts exceeding CHF 5,000,000",
+          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2388,23 +1717,23 @@
             "True",
             "=",
             "escalate_to_cpo",
-            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF"
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"CHF\""
           ],
-          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = \"CHF\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_cpo",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 33,
+          "action_index": 18,
           "rule_id": "AT-011",
-          "rule_description": "Sets single quote requirement for USD budgets up to 27,000",
+          "rule_description": "Sets minimum supplier quotes to 1 for USD budgets between 0 and 27,000",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2412,23 +1741,47 @@
             "1",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 0 AND budget <= 27000 AND currency = USD"
+            "WHEN budget >= 0 AND budget <= 27000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget >= 0 AND budget <= 27000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 0 AND budget <= 27000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 1
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 1,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 34,
+          "action_index": 19,
+          "rule_id": "AT-011",
+          "rule_description": "Requires business sign-off for USD budgets between 0 and 27,000",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_requester",
+            "WHEN budget >= 0 AND budget <= 27000 AND currency = \"USD\""
+          ],
+          "when_condition": "WHEN budget >= 0 AND budget <= 27000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_requester",
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
+        },
+        {
+          "action_index": 20,
           "rule_id": "AT-012",
-          "rule_description": "Set minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 27,000 and 108,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2436,23 +1789,23 @@
             "2",
             "=",
             "min_supplier_quotes",
-            "WHEN budget > 27000 AND budget <= 108000 AND currency = USD"
+            "WHEN budget >= 27000 AND budget <= 108000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 27000 AND budget <= 108000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 27000 AND budget <= 108000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 2
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 1,
-          "output_value_after": 2,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 35,
+          "action_index": 21,
           "rule_id": "AT-012",
-          "rule_description": "Escalate to Procurement Manager for USD budgets between 27,000 and 108,000",
+          "rule_description": "Requires Procurement Manager escalation for budgets between 27,000 and 108,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2460,23 +1813,23 @@
             "True",
             "=",
             "escalate_to_procurement_manager",
-            "WHEN budget > 27000 AND budget <= 108000 AND currency = USD"
+            "WHEN budget >= 27000 AND budget <= 108000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 27000 AND budget <= 108000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 27000 AND budget <= 108000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_procurement_manager",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 36,
+          "action_index": 22,
           "rule_id": "AT-013",
-          "rule_description": "Sets minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 108,000 and 540,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2484,23 +1837,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget > 108000 AND budget <= 540000 AND currency = USD"
+            "WHEN budget >= 108000 AND budget <= 540000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 108000 AND budget <= 540000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 108000 AND budget <= 540000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 2,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 37,
-          "rule_id": "UNKNOWN",
-          "rule_description": "",
+          "action_index": 23,
+          "rule_id": "AT-013",
+          "rule_description": "Requires Head of Category approval for budgets between 108,000 and 540,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2508,23 +1861,23 @@
             "True",
             "=",
             "escalate_to_head_of_category",
-            "WHEN budget > 108000 AND budget <= 540000 AND currency = USD"
+            "WHEN budget >= 108000 AND budget <= 540000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 108000 AND budget <= 540000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 108000 AND budget <= 540000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_category",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 38,
+          "action_index": 24,
           "rule_id": "AT-014",
-          "rule_description": "Set minimum supplier quotes and escalate to Head of Strategic Sourcing for budgets between 540,000 and 5,400,000 USD",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 540,000 and 5,400,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2532,23 +1885,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD"
+            "WHEN budget >= 540000 AND budget <= 5400000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 540000 AND budget <= 5400000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 39,
-          "rule_id": "UNKNOWN",
-          "rule_description": "",
+          "action_index": 25,
+          "rule_id": "AT-014",
+          "rule_description": "Requires Head of Strategic Sourcing approval for budgets between 540,000 and 5,400,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2556,23 +1909,23 @@
             "True",
             "=",
             "escalate_to_head_of_strategic_sourcing",
-            "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD"
+            "WHEN budget >= 540000 AND budget <= 5400000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 540000 AND budget <= 5400000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_head_of_strategic_sourcing",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 40,
+          "action_index": 26,
           "rule_id": "AT-015",
-          "rule_description": "Set minimum supplier quotes and CPO escalation for budgets exceeding $5,400,000 in USD",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets >= 5,400,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2580,23 +1933,23 @@
             "3",
             "=",
             "min_supplier_quotes",
-            "WHEN budget > 5400000 AND currency = USD"
+            "WHEN budget >= 5400000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 5400000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5400000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": 3
           },
           "output_key": "min_supplier_quotes",
-          "output_value_before": 3,
-          "output_value_after": 3,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 41,
-          "rule_id": "UNKNOWN",
-          "rule_description": "",
+          "action_index": 27,
+          "rule_id": "AT-015",
+          "rule_description": "Requires CPO approval for budgets >= 5,400,000 USD",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2604,23 +1957,23 @@
             "True",
             "=",
             "escalate_to_cpo",
-            "WHEN budget > 5400000 AND currency = USD"
+            "WHEN budget >= 5400000 AND currency = \"USD\""
           ],
-          "when_condition": "WHEN budget > 5400000 AND currency = USD",
-          "when_evaluated": false,
-          "when_passed": true,
+          "when_condition": "WHEN budget >= 5400000 AND currency = \"USD\"",
+          "when_evaluated": true,
+          "when_passed": false,
           "input_values": {
             "immediate": true
           },
           "output_key": "escalate_to_cpo",
-          "output_value_before": true,
-          "output_value_after": true,
-          "skipped": false
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
         },
         {
-          "action_index": 42,
+          "action_index": 28,
           "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _rep_esg as 0.2 * esg_score",
+          "rule_description": "Compute intermediate 0.2 * esg_score for reputation_score calculation.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2642,57 +1995,9 @@
           "skipped": false
         },
         {
-          "action_index": 43,
+          "action_index": 29,
           "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _rep_risk_base as 100 - risk_score",
-          "action_type": "OSLM",
-          "action_tuple": [
-            "OSLM",
-            "risk_score",
-            "100",
-            "-",
-            "_rep_risk_base"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "risk_score": 30,
-            "100": null
-          },
-          "output_key": "_rep_risk_base",
-          "output_value_before": null,
-          "output_value_after": -70,
-          "skipped": false
-        },
-        {
-          "action_index": 44,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _rep_risk as 0.3 * (100 - risk_score)",
-          "action_type": "OSLM",
-          "action_tuple": [
-            "OSLM",
-            "_rep_risk_base",
-            "0.3",
-            "*",
-            "_rep_risk"
-          ],
-          "when_condition": null,
-          "when_evaluated": false,
-          "when_passed": true,
-          "input_values": {
-            "_rep_risk_base": -70,
-            "0.3": null
-          },
-          "output_key": "_rep_risk",
-          "output_value_before": null,
-          "output_value_after": -21.0,
-          "skipped": false
-        },
-        {
-          "action_index": 45,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _rep_quality as 0.5 * quality_score",
+          "rule_description": "Compute intermediate 0.5 * quality_score for reputation_score calculation.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2714,9 +2019,57 @@
           "skipped": false
         },
         {
-          "action_index": 46,
+          "action_index": 30,
           "rule_id": "RANKING",
-          "rule_description": "Compute reputation_score as the sum of _rep_quality, _rep_risk, and _rep_esg",
+          "rule_description": "Compute intermediate -0.3 * risk_score for reputation_score calculation.",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "risk_score",
+            "-0.3",
+            "*",
+            "_rep_risk_neg"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "risk_score": 30,
+            "-0.3": null
+          },
+          "output_key": "_rep_risk_neg",
+          "output_value_before": null,
+          "output_value_after": -9.0,
+          "skipped": false
+        },
+        {
+          "action_index": 31,
+          "rule_id": "RANKING",
+          "rule_description": "Compute intermediate 0.3 * (100 - risk_score) for reputation_score calculation.",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "_rep_risk_neg",
+            "30",
+            "+",
+            "_rep_risk"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "_rep_risk_neg": -9.0,
+            "30": null
+          },
+          "output_key": "_rep_risk",
+          "output_value_before": null,
+          "output_value_after": 21.0,
+          "skipped": false
+        },
+        {
+          "action_index": 32,
+          "rule_id": "RANKING",
+          "rule_description": "Sum quality and risk components for reputation_score calculation.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2730,17 +2083,17 @@
           "when_passed": true,
           "input_values": {
             "_rep_quality": 40.5,
-            "_rep_risk": -21.0
+            "_rep_risk": 21.0
           },
           "output_key": "_rep_quality_risk",
           "output_value_before": null,
-          "output_value_after": 19.5,
+          "output_value_after": 61.5,
           "skipped": false
         },
         {
-          "action_index": 47,
+          "action_index": 33,
           "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _crs_denom as cost_total + 1",
+          "rule_description": "Add ESG component to compute final reputation_score.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2753,18 +2106,18 @@
           "when_evaluated": false,
           "when_passed": true,
           "input_values": {
-            "_rep_quality_risk": 19.5,
+            "_rep_quality_risk": 61.5,
             "_rep_esg": 14.600000000000001
           },
           "output_key": "reputation_score",
           "output_value_before": null,
-          "output_value_after": 34.1,
+          "output_value_after": 76.1,
           "skipped": false
         },
         {
-          "action_index": 48,
+          "action_index": 34,
           "rule_id": "RANKING",
-          "rule_description": "Compute cost_total as quantity * unit_price",
+          "rule_description": "Compute total cost (cost_total) as quantity * unit_price.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2786,9 +2139,9 @@
           "skipped": false
         },
         {
-          "action_index": 49,
+          "action_index": 35,
           "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _crs_raw as 10000000 / (cost_total + 1)",
+          "rule_description": "Compute raw cost rank score (_crs_raw) as 10000000 / (cost_total + 1).",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2810,9 +2163,9 @@
           "skipped": false
         },
         {
-          "action_index": 50,
+          "action_index": 36,
           "rule_id": "RANKING",
-          "rule_description": "Compute cost_rank_score as min(_crs_raw, 100)",
+          "rule_description": "Cap cost_rank_score at 100 (or use raw value directly if capping unavailable).",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2834,9 +2187,9 @@
           "skipped": false
         },
         {
-          "action_index": 51,
+          "action_index": 37,
           "rule_id": "RANKING",
-          "rule_description": "Compute intermediate _rank_cost_component as cost_rank_score * 100",
+          "rule_description": "Compute cost component of rank as cost_rank_score * 100.",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2858,9 +2211,9 @@
           "skipped": false
         },
         {
-          "action_index": 52,
+          "action_index": 38,
           "rule_id": "RANKING",
-          "rule_description": "Compute rank as cost_rank_score * 100 + reputation_score",
+          "rule_description": "Combine cost component and reputation_score to compute final rank.",
           "action_type": "SRM",
           "action_tuple": [
             "SRM",
@@ -2882,7 +2235,7 @@
           "skipped": false
         },
         {
-          "action_index": 53,
+          "action_index": 39,
           "rule_id": "UNKNOWN",
           "rule_description": "",
           "action_type": "SRM",
@@ -2898,11 +2251,11 @@
           "when_passed": true,
           "input_values": {
             "_rank_cost_component": 0,
-            "reputation_score": 34.1
+            "reputation_score": 76.1
           },
           "output_key": "rank",
           "output_value_before": null,
-          "output_value_after": 34.1,
+          "output_value_after": 76.1,
           "skipped": false
         }
       ],
@@ -2931,40 +2284,35 @@
         "capacity_per_month": 12000,
         "notes": "",
         "serves_delivery_country": true,
+        "compliance_score": 0.8,
+        "excluded": false,
         "unit_price": 882.7,
         "standard_lead_time_days": 28,
         "expedited_lead_time_days": 22,
         "expedited_unit_price": 953.32,
-        "escalate_to_requester": true,
+        "min_supplier_quotes": 2,
         "escalate_to_procurement_manager": true,
-        "escalate_to_head_of_strategic_sourcing": true,
-        "escalate_to_head_of_category": true,
-        "escalate_to_security_compliance": true,
-        "escalate_to_sourcing_excellence": true,
-        "escalate_to_marketing_governance": true,
-        "escalate_to_regional_compliance": true,
-        "min_supplier_quotes": 3,
-        "requires_engineering_review": true,
-        "requires_design_signoff": false,
-        "requires_cv_review": true,
-        "requires_certification_check": false,
-        "requires_brand_safety_review": false,
-        "escalate_to_cpo": true,
         "_rep_esg": 14.600000000000001,
-        "_rep_risk_base": -70,
-        "_rep_risk": -21.0,
         "_rep_quality": 40.5,
-        "_rep_quality_risk": 19.5,
-        "reputation_score": 34.1,
+        "_rep_risk_neg": -9.0,
+        "_rep_risk": 21.0,
+        "_rep_quality_risk": 61.5,
+        "reputation_score": 76.1,
         "cost_total": 70616.0,
         "_crs_denom": 70617.0,
         "_crs_raw": 141.60896101505304,
         "cost_rank_score": false,
         "_rank_cost_component": 0,
-        "rank": 34.1
+        "rank": 76.1,
+        "text_compliance_score": 0.8,
+        "normalized_rank": 0.79522,
+        "blended_avg_unit_price": 941.85,
+        "budget_penalty": 1.0
       },
       "final_cost_rank_score": false,
-      "final_reputation_score": 34.1,
+      "final_reputation_score": 76.1,
+      "final_compliance_score": 1.0,
+      "final_normalized_rank": 0.79522,
       "excluded": false,
       "exclusion_reason": null
     },
@@ -2977,6 +2325,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Smartphones')"
     },
@@ -2989,6 +2339,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Rugged Devices' != 'Smartphones')"
     },
@@ -3001,6 +2353,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Rugged Devices' != 'Smartphones')"
     },
@@ -3013,6 +2367,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Smartphones')"
     },
@@ -3025,6 +2381,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Smartphones')"
     },
@@ -3037,6 +2395,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Smartphones')"
     },
@@ -3049,6 +2409,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Smartphones')"
     },
@@ -3061,6 +2423,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Smartphones')"
     },
@@ -3073,6 +2437,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Smartphones')"
     },
@@ -3085,6 +2451,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Smartphones')"
     },
@@ -3097,6 +2465,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Smartphones')"
     },
@@ -3109,6 +2479,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Desktop Workstations' != 'Smartphones')"
     },
@@ -3121,6 +2493,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Smartphones')"
     },
@@ -3133,6 +2507,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Smartphones')"
     },
@@ -3145,6 +2521,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Smartphones')"
     },
@@ -3157,6 +2535,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Smartphones')"
     },
@@ -3169,6 +2549,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Smartphones')"
     },
@@ -3181,6 +2563,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Smartphones')"
     },
@@ -3193,6 +2577,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Smartphones')"
     },
@@ -3205,6 +2591,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Security Services' != 'Smartphones')"
     },
@@ -3217,6 +2605,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Smartphones')"
     },
@@ -3229,6 +2619,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Smartphones')"
     },
@@ -3241,6 +2633,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Smartphones')"
     },
@@ -3253,6 +2647,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Smartphones')"
     },
@@ -3265,6 +2661,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Security Services' != 'Smartphones')"
     },
@@ -3277,6 +2675,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Smartphones')"
     },
@@ -3289,6 +2689,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Smartphones')"
     },
@@ -3301,6 +2703,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Smartphones')"
     },
@@ -3313,6 +2717,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Smartphones')"
     },
@@ -3325,6 +2731,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Security Services' != 'Smartphones')"
     },
@@ -3337,6 +2745,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Smartphones')"
     },
@@ -3349,6 +2759,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Smartphones')"
     },
@@ -3361,6 +2773,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Smartphones')"
     },
@@ -3373,6 +2787,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Smartphones')"
     },
@@ -3385,6 +2801,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Smartphones')"
     },
@@ -3397,6 +2815,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Smartphones')"
     },
@@ -3409,6 +2829,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Security Services' != 'Smartphones')"
     },
@@ -3421,6 +2843,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3433,6 +2857,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3445,6 +2871,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3457,6 +2885,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3469,6 +2899,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3481,6 +2913,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3493,6 +2927,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3505,6 +2941,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3517,6 +2955,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3529,6 +2969,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3541,6 +2983,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3553,6 +2997,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3565,6 +3011,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3577,6 +3025,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3589,6 +3039,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3601,6 +3053,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3613,6 +3067,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3625,6 +3081,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3637,6 +3095,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -3649,6 +3109,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3661,6 +3123,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3673,6 +3137,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3685,6 +3151,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3697,6 +3165,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3709,6 +3179,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3721,6 +3193,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3733,6 +3207,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3745,6 +3221,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3757,6 +3235,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3769,6 +3249,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3781,6 +3263,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3793,6 +3277,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3805,6 +3291,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3817,6 +3305,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3829,6 +3319,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3841,6 +3333,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3853,6 +3347,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3865,6 +3361,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -3877,6 +3375,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -3889,6 +3389,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -3901,6 +3403,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -3913,6 +3417,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -3925,6 +3431,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -3937,6 +3445,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -3949,6 +3459,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -3961,6 +3473,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -3973,6 +3487,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -3985,6 +3501,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -3997,6 +3515,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4009,6 +3529,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4021,6 +3543,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4033,6 +3557,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4045,6 +3571,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4057,6 +3585,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4069,6 +3599,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4081,6 +3613,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4093,6 +3627,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4105,6 +3641,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Smartphones')"
     },
@@ -4117,6 +3655,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Smartphones')"
     },
@@ -4129,6 +3669,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Smartphones')"
     },
@@ -4141,6 +3683,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Smartphones')"
     },
@@ -4153,6 +3697,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Desktop Workstations' != 'Smartphones')"
     },
@@ -4165,6 +3711,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Smartphones')"
     },
@@ -4177,6 +3725,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Smartphones')"
     },
@@ -4189,6 +3739,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Security Services' != 'Smartphones')"
     },
@@ -4201,6 +3753,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Smartphones')"
     },
@@ -4213,6 +3767,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Smartphones')"
     },
@@ -4225,6 +3781,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Desktop Workstations' != 'Smartphones')"
     },
@@ -4237,6 +3795,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Smartphones')"
     },
@@ -4249,6 +3809,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Smartphones')"
     },
@@ -4261,6 +3823,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Smartphones')"
     },
@@ -4273,6 +3837,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Smartphones')"
     },
@@ -4285,6 +3851,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Smartphones')"
     },
@@ -4297,6 +3865,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Smartphones')"
     },
@@ -4309,6 +3879,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -4321,6 +3893,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -4333,6 +3907,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -4345,6 +3921,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -4357,6 +3935,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -4369,6 +3949,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -4381,6 +3963,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
     },
@@ -4393,6 +3977,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -4405,6 +3991,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -4417,6 +4005,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -4429,6 +4019,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -4441,6 +4033,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -4453,6 +4047,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -4465,6 +4061,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -4477,6 +4075,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
     },
@@ -4489,6 +4089,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4501,6 +4103,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4513,6 +4117,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4525,6 +4131,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4537,6 +4145,8 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     },
@@ -4549,9 +4159,38 @@
       "final_state": {},
       "final_cost_rank_score": null,
       "final_reputation_score": null,
+      "final_compliance_score": null,
+      "final_normalized_rank": null,
       "excluded": true,
       "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
     }
   ],
-  "global_action_logs": []
+  "global_action_logs": [],
+  "escalation_assessment": null,
+  "flag_assessment": {
+    "flags": [
+      {
+        "flag_id": "HIGH_EXCLUSION_RATE",
+        "severity": "warning",
+        "description": "149 of 151 candidate suppliers (99%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.",
+        "details": {
+          "n_total": 151,
+          "n_excluded": 149,
+          "exclusion_fraction": 0.987
+        }
+      },
+      {
+        "flag_id": "DOMINANT_SUPPLIER",
+        "severity": "info",
+        "description": "'Samsung Knox Devices' leads the ranking by 0.749 points (rank 0.795 vs 0.046 for #2). The selection is unambiguous \u2014 verify this is not a data or configuration anomaly before issuing a single quote.",
+        "details": {
+          "top_supplier": "Samsung Knox Devices",
+          "rank_1": 0.79522,
+          "rank_2": 0.045825,
+          "gap": 0.7494
+        }
+      }
+    ],
+    "has_warnings": true
+  }
 }

@@ -1,5 +1,5 @@
 REQUEST: REQ-000276
-Timestamp: 2026-03-19T14:00:27.657561+00:00
+Timestamp: 2026-03-19T14:39:50.724556+00:00
 Context: {'category_l1': 'Professional Services', 'category_l2': 'Data Engineering Services', 'budget': 100200, 'currency': 'USD', 'quantity': 200, 'amount_unit': 'days', 'delivery_country': 'SG', 'days_until_required': 54, 'preferred_supplier_mentioned': 'Infosys Consulting', 'incumbent_supplier': None, 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Professional Services')]
@@ -303,3 +303,15 @@ SUPPLIER: Havas Group Americas (SUP-0047) — Social Media Advertising  [EXCLUDE
 SUPPLIER: Havas Group Americas (SUP-0047) — Content Production Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'Professional Services')]
 
 SUPPLIER: Havas Group Americas (SUP-0047) — Influencer Campaign Management  [EXCLUDED: category_l1 mismatch ('Marketing' != 'Professional Services')]
+
+============================================================
+RESULT FLAGS
+============================================================
+  [⚠  WARNING] [HIGH_EXCLUSION_RATE]
+    151 of 151 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.
+
+  [⚠  WARNING] [SINGLE_QUALIFIED_SUPPLIER]
+    Only 0 supplier(s) qualified after evaluation. Competitive pricing cannot be guaranteed without market alternatives.
+
+  [ℹ  INFO] [PREFERRED_SUPPLIER_EXCLUDED]
+    Preferred supplier restricted due to: 'Infosys Consulting' was explicitly requested but excluded — category_l2 mismatch ('Software Development Services' != 'Data Engineering Services').

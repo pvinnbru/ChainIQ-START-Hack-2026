@@ -1,5 +1,5 @@
 REQUEST: REQ-000110
-Timestamp: 2026-03-19T14:00:26.739073+00:00
+Timestamp: 2026-03-19T14:35:40.636428+00:00
 Context: {'category_l1': 'IT', 'category_l2': 'Replacement / Break-Fix Pool Devices', 'budget': 83200, 'currency': 'CHF', 'quantity': 80, 'amount_unit': 'device', 'delivery_country': 'CH', 'days_until_required': 3, 'preferred_supplier_mentioned': 'Dell Enterprise Europe', 'incumbent_supplier': 'Panasonic Toughbook Europe', 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l2 mismatch ('Laptops' != 'Replacement / Break-Fix Pool Devices')]
@@ -303,3 +303,15 @@ SUPPLIER: Havas Group Americas (SUP-0047) — Social Media Advertising  [EXCLUDE
 SUPPLIER: Havas Group Americas (SUP-0047) — Content Production Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
 
 SUPPLIER: Havas Group Americas (SUP-0047) — Influencer Campaign Management  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+============================================================
+RESULT FLAGS
+============================================================
+  [⚠  WARNING] [HIGH_EXCLUSION_RATE]
+    151 of 151 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.
+
+  [⚠  WARNING] [SINGLE_QUALIFIED_SUPPLIER]
+    Only 0 supplier(s) qualified after evaluation. Competitive pricing cannot be guaranteed without market alternatives.
+
+  [ℹ  INFO] [PREFERRED_SUPPLIER_EXCLUDED]
+    Preferred supplier restricted due to: 'Dell Enterprise Europe' was explicitly requested but excluded — category_l2 mismatch ('Laptops' != 'Replacement / Break-Fix Pool Devices').

@@ -1,5 +1,5 @@
 REQUEST: REQ-000179
-Timestamp: 2026-03-19T14:00:27.158336+00:00
+Timestamp: 2026-03-19T14:37:40.005724+00:00
 Context: {'category_l1': 'Facilities', 'category_l2': 'Meeting Room Furniture', 'budget': 8400, 'currency': 'CHF', 'quantity': 2, 'amount_unit': 'set', 'delivery_country': 'CH', 'days_until_required': 0, 'preferred_supplier_mentioned': None, 'incumbent_supplier': 'IKEA Business', 'data_residency_constraint': False, 'esg_requirement': False}
 
 SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Facilities')]
@@ -303,3 +303,12 @@ SUPPLIER: Havas Group Americas (SUP-0047) — Social Media Advertising  [EXCLUDE
 SUPPLIER: Havas Group Americas (SUP-0047) — Content Production Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'Facilities')]
 
 SUPPLIER: Havas Group Americas (SUP-0047) — Influencer Campaign Management  [EXCLUDED: category_l1 mismatch ('Marketing' != 'Facilities')]
+
+============================================================
+RESULT FLAGS
+============================================================
+  [⚠  WARNING] [HIGH_EXCLUSION_RATE]
+    151 of 151 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.
+
+  [⚠  WARNING] [SINGLE_QUALIFIED_SUPPLIER]
+    Only 0 supplier(s) qualified after evaluation. Competitive pricing cannot be guaranteed without market alternatives.

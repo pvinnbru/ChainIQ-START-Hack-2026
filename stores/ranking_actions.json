@@ -1,6 +1,6 @@
 {
   "data_hash": "4921ef9152a628150dc48adabc12ed9a212b41db347eb0caa8bd0d0ea8a26bbe",
-  "created_at": "2026-03-19T14:00:26.068075+00:00",
+  "created_at": "2026-03-19T14:32:25.770613+00:00",
   "ranking_actions": [
     [
       "OSLM",
@@ -11,24 +11,24 @@
     ],
     [
       "OSLM",
+      "risk_score",
+      "-0.3",
+      "*",
+      "_rep_risk_neg"
+    ],
+    [
+      "OSLM",
+      "_rep_risk_neg",
+      "30",
+      "+",
+      "_rep_risk"
+    ],
+    [
+      "OSLM",
       "quality_score",
       "0.5",
       "*",
       "_rep_quality"
-    ],
-    [
-      "OSLM",
-      "risk_score",
-      "100",
-      "-",
-      "_rep_risk_base"
-    ],
-    [
-      "OSLM",
-      "_rep_risk_base",
-      "0.3",
-      "*",
-      "_rep_risk"
     ],
     [
       "OSLM",
