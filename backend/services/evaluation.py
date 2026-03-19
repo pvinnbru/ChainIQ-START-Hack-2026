@@ -132,13 +132,17 @@ def _get_delivery_country(req) -> str:
 # Escalation flag → DB Escalation mapping
 # ---------------------------------------------------------------------------
 
-ESCALATION_MAP: list[tuple[str, str, str | None]] = [
-    ("escalate_to_requester",               "requester_clarification", None),
-    ("escalate_to_procurement_manager",     "procurement_manager",     "approver"),
-    ("escalate_to_head_of_category",        "category_head",           "category_head"),
-    ("escalate_to_security_compliance",     "compliance",              "compliance_reviewer"),
-    ("escalate_to_regional_compliance",     "compliance",              "compliance_reviewer"),
-]
+ESCALATION_TYPE_MAPPING = {
+    "escalate_to_requester":               "requester_clarification",
+    "escalate_to_procurement_manager":     "procurement_manager",
+    "escalate_to_head_of_category":        "category_head",
+    "escalate_to_head_of_strategic_sourcing": "category_head",
+    "escalate_to_cpo":                     "category_head",
+    "escalate_to_security_compliance":     "compliance",
+    "escalate_to_regional_compliance":     "compliance",
+    "escalate_to_sourcing_excellence":     "procurement_manager",
+    "escalate_to_marketing_governance":    "compliance",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -259,8 +263,19 @@ def enrich_and_evaluate(req, db) -> None:
         # ------------------------------------------------------------------
         global_outputs    = result.get("global_outputs", {})
         ranked_suppliers  = result.get("ranked_suppliers", [])
-        escalation_assess = result.get("escalation_assessment")
+        # IMPORTANT: evaluate_request.py outputs the key as "escalation",
+        # NOT "escalation_assessment".  Try both for safety.
+        escalation_assess = result.get("escalation") or result.get("escalation_assessment")
         flag_assess       = result.get("flag_assessment")
+
+        logger.info(
+            "[ESCALATION DEBUG] result keys: %s", list(result.keys())
+        )
+        logger.info(
+            "[ESCALATION DEBUG] escalation_assess type=%s, value=%s",
+            type(escalation_assess).__name__,
+            json.dumps(escalation_assess, default=str)[:1000] if escalation_assess else "None",
+        )
 
         req.ai_output = json.dumps({
             "global_outputs":        global_outputs,
@@ -272,56 +287,102 @@ def enrich_and_evaluate(req, db) -> None:
         db.flush()
 
         # ------------------------------------------------------------------
-        # Step 6 — Create Escalation DB records from global_outputs flags
+        # Step 6 — Create Escalation DB records from escalation_assessment
         # ------------------------------------------------------------------
         import models
 
         escalations_created: list[tuple] = []  # (Escalation, target_user | None)
         seen_types: set[str] = set()
 
-        for flag_key, esc_type, required_role in ESCALATION_MAP:
-            if not global_outputs.get(flag_key):
-                continue
-            if esc_type in seen_types:
-                continue
-            seen_types.add(esc_type)
+        from routers.escalations import _route_escalation
 
-            # Build escalation message from escalation_assessment triggers
-            message_parts: list[str] = []
-            if escalation_assess and isinstance(escalation_assess.get("triggers"), list):
-                for trig in escalation_assess["triggers"]:
-                    desc = trig.get("description", "")
-                    if desc:
-                        message_parts.append(desc)
-            message = "; ".join(message_parts[:3]) if message_parts else flag_key
+        needs_esc = False
+        esc_records: list = []
 
-            # Find target user by role (if role specified)
-            target_user_id: str | None = None
-            esc_target_user = None
-            if required_role:
-                esc_target_user = (
-                    db.query(models.User)
-                    .filter(models.User.role == required_role)
-                    .first()
-                )
-                if esc_target_user:
-                    target_user_id = esc_target_user.id
-
-            esc = models.Escalation(
-                request_id=req.id,
-                type=esc_type,
-                status="pending",
-                target_user_id=target_user_id,
-                message=message,
+        if escalation_assess:
+            needs_esc = escalation_assess.get("needs_escalation", False)
+            esc_records = escalation_assess.get("records", [])
+            logger.info(
+                "[ESCALATION DEBUG] needs_escalation=%s, num_records=%d",
+                needs_esc, len(esc_records),
             )
-            db.add(esc)
-            escalations_created.append((esc, esc_target_user))
+        else:
+            logger.info("[ESCALATION DEBUG] escalation_assess is None/empty — no escalations from AI")
+
+        if needs_esc and esc_records:
+            for record in esc_records:
+                person = record.get("person_to_escalate_to", "")
+                p_norm = person.lower().strip()
+                # Strip common prefixes
+                for prefix in ("escalate_to_", "escalate to "):
+                    if p_norm.startswith(prefix):
+                        p_norm = p_norm[len(prefix):]
+
+                logger.info(
+                    "[ESCALATION DEBUG] Processing record: person=%r → p_norm=%r",
+                    person, p_norm,
+                )
+
+                if p_norm in ("requester",):
+                    esc_type = "requester_clarification"
+                elif p_norm in ("procurement_manager", "procurement manager",
+                                "buyer", "sourcing_excellence", "sourcing excellence",
+                                "sourcing excellence lead"):
+                    esc_type = "procurement_manager"
+                elif p_norm in ("category_head", "category head",
+                                "cpo", "head_of_strategic_sourcing",
+                                "head of strategic sourcing",
+                                "head_of_category", "head of category"):
+                    esc_type = "category_head"
+                elif "compliance" in p_norm or "governance" in p_norm:
+                    esc_type = "compliance"
+                else:
+                    # Default fallback — still create an escalation
+                    esc_type = "procurement_manager"
+                    logger.warning(
+                        "[ESCALATION] Unknown person %r — defaulting to procurement_manager",
+                        person,
+                    )
+
+                if esc_type in seen_types:
+                    logger.info("[ESCALATION DEBUG] Skipping duplicate esc_type=%s", esc_type)
+                    continue
+                seen_types.add(esc_type)
+
+                message = record.get("reason_for_escalation") or "Review required"
+                task_desc = record.get("task_for_escalation")
+                if task_desc:
+                    message += f" (Action: {task_desc})"
+
+                esc_target_user = _route_escalation(esc_type, req, db)
+                target_user_id = esc_target_user.id if esc_target_user else None
+                logger.info(
+                    "[ESCALATION] Creating DB record: type=%s, target_user=%s (id=%s)",
+                    esc_type,
+                    esc_target_user.name if esc_target_user else "None",
+                    target_user_id,
+                )
+
+                esc = models.Escalation(
+                    request_id=req.id,
+                    type=esc_type,
+                    status="pending",
+                    target_user_id=target_user_id,
+                    message=message[:500],
+                )
+                db.add(esc)
+                escalations_created.append((esc, esc_target_user))
 
         if escalations_created:
-            req.status = "pending_review"
+            req.status = "escalated"
             logger.info(
-                "Created %d escalation(s) for request %s: %s",
+                "✅ Created %d escalation(s) for request %s: %s",
                 len(escalations_created), req.id, [e.type for e, _ in escalations_created],
+            )
+        else:
+            logger.info(
+                "ℹ️  No escalations created for request %s (needs_esc=%s, records=%d)",
+                req.id, needs_esc, len(esc_records),
             )
 
         db.commit()

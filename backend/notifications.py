@@ -9,7 +9,7 @@ import os
 _APP_URL = os.environ.get("CHAINIQ_APP_URL", "http://localhost:3000")
 
 
-def send_slack_dm(slack_user_id: str, text: str) -> None:
+def send_slack_dm(slack_user_id: str, text: str, blocks: list = None) -> None:
     """Open a DM channel with the user and send a message. Never raises."""
     token = os.environ.get("SLACK_BOT_TOKEN", "")
     if not token or token.startswith("xoxb-your"):
@@ -18,7 +18,7 @@ def send_slack_dm(slack_user_id: str, text: str) -> None:
         from slack_sdk import WebClient
         client = WebClient(token=token)
         channel = client.conversations_open(users=slack_user_id)["channel"]["id"]
-        client.chat_postMessage(channel=channel, text=text)
+        client.chat_postMessage(channel=channel, text=text, blocks=blocks)
     except Exception:
         pass  # Never let Slack failures break the main request
 
@@ -66,12 +66,12 @@ def notify_evaluation_complete(request, requester) -> None:
     if not requester or not getattr(requester, "slack_user_id", None):
         return
 
-    text = _build_evaluation_summary(request)
-    send_slack_dm(requester.slack_user_id, text)
+    summary = _build_evaluation_summary(request)
+    send_slack_dm(requester.slack_user_id, text=summary["text"], blocks=summary["blocks"])
 
 
-def _build_evaluation_summary(request) -> str:
-    """Build a Slack-formatted evaluation summary from the request's ai_output."""
+def _build_evaluation_summary(request) -> dict:
+    """Build a Slack-formatted evaluation summary using Block Kit."""
     ai: dict = {}
     if request.ai_output:
         try:
@@ -79,57 +79,61 @@ def _build_evaluation_summary(request) -> str:
         except Exception:
             pass
 
+    escalation_assess = ai.get("escalation_assessment")
+
     ranked = ai.get("ranked_suppliers", [])
     global_outputs = ai.get("global_outputs", {})
     flags = (ai.get("flag_assessment") or {}).get("flags", [])
 
-    lines = [f"✅ *Evaluation complete for request `{request.id[:8]}…`*\n"]
+    fallback_text = f"Evaluation complete for request {request.id[:8]}…"
+    blocks = [
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": f"✅ Evaluation Complete: REQ-{request.id[:6].upper()}…"
+            }
+        }
+    ]
 
     # Category & budget
+    cat_budget = []
     if request.category_l1:
         cat = request.category_l1
         if request.category_l2:
             cat += f" / {request.category_l2}"
-        lines.append(f"📂 *Category:* {cat}")
+        cat_budget.append(f"📂 *Category:* {cat}")
     if request.budget_amount:
-        lines.append(f"💰 *Budget:* {request.currency or 'EUR'} {request.budget_amount:,.0f}")
-    lines.append("")
+        cat_budget.append(f"💰 *Budget:* {request.currency or 'EUR'} {request.budget_amount:,.0f}")
+    
+    if cat_budget:
+        blocks.append({
+            "type": "section",
+            "text": {"type": "mrkdwn", "text": "\n".join(cat_budget)}
+        })
+    blocks.append({"type": "divider"})
 
     # Supplier ranking
     MEDALS = ["🥇", "🥈", "🥉"]
+    rank_text = "🏆 *Top Suppliers*\n"
     if ranked:
-        lines.append("🏆 *Top Suppliers:*")
         for s in ranked[:3]:
             medal = MEDALS[s["position"] - 1] if s["position"] <= 3 else f"#{s['position']}"
             cost = f"{s.get('currency', '')} {s['cost_total']:,.0f}" if s.get("cost_total") else "—"
             unit = f"{s.get('currency', '')} {s['unit_price']:,.2f}/unit" if s.get("unit_price") else ""
             preferred = " ⭐ _preferred_" if s.get("preferred_supplier") else ""
-            lines.append(f"  {medal} *{s['supplier_name']}*{preferred}")
-            lines.append(f"       Total: {cost}  |  Unit: {unit}")
+            rank_text += f"\n{medal} *{s['supplier_name']}*{preferred}\n`Total: {cost}`  |  `Unit: {unit}`\n"
     else:
-        lines.append("⚠️ *No suppliers could be ranked* — see warnings below")
-    lines.append("")
+        rank_text += "\n⚠️ *No suppliers could be ranked* — see warnings below"
+    
+    blocks.append({
+        "type": "section",
+        "text": {"type": "mrkdwn", "text": rank_text}
+    })
 
-    # Escalations triggered
-    ESCALATION_LABELS: dict[str, str] = {
-        "escalate_to_requester":               "Your clarification is needed",
-        "escalate_to_procurement_manager":     "Procurement Manager approval required",
-        "escalate_to_head_of_category":        "Head of Category escalation",
-        "escalate_to_security_compliance":     "Security & Compliance review required",
-        "escalate_to_regional_compliance":     "Regional Compliance approval required",
-        "escalate_to_head_of_strategic_sourcing": "Head of Strategic Sourcing required",
-        "escalate_to_cpo":                     "CPO approval required",
-        "escalate_to_sourcing_excellence":     "Sourcing Excellence Lead escalation",
-        "escalate_to_marketing_governance":    "Marketing Governance review required",
-    }
-    escalation_flags = [k for k, v in global_outputs.items() if k.startswith("escalate_") and v]
-    if escalation_flags:
-        lines.append("🔔 *Escalations triggered:*")
-        for flag in escalation_flags:
-            lines.append(f"  • {ESCALATION_LABELS.get(flag, flag.replace('_', ' ').title())}")
-        lines.append("")
-
-    # Required process actions
+    # Escalations & Actions
+    escalation_records = escalation_assess.get("records", []) if escalation_assess else []
+    
     ACTION_FLAGS: dict[str, str] = {
         "fast_track_eligible":          "⚡ Fast-track eligible — single quote allowed",
         "requires_security_review":     "🔒 Security architecture review required",
@@ -141,30 +145,54 @@ def _build_evaluation_summary(request) -> str:
         "requires_performance_baseline":"📊 SEM performance baseline required",
     }
     actions = [label for key, label in ACTION_FLAGS.items() if global_outputs.get(key)]
-    if actions:
-        lines.append("📋 *Required process actions:*")
-        for a in actions:
-            lines.append(f"  • {a}")
-        lines.append("")
 
-    # Min quotes
+    if escalation_records or actions:
+        blocks.append({"type": "divider"})
+        req_actions_text = ""
+        if escalation_records:
+            req_actions_text += "🔔 *Escalations triggered:*\n"
+            for rec in escalation_records:
+                person = rec.get("person_to_escalate_to", "").replace("escalate_to_", "").replace("_", " ").title()
+                req_actions_text += f"• *{person}:* {rec.get('reason_for_escalation', 'Review required')}\n"
+            req_actions_text += "\n"
+        if actions:
+            req_actions_text += "📋 *Required process actions:*\n"
+            for a in actions:
+                req_actions_text += f"• {a}\n"
+        
+        blocks.append({
+            "type": "section",
+            "text": {"type": "mrkdwn", "text": req_actions_text.strip()}
+        })
+
+    # Quotes and warnings
     min_quotes = global_outputs.get("min_supplier_quotes")
+    warn_text = ""
     if min_quotes is not None:
-        lines.append(f"📌 *Minimum quotes required:* {min_quotes}")
-
-    # Warnings / flags
+        warn_text += f"📌 *Minimum quotes required:* {min_quotes}\n"
     if flags:
-        lines.append("⚠️ *Warnings:*")
+        warn_text += "\n⚠️ *Warnings:*\n"
         for f in flags[:3]:
-            lines.append(f"  • {f['description']}")
-        lines.append("")
+            warn_text += f"• {f['description']}\n"
+    
+    if warn_text:
+        blocks.append({"type": "divider"})
+        blocks.append({
+            "type": "section",
+            "text": {"type": "mrkdwn", "text": warn_text.strip()}
+        })
 
-    # Overall status
-    if request.status == "pending_review":
-        lines.append("🟠 *Status:* Pending review — escalation sent to the relevant team")
-    else:
-        lines.append("🟢 *Status:* Ready to proceed")
+    blocks.append({"type": "divider"})
+    # Overall status Context block
+    status_msg = "🟠 *Status:* Pending review — escalation sent to the relevant team" if request.status == "pending_review" else "🟢 *Status:* Ready to proceed"
+    blocks.append({
+        "type": "context",
+        "elements": [
+            {
+                "type": "mrkdwn",
+                "text": f"{status_msg} | 🔗 <{_APP_URL}/dashboard/transparency?id={request.id}|View full AI decision log>"
+            }
+        ]
+    })
 
-    lines.append(f"\n🔗 View full AI decision log: {_APP_URL}/dashboard/transparency?id={request.id}")
-
-    return "\n".join(lines)
+    return {"text": fallback_text, "blocks": blocks}

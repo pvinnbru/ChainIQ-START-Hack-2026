@@ -7,6 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { Badge } from "@/components/ui/badge"
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -24,9 +25,11 @@ export function NavMain({
     title: string
     icon?: LucideIcon
     isActive?: boolean
+    badge?: number | string
     items?: {
       title: string
       url: string
+      badge?: number | string
     }[]
   }[]
 }) {
@@ -47,9 +50,14 @@ export function NavMain({
                 className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sm hover:cursor-pointer"
               >
                 <CollapsibleTrigger>
-                  {item.icon && <item.icon className="mr-2 h-4 w-4" />}
-                  {item.title}
-                  <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                  {item.icon && <item.icon className="mr-2 h-4 w-4 shrink-0" />}
+                  <span className="flex-1 text-left">{item.title}</span>
+                  {item.badge ? (
+                    <Badge className="mr-2 h-5 px-1.5 text-[10px] bg-orange-500 hover:bg-orange-600 text-white shrink-0">
+                      {item.badge}
+                    </Badge>
+                  ) : null}
+                  <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90 shrink-0" />
                 </CollapsibleTrigger>
               </SidebarMenuButton>
               <CollapsibleContent>
@@ -57,8 +65,13 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <Link href={subItem.url}>
+                        <Link href={subItem.url} className="flex flex-1 items-center justify-between">
                           <span>{subItem.title}</span>
+                          {subItem.badge ? (
+                            <Badge className="h-5 px-1.5 text-[10px] bg-orange-500 hover:bg-orange-600 text-white shrink-0">
+                              {subItem.badge}
+                            </Badge>
+                          ) : null}
                         </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>

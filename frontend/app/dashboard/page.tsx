@@ -63,6 +63,7 @@ export default function DashboardPage() {
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
   const [escalations, setEscalations] = useState<Escalation[]>([]);
 
+
   useEffect(() => {
     Promise.all([
       fetch(`${API}/requests/stats`, { credentials: 'include' }).then(r => r.json()),
@@ -78,7 +79,7 @@ export default function DashboardPage() {
   const isRequester = user?.role === 'requester';
   const s = stats?.by_status ?? {};
 
-  const kpis = isRequester
+  const kpis: any[] = isRequester
     ? [
         { label: 'Total Requests',  value: stats?.total ?? 0,                               icon: FileText,    ...STATUS_KPI.new,          href: '/dashboard/cases' },
         { label: 'Pending Review',  value: (s.new ?? 0) + (s.pending_review ?? 0),          icon: Clock,       ...STATUS_KPI.pending_review, href: '/dashboard/cases' },
@@ -125,6 +126,8 @@ export default function DashboardPage() {
         ))}
       </div>
 
+
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Needs attention */}
         <Card>
@@ -137,7 +140,7 @@ export default function DashboardPage() {
               )}
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 h-[250px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted">
             {escalations.length === 0 ? (
               <div className="px-6 py-8 text-center text-muted-foreground">
                 <CheckCircle className="h-8 w-8 mx-auto mb-2 opacity-30" />
@@ -191,7 +194,7 @@ export default function DashboardPage() {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 h-[250px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted">
             {activity.length === 0 ? (
               <div className="px-6 py-8 text-center text-sm text-muted-foreground">No activity yet.</div>
             ) : (

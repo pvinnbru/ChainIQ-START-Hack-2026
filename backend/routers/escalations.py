@@ -32,6 +32,20 @@ def _route_escalation(esc_type: str, request: models.Request, db: Session) -> mo
     return db.query(models.User).filter(models.User.role == target_role).first()
 
 
+
+@router.post("/demo-reset")
+def demo_reset(db: Session = Depends(get_db)):
+    """Reset the demo escalations from seed.py so they appear as pending for demos."""
+    escs = db.query(models.Escalation).filter(models.Escalation.id.in_(["esc-sample-2", "esc-sample-3", "esc-sample-4"])).all()
+    for e in escs:
+        e.status = "pending"
+        
+    reqs = db.query(models.Request).filter(models.Request.id.in_(["req-sample-8", "req-sample-9", "req-sample-10"])).all()
+    for r in reqs:
+        r.status = "escalated"
+        
+    db.commit()
+    return {"message": "Demo escalations reset successfully."}
 @router.get("/me", response_model=list[schemas.EscalationOut])
 def my_escalations(
     current_user: models.User = Depends(get_current_user),
