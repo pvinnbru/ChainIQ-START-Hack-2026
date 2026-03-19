@@ -20,6 +20,7 @@ class User(Base):
     country = Column(String, nullable=True)
     site = Column(String, nullable=True)
     requester_role = Column(String, nullable=True)  # job title
+    slack_user_id = Column(String, nullable=True)  # Slack user ID e.g. "U08T5QS8BN7"
 
     requests = relationship("Request", back_populates="requester")
     escalations = relationship("Escalation", back_populates="target_user")

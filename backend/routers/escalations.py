@@ -73,6 +73,14 @@ def create_escalation(
     _add_audit(db, body.request_id, current_user.id, "escalated", body.message)
     db.commit()
     db.refresh(escalation)
+
+    # Slack notification (silently skips if not configured)
+    try:
+        from notifications import notify_escalation
+        notify_escalation(escalation, request, target)
+    except Exception:
+        pass
+
     return escalation
 
 
