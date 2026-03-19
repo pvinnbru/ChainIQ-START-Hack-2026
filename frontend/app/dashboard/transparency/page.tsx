@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
-  ArrowLeft, Bot, Printer, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Send,
+  ArrowLeft, Bot, Printer, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Send, Trash2,
   AlertTriangle, CheckCircle, Minus, ArrowRight, Star, Package, Clock, ShieldCheck, TrendingUp,
 } from 'lucide-react';
 
@@ -650,15 +650,27 @@ function AiChatSidebar({
           <Bot className="h-4 w-4 text-primary" />
           Ask AI
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-6 w-6 p-0"
-          onClick={() => onOpenChange(false)}
-          title="Close AI Chat"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+            onClick={() => setMessages([])}
+            title="Clear chat"
+            disabled={messages.length === 0}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
+            onClick={() => onOpenChange(false)}
+            title="Close AI Chat"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
         {/* Messages */}
