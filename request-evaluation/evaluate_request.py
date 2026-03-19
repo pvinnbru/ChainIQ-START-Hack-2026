@@ -262,12 +262,12 @@ def evaluate_request(request_json: str) -> str:
             "request_id": request_id,
             "timestamp": timestamp,
             "error":     f"Invalid JSON input: {exc}",
-            "global_outputs":         {},
-            "ranked_suppliers":        [],
-            "escalation_assessment":  None,
-            "flag_assessment":        None,
-            "confidence_assessment":  None,
-            "execution_log":          None,
+            "global_outputs":        {},
+            "ranked_suppliers":       [],
+            "escalation":            None,
+            "flag_assessment":       None,
+            "confidence_assessment": None,
+            "execution_log":         None,
         }, indent=2)
 
     try:
@@ -320,12 +320,12 @@ def evaluate_request(request_json: str) -> str:
             "request_id":  request_id,
             "timestamp":   exec_log.timestamp,
             "error":       None,
-            "global_outputs":   outcome.get("global_outputs", {}),
-            "ranked_suppliers": ranked_suppliers,
-            "escalation_assessment":  _to_serializable(outcome.get("escalation_assessment")),
-            "flag_assessment":        _to_serializable(outcome.get("flag_assessment")),
-            "confidence_assessment":  _to_serializable(outcome.get("confidence_assessment")),
-            "execution_log":          _to_serializable(exec_log),
+            "global_outputs":    outcome.get("global_outputs", {}),
+            "ranked_suppliers":  ranked_suppliers,
+            "escalation":        _to_serializable(outcome.get("escalation_assessment")),
+            "flag_assessment":   _to_serializable(outcome.get("flag_assessment")),
+            "confidence_assessment": _to_serializable(outcome.get("confidence_assessment")),
+            "execution_log":     _to_serializable(exec_log),
         }
 
     except Exception as exc:  # noqa: BLE001
@@ -335,12 +335,12 @@ def evaluate_request(request_json: str) -> str:
             "request_id": request_id,
             "timestamp": timestamp,
             "error":     f"{type(exc).__name__}: {exc}",
-            "global_outputs":         {},
-            "ranked_suppliers":        [],
-            "escalation_assessment":  None,
-            "flag_assessment":        None,
-            "confidence_assessment":  None,
-            "execution_log":          None,
+            "global_outputs":        {},
+            "ranked_suppliers":       [],
+            "escalation":            None,
+            "flag_assessment":       None,
+            "confidence_assessment": None,
+            "execution_log":         None,
         }
 
     return json.dumps(result, indent=2, default=str)
@@ -377,15 +377,11 @@ def evaluate_request(request_json: str) -> str:
 #   requires_certification_check  boolean   Supplier certification check required (CR-008)
 #   requires_brand_safety_review  boolean   Brand safety review required (CR-010/ER-007)
 #   requires_performance_baseline boolean   SEM performance baseline required (CR-009)
-#   escalate_to_requester               boolean   Requester clarification needed (ER-001)
-#   escalate_to_procurement_manager     boolean   Procurement Manager approval (ER-002 / AT)
-#   escalate_to_head_of_category        boolean   Head of Category escalation (ER-004 / AT)
-#   escalate_to_head_of_strategic_sourcing boolean  (ER-003 / AT)
-#   escalate_to_cpo                     boolean   CPO approval required (AT)
-#   escalate_to_security_compliance     boolean   Security & Compliance Review (ER-005)
-#   escalate_to_sourcing_excellence     boolean   Sourcing Excellence Lead (ER-006)
-#   escalate_to_marketing_governance    boolean   Marketing Governance review (ER-007)
-#   escalate_to_regional_compliance     boolean   Regional Compliance approval (ER-008)
+#
+#   NOTE: escalate_to_* boolean fields are no longer present in global_outputs.
+#   They are converted to structured EscalationRecord objects in the ``escalation``
+#   field, where each record carries person_to_escalate_to, reason_for_escalation,
+#   task_for_escalation, and severity.
 #
 # ranked_suppliers  array   Suppliers that passed all gates, sorted by normalized_rank
 #                           descending (best match first).  Each element:
@@ -415,18 +411,29 @@ def evaluate_request(request_json: str) -> str:
 #   rank_without_preferred_bonus      number | null  normalized_rank before the bonus;
 #                                       present only when the bonus was applied
 #
-# escalation_assessment  object | null   Structured escalation decision (null when no
-#                                        field_impact_map is configured).  Shape:
+# escalation  object | null   Unified escalation decision (null when no field_impact_map
+#                              is configured).  Structurally agnostic to specific roles —
+#                              records are generated dynamically from policy rule outputs
+#                              and engine triggers, with no hardcoded role field names.
 #
-#   triggers        array   Each trigger:
-#     trigger_id          string   e.g. "missing_field:budget", "min_quotes_gap",
-#                                  "insufficient_suppliers"
-#     description         string   Human-readable explanation
-#     severity            string   "blocking" | "advisory" | "logged"
-#     rank_impact         number   Estimated rank-score impact (0–1)
-#     escalate_to         string | null  Role or team to escalate to
-#     suppression_reason  string | null  Why a higher severity was downgraded (e.g. urgency)
-#   context_notes   array[string]  Contextual adjustments applied (e.g. urgency note)
+#   needs_escalation  boolean   True if any blocking or advisory record exists.
+#   has_blocking      boolean   True if at least one blocking record is present.
+#   has_advisory      boolean   True if at least one advisory record is present.
+#   records           array    Each record:
+#     person_to_escalate_to  string  Role or person responsible for resolving this item.
+#                                    Derived dynamically from policy rule keys or engine
+#                                    routing — never hardcoded in the output schema.
+#     reason_for_escalation  string  Why this escalation is needed (what condition fired).
+#     task_for_escalation    string  What the recipient is expected to do.
+#     severity               string  "blocking" | "advisory"
+#     source                 string  Rule key or trigger ID that produced this record,
+#                                    e.g. "escalate_to_cpo", "CR_C01_CONFIDENCE_FLOOR",
+#                                    "INSUFFICIENT_SUPPLIERS"
+#     source_type            string  "policy_rule" (from action pipeline) |
+#                                    "engine" (structural / missing field) |
+#                                    "confidence" (CR-C rule)
+#   context_notes     array[string]  Contextual modifiers applied (urgency, budget scaling,
+#                                    confidence boost).
 #
 # flag_assessment  object | null  Result-quality flags.  Shape:
 #

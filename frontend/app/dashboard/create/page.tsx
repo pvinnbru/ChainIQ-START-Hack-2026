@@ -160,8 +160,9 @@ export default function CreateRequestPage() {
       });
 
       if (!res.ok) throw new Error('Failed to submit request');
-      toast.success('Request submitted successfully!');
-      router.push('/dashboard/cases');
+      const created = await res.json();
+      toast.success('Request submitted and analysed!');
+      router.push(`/dashboard/transparency?id=${created.id}`);
     } catch {
       toast.error('Failed to submit request. Please try again.');
     } finally {
@@ -432,7 +433,7 @@ export default function CreateRequestPage() {
             Cancel
           </Button>
           <Button type="submit" disabled={submitting}>
-            {submitting ? 'Submitting…' : 'Submit Request'}
+            {submitting ? 'Analysing request…' : 'Submit Request'}
           </Button>
         </div>
       </form>

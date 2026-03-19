@@ -29,7 +29,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
-from ingest_historical_awards import get_historical_stats, load_historical_store
+from ingest_historical_awards import get_historical_stats, get_supplier_historic_score, load_historical_store
 
 # ---------------------------------------------------------------------------
 # Country-to-region mapping
@@ -1564,7 +1564,7 @@ def run_procurement_evaluation(
     #                             spread scores further than high-variance ones; with
     #                             exponential budget penalty hitting 0 at 5 % over budget
     #    2.5%  reputation_norm  — weighted quality/risk/ESG composite, capped to [0,1]
-    #    2.5%  historic_score   — TODO: replace dummy with real historic data
+    #    2.5%  historic_score   — shrunk Bayesian composite (award rate / rank / savings)
     #
     # Cost score detail
     # -----------------
@@ -1654,12 +1654,16 @@ def run_procurement_evaluation(
             final_state["_reputation_raw"]     = rep_raw
         reputation_norm = max(0.0, min(rep_raw, 100.0)) / 100.0
 
-        # --- Historic (dummy — full score until real data is wired in) ---
-        # O-4: hardcoded to 1.0 until ingest_historical_awards.py award data is
-        # wired into this path.  The field is intentionally surfaced in the log
-        # so consumers know the 2.5% weight is always at maximum.
-        historic_score = 1.0
-        final_state["_historic_score_is_dummy"] = True
+        # --- Historic score (from ingest_historical_awards.py) ---
+        # Composed of: award_rate (65%), 1/avg_rank (20%), savings_pct (15%),
+        # shrunk toward the neutral prior 0.5 based on data reliability.
+        # Returns 0.5 (neutral) when no historical data exists for this supplier
+        # in this category — neither a boost nor a penalty.
+        supplier_id_for_hist = identity.get("supplier_id", "")
+        historic_score = get_supplier_historic_score(
+            supplier_id_for_hist, category_l1, category_l2, hist_store
+        )
+        final_state["_historic_score_is_dummy"] = False
 
         # --- Compliance multiplier ---
         # Clamped to [0, 1]. OSLM actions reduce this from 1.0 for soft
@@ -1725,25 +1729,8 @@ def run_procurement_evaluation(
         global_action_logs=[],
     )
 
-    # Run escalation assessment if the necessary inputs are available.
-    # field_impact_map and escalation_rules are optional so callers that haven't
-    # wired them up yet still work without changes.
-    if field_impact_map is not None:
-        from escalation_engine import evaluate_escalations  # local import avoids circular
-        outcome_for_esc = {
-            "supplier_results": supplier_results,
-            "global_outputs":   global_outputs,
-        }
-        execution_log.escalation_assessment = evaluate_escalations(
-            request=request,
-            outcome=outcome_for_esc,
-            fix_in_keys=fix_in_keys,
-            field_impact_map=field_impact_map,
-            escalation_rules=escalation_rules or [],
-        )
-
-    # Result-quality flags and confidence score — always evaluated regardless
-    # of escalation config.
+    # Result-quality flags and confidence score — computed first so that
+    # confidence_assessment can be passed into the escalation engine.
     from result_flags import evaluate_flags, compute_confidence_score  # local import avoids circular
 
     # ISSUE-009: HIGH_EXCLUSION_RATE should use the category-matched supplier
@@ -1790,6 +1777,29 @@ def run_procurement_evaluation(
         hist_avg=hist_avg,
     )
     execution_log.confidence_assessment = confidence_assessment
+
+    # Run escalation assessment — after confidence so CR-C rules can fire.
+    # field_impact_map and escalation_rules are optional so callers that haven't
+    # wired them up yet still work without changes.
+    if field_impact_map is not None:
+        from escalation_engine import evaluate_escalations  # local import avoids circular
+        outcome_for_esc = {
+            "supplier_results": supplier_results,
+            "global_outputs":   global_outputs,
+        }
+        execution_log.escalation_assessment = evaluate_escalations(
+            request=request,
+            outcome=outcome_for_esc,
+            fix_in_keys=fix_in_keys,
+            field_impact_map=field_impact_map,
+            escalation_rules=escalation_rules or [],
+            confidence_assessment=confidence_assessment,
+        )
+        # Strip escalate_to_* booleans from global_outputs — they are now
+        # represented as structured EscalationRecord objects in the assessment.
+        # Keeping them would expose the same information twice in different formats.
+        for _k in [k for k in global_outputs if k.startswith("escalate_to_")]:
+            del global_outputs[_k]
 
     return (
         {

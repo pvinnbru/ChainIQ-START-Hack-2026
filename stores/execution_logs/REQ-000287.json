@@ -1,6 +1,6 @@
 {
   "request_id": "REQ-000287",
-  "timestamp": "2026-03-19T14:39:58.209758+00:00",
+  "timestamp": "2026-03-19T18:01:11.214092+00:00",
   "global_context_snapshot": {
     "category_l1": "Professional Services",
     "category_l2": "Data Engineering Services",
@@ -2138,10 +2138,10 @@
       {
         "flag_id": "HIGH_EXCLUSION_RATE",
         "severity": "warning",
-        "description": "151 of 151 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.",
+        "description": "2 of 2 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.",
         "details": {
-          "n_total": 151,
-          "n_excluded": 151,
+          "n_total": 2,
+          "n_excluded": 2,
           "exclusion_fraction": 1.0
         }
       },

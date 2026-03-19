@@ -1,0 +1,3 @@
+- No supplier was ranked first because none matched the requested category.  
+- The system flagged a warning due to no qualified suppliers, which means competitive pricing cannot be guaranteed.  
+- No sign-off is required, but human review is recommended to address the lack of qualified suppliers.  

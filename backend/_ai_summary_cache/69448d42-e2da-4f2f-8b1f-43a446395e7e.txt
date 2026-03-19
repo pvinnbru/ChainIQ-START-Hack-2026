@@ -1,0 +1,3 @@
+- No supplier was ranked first because all were excluded due to either mismatched product categories, delivery limitations, or pricing tiers.  
+- This needs human attention because no suppliers qualified, meaning competitive pricing cannot be guaranteed.  
+- Sign-off is required from your manager to review the supplier pool and ensure compliance with procurement policies.  

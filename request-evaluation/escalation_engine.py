@@ -51,6 +51,33 @@ ADVISORY_THRESHOLD:    float = 0.25   # recommend escalation
 MIN_QUOTES_GAP:        float = 0.20   # rank gap that makes extra quote ceremonial
 
 # ---------------------------------------------------------------------------
+# Confidence-based escalation thresholds (CR-C rules)
+# ---------------------------------------------------------------------------
+
+# CR-C01: below this confidence score the evaluation always escalates (blocking)
+CONFIDENCE_FLOOR_BLOCKING: float = 0.25
+
+# CR-C02: "false certainty" — top rank looks decisive but the scoring is unreliable
+CONFIDENCE_FALSE_CERTAINTY_SCORE:   float = 0.35  # confidence ceiling
+CONFIDENCE_FALSE_CERTAINTY_RANK:    float = 0.75  # normalized_rank floor
+
+# CR-C03: low input_completeness → requester clarification
+CONFIDENCE_INPUT_COMPLETENESS_MIN: float = 0.50
+
+# CR-C04: low market_coverage → head of category
+CONFIDENCE_MARKET_COVERAGE_MIN: float = 0.40
+
+# CR-C05: low data_reliability → sourcing excellence
+CONFIDENCE_DATA_RELIABILITY_MIN: float = 0.40
+
+# CR-C06: fast-track suppression — flag if eligible AND confidence is low
+CONFIDENCE_FAST_TRACK_MIN: float = 0.50
+
+# Confidence severity boost: when overall confidence is below this level,
+# promote existing advisory triggers to blocking
+CONFIDENCE_SEVERITY_BOOST_THRESHOLD: float = 0.40
+
+# ---------------------------------------------------------------------------
 # Context modifiers
 # ---------------------------------------------------------------------------
 
@@ -93,10 +120,31 @@ _PREFIX_IMPACT: list[tuple[str, float]] = [
 # ---------------------------------------------------------------------------
 
 @dataclass
+class EscalationRecord:
+    """
+    A single actionable escalation item returned to the caller.
+
+    Structurally agnostic to specific roles: person_to_escalate_to is a plain
+    string derived at runtime from policy rules or the engine, not a hardcoded
+    field name.  Any escalate_to_<role> action output or engine trigger maps to
+    one of these records regardless of what role names the policy uses.
+    """
+    person_to_escalate_to:  str   # e.g. "CPO", "Procurement Manager", "Requester"
+    reason_for_escalation:  str   # human-readable explanation of why escalation is needed
+    task_for_escalation:    str   # what the escalation recipient is expected to do
+    severity:               str   # "blocking" | "advisory"
+    source:                 str   # trigger_id or action key, e.g. "escalate_to_cpo" / "CR_C01_..."
+    source_type:            str   # "policy_rule" | "engine" | "confidence"
+
+
+@dataclass
 class EscalationTrigger:
-    """A single evaluated escalation condition."""
+    """
+    Internal intermediate used during engine evaluation.
+    Converted to EscalationRecord before being returned to the caller.
+    """
     trigger_id:        str
-    trigger_type:      str    # "missing_field" | "min_quotes_gap" | "insufficient_suppliers"
+    trigger_type:      str    # "missing_field" | "min_quotes_gap" | "insufficient_suppliers" | "confidence"
     severity:          str    # "blocking" | "advisory" | "logged"
     rank_impact:       float  # 0.0 – 1.0
     description:       str
@@ -107,12 +155,175 @@ class EscalationTrigger:
 
 @dataclass
 class EscalationAssessment:
-    """All escalation triggers for a single request evaluation."""
-    triggers:          list[EscalationTrigger] = field(default_factory=list)
-    should_escalate:   bool = False   # True if any blocking or advisory trigger exists
+    """All escalation records for a single request evaluation."""
+    needs_escalation:  bool = False   # True if any blocking or advisory record exists
     has_blocking:      bool = False
     has_advisory:      bool = False
+    records:           list[EscalationRecord] = field(default_factory=list)
     context_notes:     list[str] = field(default_factory=list)  # human-readable modifier log
+
+
+# ---------------------------------------------------------------------------
+# Action-escalation metadata  (enrichment config — not schema)
+# ---------------------------------------------------------------------------
+# Maps escalate_to_<role> action output keys to human-readable metadata.
+# The engine works with ANY key matching the escalate_to_* prefix — this dict
+# only provides richer person names, reasons, and tasks for known roles.
+# Unknown keys are handled dynamically by _key_to_person() and generic defaults.
+#
+# To add a new escalation role: add an entry here.  No schema change required.
+# ---------------------------------------------------------------------------
+
+_ACTION_ESCALATION_METADATA: dict[str, dict] = {
+    "escalate_to_requester": {
+        "person":        "Requester",
+        "reason_prefix": "Requester clarification is needed before sourcing can continue",
+        "task":          "Provide or confirm the missing or ambiguous request information so sourcing can proceed.",
+        "severity":      "advisory",
+    },
+    "escalate_to_procurement_manager": {
+        "person":        "Procurement Manager",
+        "reason_prefix": "Procurement Manager approval or policy deviation is required",
+        "task":          "Review and approve the sourcing decision, or grant a policy deviation if appropriate.",
+        "severity":      "blocking",
+    },
+    "escalate_to_head_of_category": {
+        "person":        "Head of Category",
+        "reason_prefix": "Head of Category sign-off is required for this procurement",
+        "task":          "Confirm category strategy alignment and approve the sourcing approach.",
+        "severity":      "blocking",
+    },
+    "escalate_to_head_of_strategic_sourcing": {
+        "person":        "Head of Strategic Sourcing",
+        "reason_prefix": "Head of Strategic Sourcing approval is required for this high-value contract",
+        "task":          "Approve the sourcing decision in line with strategic procurement policy.",
+        "severity":      "blocking",
+    },
+    "escalate_to_cpo": {
+        "person":        "CPO",
+        "reason_prefix": "CPO executive approval is required for this procurement",
+        "task":          "Grant executive approval per governance policy before any commitment is made.",
+        "severity":      "blocking",
+    },
+    "escalate_to_security_compliance": {
+        "person":        "Security & Compliance",
+        "reason_prefix": "Security and compliance review is required",
+        "task":          "Review data residency or security requirements and validate supplier eligibility.",
+        "severity":      "blocking",
+    },
+    "escalate_to_sourcing_excellence": {
+        "person":        "Sourcing Excellence Lead",
+        "reason_prefix": "Sourcing Excellence review is required",
+        "task":          "Assess single-supplier risk and advise on market engagement strategy.",
+        "severity":      "advisory",
+    },
+    "escalate_to_marketing_governance": {
+        "person":        "Marketing Governance Lead",
+        "reason_prefix": "Marketing Governance review is required for this category",
+        "task":          "Review brand safety concerns and approve supplier engagement for the marketing category.",
+        "severity":      "blocking",
+    },
+    "escalate_to_regional_compliance": {
+        "person":        "Regional Compliance Lead",
+        "reason_prefix": "Regional compliance approval is required",
+        "task":          "Validate supplier registration and sanction screening for the delivery country.",
+        "severity":      "blocking",
+    },
+}
+
+# Default tasks per engine trigger type (used when converting EscalationTrigger → EscalationRecord)
+_TRIGGER_TASKS: dict[str, str] = {
+    "missing_field":          "Supply or confirm the missing information before the sourcing process continues.",
+    "min_quotes_gap":         "Review whether a policy deviation is appropriate, or confirm the additional quote is still required.",
+    "insufficient_suppliers": "Expand the approved supplier pool or review scope and category mapping for this request.",
+    "confidence":             "Manually review the ranking output before issuing a purchase order or advancing the sourcing process.",
+}
+
+
+def _key_to_person(key: str) -> str:
+    """
+    Dynamically derive a human-readable role name from an escalate_to_* key.
+
+    escalate_to_procurement_manager  →  "Procurement Manager"
+    escalate_to_cpo                  →  "CPO"
+    escalate_to_head_of_category     →  "Head Of Category"
+
+    Used as a fallback when the key is not in _ACTION_ESCALATION_METADATA.
+    """
+    stem = key.removeprefix("escalate_to_").replace("_", " ")
+    return " ".join(w.capitalize() for w in stem.split())
+
+
+def _build_action_reason(key: str, meta: dict, request: dict[str, Any]) -> str:
+    """Build a reason string for an action-pipeline escalation record."""
+    prefix = meta.get("reason_prefix") or f"{_key_to_person(key)} approval required"
+    budget   = request.get("budget")
+    currency = request.get("currency", "")
+    cat      = request.get("category_l2") or request.get("category_l1") or ""
+
+    parts = [prefix]
+    if budget and currency:
+        try:
+            parts.append(f"(budget: {currency} {float(budget):,.0f})")
+        except (TypeError, ValueError):
+            pass
+    if cat:
+        parts.append(f"in category '{cat}'")
+    return " ".join(parts) + "."
+
+
+def build_action_escalations(
+    global_outputs: dict[str, Any],
+    request: dict[str, Any],
+) -> list[EscalationRecord]:
+    """
+    Convert escalate_to_* boolean flags in global_outputs into EscalationRecords.
+
+    Works with any key matching the escalate_to_* prefix — no prior knowledge of
+    specific role names is required.  _ACTION_ESCALATION_METADATA provides richer
+    text for known roles; unknown roles fall back to dynamic key-name parsing.
+    """
+    records: list[EscalationRecord] = []
+    for key, val in global_outputs.items():
+        if not key.startswith("escalate_to_"):
+            continue
+        # Treat True, "True", 1 as active — anything falsy is ignored
+        try:
+            active = bool(val) and str(val).lower() not in ("false", "0", "none", "")
+        except Exception:
+            active = False
+        if not active:
+            continue
+
+        meta     = _ACTION_ESCALATION_METADATA.get(key, {})
+        person   = meta.get("person") or _key_to_person(key)
+        task     = meta.get("task") or "Review and take appropriate action for this procurement request."
+        severity = meta.get("severity", "blocking")
+        reason   = _build_action_reason(key, meta, request)
+
+        records.append(EscalationRecord(
+            person_to_escalate_to=person,
+            reason_for_escalation=reason,
+            task_for_escalation=task,
+            severity=severity,
+            source=key,
+            source_type="policy_rule",
+        ))
+    return records
+
+
+def _trigger_to_record(trigger: EscalationTrigger) -> EscalationRecord:
+    """Convert an internal EscalationTrigger into a public EscalationRecord."""
+    source_type = "confidence" if trigger.trigger_type == "confidence" else "engine"
+    task = _TRIGGER_TASKS.get(trigger.trigger_type, "Review and take appropriate action.")
+    return EscalationRecord(
+        person_to_escalate_to=trigger.escalate_to or "Procurement Manager",
+        reason_for_escalation=trigger.description,
+        task_for_escalation=task,
+        severity=trigger.severity,
+        source=trigger.trigger_id,
+        source_type=source_type,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -210,6 +421,7 @@ _TRIGGER_KEYWORDS: list[tuple[str, list[str]]] = [
     ("missing_field",          ["missing", "absent", "required", "incomplete"]),
     ("insufficient_suppliers", ["no compliant", "no supplier", "insufficient supplier"]),
     ("min_quotes_gap",         ["deviation", "policy deviation", "quotes", "minimum supplier"]),
+    ("confidence",             ["confidence", "unreliable", "uncertain", "data quality"]),
 ]
 
 
@@ -370,6 +582,202 @@ def assess_min_quotes_gap(
 
 
 # ---------------------------------------------------------------------------
+# Confidence-based trigger assessors  (CR-C01 … CR-C06)
+# ---------------------------------------------------------------------------
+
+# Fallback routing targets when the escalation_rules store has no match.
+# These mirror the standard ER-rule routing for the same concern areas.
+_CONFIDENCE_FALLBACK_ROUTES: dict[str, str] = {
+    "floor":            "Procurement Manager",
+    "false_certainty":  "Procurement Manager",
+    "input":            "Requester",
+    "market":           "Head of Category",
+    "data":             "Sourcing Excellence Lead",
+    "fast_track":       "Procurement Manager",
+}
+
+
+def _confidence_route(dimension_key: str, escalation_rules: list[dict]) -> str:
+    """Return the escalate_to target for a confidence-based trigger.
+
+    Tries the rules store first; falls back to _CONFIDENCE_FALLBACK_ROUTES.
+    """
+    from_store = _find_escalation_target("confidence", escalation_rules)
+    return from_store or _CONFIDENCE_FALLBACK_ROUTES.get(dimension_key, "Procurement Manager")
+
+
+def assess_confidence_triggers(
+    confidence_assessment: Any,
+    supplier_results: list[tuple],
+    global_outputs: dict[str, Any],
+    escalation_rules: list[dict],
+) -> list[EscalationTrigger]:
+    """
+    Evaluate confidence-based escalation rules (CR-C01 … CR-C06).
+
+    These fire on *output* conditions — the computed confidence score and its
+    per-dimension breakdown — rather than on request input fields.  They are
+    never suppressed by urgency (trigger_type = "confidence" is intentionally
+    excluded from _TIME_SENSITIVE in _apply_context_adjustments).
+
+    CR-C01  confidence_floor       — overall score < 0.25: always block.
+    CR-C02  false_certainty        — top rank high but confidence low: block.
+    CR-C03  input_incomplete       — input_completeness dim < 0.50: requester.
+    CR-C04  market_coverage_poor   — market_coverage dim < 0.40: head of category.
+    CR-C05  data_sparse            — data_reliability dim < 0.40: sourcing excellence.
+    CR-C06  fast_track_risk        — fast_track eligible AND confidence < 0.50: advisory.
+    """
+    if confidence_assessment is None:
+        return []
+
+    score      = float(getattr(confidence_assessment, "score", 1.0))
+    label      = getattr(confidence_assessment, "label", "high")
+    breakdown  = getattr(confidence_assessment, "breakdown", {})
+    dims       = breakdown.get("dimensions", {})
+    explanation = getattr(confidence_assessment, "explanation", "")
+
+    triggers: list[EscalationTrigger] = []
+
+    # CR-C01 — Confidence floor (very_low): always block regardless of other conditions.
+    if score < CONFIDENCE_FLOOR_BLOCKING:
+        triggers.append(EscalationTrigger(
+            trigger_id="CR_C01_CONFIDENCE_FLOOR",
+            trigger_type="confidence",
+            severity="blocking",
+            rank_impact=1.0 - score,
+            description=(
+                f"Overall ranking confidence is {label} ({score:.2f}). "
+                f"The evaluation output is too uncertain to act on without human review. "
+                f"Primary limiting factor: {explanation}"
+            ),
+            escalate_to=_confidence_route("floor", escalation_rules),
+            details={"confidence_score": score, "label": label, "dimensions": dims},
+        ))
+
+    # CR-C02 — False certainty: high normalized_rank but low confidence.
+    # This is the most dangerous case — the output *looks* decisive but the
+    # scoring is built on unreliable data.
+    if supplier_results and score < CONFIDENCE_FALSE_CERTAINTY_SCORE:
+        top_rank = float(supplier_results[0][2].get("normalized_rank") or 0)
+        if top_rank >= CONFIDENCE_FALSE_CERTAINTY_RANK:
+            top_name = supplier_results[0][0].get("supplier_name", "?")
+            triggers.append(EscalationTrigger(
+                trigger_id="CR_C02_FALSE_CERTAINTY",
+                trigger_type="confidence",
+                severity="blocking",
+                rank_impact=top_rank * (1.0 - score),
+                description=(
+                    f"'{top_name}' ranks #{1} with normalized_rank={top_rank:.3f} (looks decisive) "
+                    f"but confidence is {label} ({score:.2f}). "
+                    f"The high rank may not be reliable — verify before issuing a PO. "
+                    f"Limiting factor: {explanation}"
+                ),
+                escalate_to=_confidence_route("false_certainty", escalation_rules),
+                details={
+                    "top_supplier":      top_name,
+                    "normalized_rank":   top_rank,
+                    "confidence_score":  score,
+                    "confidence_label":  label,
+                },
+            ))
+
+    # CR-C03 — Input incompleteness: key scoring inputs were absent.
+    # Route to requester so they can provide quantity / budget / category.
+    input_dim = float(dims.get("input_completeness", 1.0))
+    if input_dim < CONFIDENCE_INPUT_COMPLETENESS_MIN and score >= CONFIDENCE_FLOOR_BLOCKING:
+        # Skip if CR-C01 already fired — that's already blocking at a higher level.
+        triggers.append(EscalationTrigger(
+            trigger_id="CR_C03_INPUT_INCOMPLETE",
+            trigger_type="confidence",
+            severity="advisory",
+            rank_impact=1.0 - input_dim,
+            description=(
+                f"Input completeness is low ({input_dim:.2f}): quantity, budget, or category "
+                f"may be absent or zero, making the cost-based ranking unreliable. "
+                f"Requester should confirm or supply the missing fields."
+            ),
+            escalate_to=_confidence_route("input", escalation_rules),
+            details={"input_completeness": input_dim},
+        ))
+
+    # CR-C04 — Poor market coverage: too few suppliers or high exclusion rate.
+    # Route to head of category — the supplier pool itself needs attention.
+    market_dim = float(dims.get("market_coverage", 1.0))
+    if market_dim < CONFIDENCE_MARKET_COVERAGE_MIN and score >= CONFIDENCE_FLOOR_BLOCKING:
+        meta = breakdown.get("meta", {})
+        triggers.append(EscalationTrigger(
+            trigger_id="CR_C04_MARKET_COVERAGE_POOR",
+            trigger_type="confidence",
+            severity="advisory",
+            rank_impact=1.0 - market_dim,
+            description=(
+                f"Market coverage is low ({market_dim:.2f}): only "
+                f"{meta.get('n_surviving_suppliers', '?')} supplier(s) qualified "
+                f"({meta.get('n_excluded', '?')} excluded). "
+                f"Competitive pricing cannot be confirmed — Head of Category should "
+                f"review the supplier pool."
+            ),
+            escalate_to=_confidence_route("market", escalation_rules),
+            details={
+                "market_coverage":       market_dim,
+                "n_surviving_suppliers": meta.get("n_surviving_suppliers"),
+                "n_excluded":            meta.get("n_excluded"),
+            },
+        ))
+
+    # CR-C05 — Sparse historical data: z-score unreliable or fallback ratio used.
+    # Route to sourcing excellence — they own historical award data.
+    data_dim = float(dims.get("data_reliability", 1.0))
+    if data_dim < CONFIDENCE_DATA_RELIABILITY_MIN and score >= CONFIDENCE_FLOOR_BLOCKING:
+        meta = breakdown.get("meta", {})
+        used_zscore = meta.get("used_zscore_sigmoid", False)
+        triggers.append(EscalationTrigger(
+            trigger_id="CR_C05_DATA_SPARSE",
+            trigger_type="confidence",
+            severity="advisory",
+            rank_impact=1.0 - data_dim,
+            description=(
+                f"Historical data reliability is low ({data_dim:.2f}): "
+                f"{meta.get('n_hist_data_points', 0)} historical award(s) found, "
+                f"{'z-score sigmoid used' if used_zscore else 'fallback price-ratio formula used — less discriminating'}. "
+                f"Sourcing Excellence should validate that the cost score reflects "
+                f"actual market rates for this category."
+            ),
+            escalate_to=_confidence_route("data", escalation_rules),
+            details={
+                "data_reliability":    data_dim,
+                "n_hist_data_points":  meta.get("n_hist_data_points"),
+                "used_zscore_sigmoid": used_zscore,
+            },
+        ))
+
+    # CR-C06 — Fast-track risk: policy says fast-track is eligible but confidence
+    # is too low to safely skip competitive quoting.
+    fast_track_eligible = global_outputs.get("fast_track_eligible")
+    if fast_track_eligible and score < CONFIDENCE_FAST_TRACK_MIN:
+        triggers.append(EscalationTrigger(
+            trigger_id="CR_C06_FAST_TRACK_CONFIDENCE_RISK",
+            trigger_type="confidence",
+            severity="advisory",
+            rank_impact=CONFIDENCE_FAST_TRACK_MIN - score,
+            description=(
+                f"Fast-track is policy-eligible for this request, but ranking confidence "
+                f"is {label} ({score:.2f}). Skipping competitive quoting on an unreliable "
+                f"ranking carries risk — Procurement Manager should approve any fast-track "
+                f"deviation explicitly."
+            ),
+            escalate_to=_confidence_route("fast_track", escalation_rules),
+            details={
+                "confidence_score":      score,
+                "confidence_label":      label,
+                "fast_track_eligible":   fast_track_eligible,
+            },
+        ))
+
+    return triggers
+
+
+# ---------------------------------------------------------------------------
 # Context-based adjustments
 # ---------------------------------------------------------------------------
 
@@ -393,6 +801,7 @@ def _apply_context_adjustments(
     triggers: list[EscalationTrigger],
     days_until_required: int | float | None,
     budget: float,
+    confidence_score: float | None = None,
 ) -> tuple[list[EscalationTrigger], list[str]]:
     """
     Post-process raw triggers with two context adjustments and return the
@@ -409,6 +818,12 @@ def _apply_context_adjustments(
        Higher budget lowers effective thresholds so even moderate rank impacts
        trigger escalation.  The raw rank_impact is unchanged; only severity
        classification is reconsidered.
+
+    3. **Confidence severity boost**:
+       When overall confidence is below CONFIDENCE_SEVERITY_BOOST_THRESHOLD,
+       existing advisory triggers (from missing_field / min_quotes_gap) are
+       promoted to blocking.  Confidence triggers (type="confidence") are never
+       suppressed by urgency — they fire independently of time pressure.
     """
     notes: list[str] = []
 
@@ -424,6 +839,18 @@ def _apply_context_adjustments(
             f"multiplier={mult:.2f}): blocking≥{eff_blocking:.3f}, "
             f"advisory≥{eff_advisory:.3f} ({direction} from baseline "
             f"{BLOCKING_THRESHOLD}/{ADVISORY_THRESHOLD})."
+        )
+
+    # --- Confidence severity boost ---
+    low_confidence = (
+        confidence_score is not None
+        and confidence_score < CONFIDENCE_SEVERITY_BOOST_THRESHOLD
+    )
+    if low_confidence:
+        notes.append(
+            f"Confidence severity boost active (confidence={confidence_score:.2f} "
+            f"< {CONFIDENCE_SEVERITY_BOOST_THRESHOLD}): advisory triggers from "
+            f"missing_field and min_quotes_gap are promoted to blocking."
         )
 
     # --- Urgency flag ---
@@ -447,14 +874,17 @@ def _apply_context_adjustments(
         )
 
     # --- Apply to each trigger ---
+    # "confidence" triggers are intentionally excluded from urgency suppression:
+    # low confidence is a structural problem independent of time pressure.
     _TIME_SENSITIVE = {"missing_field", "min_quotes_gap"}
 
     adjusted: list[EscalationTrigger] = []
     for t in triggers:
         # 1. Re-classify severity with budget-adjusted thresholds.
-        #    insufficient_suppliers is always blocking regardless.
-        if t.trigger_type == "insufficient_suppliers":
-            new_severity = "blocking"
+        #    insufficient_suppliers and confidence triggers are always at least
+        #    their originally-computed severity (confidence triggers set their own).
+        if t.trigger_type in ("insufficient_suppliers", "confidence"):
+            new_severity = t.severity
         elif t.rank_impact >= eff_blocking:
             new_severity = "blocking"
         elif t.rank_impact >= eff_advisory:
@@ -462,14 +892,29 @@ def _apply_context_adjustments(
         else:
             new_severity = "logged"
 
-        # 2. Urgency suppression overrides (always wins against budget upgrade).
+        # 2. Confidence severity boost: promote advisory → blocking for
+        #    non-confidence trigger types when confidence is globally low.
+        if low_confidence and new_severity == "advisory" and t.trigger_type in _TIME_SENSITIVE:
+            new_severity = "blocking"
+
+        # 3. Urgency suppression: overrides everything for time-sensitive types,
+        #    but NEVER suppresses confidence triggers even under time pressure.
         suppression_reason: str | None = None
         if is_urgent and t.trigger_type in _TIME_SENSITIVE:
-            new_severity = "logged"
-            suppression_reason = (
-                f"Suppressed: {days_until_required} day(s) remain — "
-                f"no time to act on this information."
-            )
+            if low_confidence:
+                # Confidence boost vetoes urgency suppression for advisory→blocking cases.
+                # Urgency still suppresses triggers that would otherwise be "logged".
+                if new_severity == "logged":
+                    suppression_reason = (
+                        f"Suppressed: {days_until_required} day(s) remain — "
+                        f"no time to act on this information."
+                    )
+            else:
+                new_severity = "logged"
+                suppression_reason = (
+                    f"Suppressed: {days_until_required} day(s) remain — "
+                    f"no time to act on this information."
+                )
 
         adjusted.append(EscalationTrigger(
             trigger_id=t.trigger_id,
@@ -490,11 +935,12 @@ def _apply_context_adjustments(
 # ---------------------------------------------------------------------------
 
 def evaluate_escalations(
-    request:            dict[str, Any],
-    outcome:            dict[str, Any],
-    fix_in_keys:        set[str],
-    field_impact_map:   dict[str, float],
-    escalation_rules:   list[dict],
+    request:               dict[str, Any],
+    outcome:               dict[str, Any],
+    fix_in_keys:           set[str],
+    field_impact_map:      dict[str, float],
+    escalation_rules:      list[dict],
+    confidence_assessment: Any | None = None,
 ) -> EscalationAssessment:
     """
     Run all escalation assessors and return a consolidated EscalationAssessment.
@@ -512,8 +958,15 @@ def evaluate_escalations(
         Pre-computed per-field rank-impact scores from build_field_impact_map().
     escalation_rules:
         Natural-language escalation rule records from the escalation_rules store.
+    confidence_assessment:
+        Optional ConfidenceAssessment from result_flags.compute_confidence_score().
+        When provided, enables CR-C01..CR-C06 confidence-based triggers and
+        severity boosting of existing triggers.
     """
     triggers: list[EscalationTrigger] = []
+
+    supplier_results = outcome.get("supplier_results", [])
+    global_outputs   = outcome.get("global_outputs", {})
 
     # --- Missing fields ---
     triggers.extend(
@@ -521,8 +974,6 @@ def evaluate_escalations(
     )
 
     # --- Min quotes gap ---
-    supplier_results = outcome.get("supplier_results", [])
-    global_outputs   = outcome.get("global_outputs", {})
     # O-6: use `or 1` only when the value is absent (None), not when it is 0.
     # A deliberately-set 0 means "no minimum" and should not be overridden to 1.
     _min_quotes_raw = global_outputs.get("min_supplier_quotes")
@@ -531,7 +982,14 @@ def evaluate_escalations(
         assess_min_quotes_gap(supplier_results, min_quotes, escalation_rules)
     )
 
-    # --- Context adjustments: urgency + budget scaling ---
+    # --- Confidence-based triggers (CR-C01 … CR-C06) ---
+    triggers.extend(
+        assess_confidence_triggers(
+            confidence_assessment, supplier_results, global_outputs, escalation_rules
+        )
+    )
+
+    # --- Context adjustments: urgency + budget scaling + confidence severity boost ---
     days_raw = request.get("days_until_required")
     try:
         days_until_required: int | float | None = float(days_raw) if days_raw is not None else None
@@ -539,14 +997,34 @@ def evaluate_escalations(
         days_until_required = None
 
     budget = float(request.get("budget") or 0)
-    triggers, context_notes = _apply_context_adjustments(triggers, days_until_required, budget)
+    confidence_score = (
+        float(getattr(confidence_assessment, "score", 1.0))
+        if confidence_assessment is not None else None
+    )
+    triggers, context_notes = _apply_context_adjustments(
+        triggers, days_until_required, budget, confidence_score
+    )
 
-    # Sort: blocking first, then by descending rank_impact
-    triggers.sort(key=lambda t: (t.severity != "blocking", -t.rank_impact))
+    # --- Convert engine triggers → EscalationRecord (blocking + advisory only) ---
+    # "logged" triggers are suppressed and excluded from the public record list.
+    engine_records: list[EscalationRecord] = [
+        _trigger_to_record(t)
+        for t in sorted(triggers, key=lambda t: (t.severity != "blocking", -t.rank_impact))
+        if t.severity in ("blocking", "advisory")
+    ]
 
-    assessment = EscalationAssessment(triggers=triggers, context_notes=context_notes)
-    assessment.has_blocking = any(t.severity == "blocking" for t in triggers)
-    assessment.has_advisory = any(t.severity == "advisory" for t in triggers)
-    assessment.should_escalate = assessment.has_blocking or assessment.has_advisory
+    # --- Convert action-pipeline escalate_to_* booleans → EscalationRecord ---
+    # These come from AT/ER rule actions evaluated during the supplier pipeline.
+    # They are role-agnostic: any escalate_to_<anything> key is handled dynamically.
+    action_records = build_action_escalations(global_outputs, request)
+
+    # Merge: policy-rule records first (they fire from explicit thresholds),
+    # then engine records (structural / confidence issues).
+    all_records = action_records + engine_records
+
+    assessment = EscalationAssessment(records=all_records, context_notes=context_notes)
+    assessment.has_blocking    = any(r.severity == "blocking"  for r in all_records)
+    assessment.has_advisory    = any(r.severity == "advisory"  for r in all_records)
+    assessment.needs_escalation = assessment.has_blocking or assessment.has_advisory
 
     return assessment

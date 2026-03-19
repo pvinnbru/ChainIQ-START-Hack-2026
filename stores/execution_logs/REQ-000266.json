@@ -1,6 +1,6 @@
 {
   "request_id": "REQ-000266",
-  "timestamp": "2026-03-19T14:39:47.079994+00:00",
+  "timestamp": "2026-03-19T18:01:10.911773+00:00",
   "global_context_snapshot": {
     "category_l1": "Marketing",
     "category_l2": "Content Production Services",
@@ -2135,16 +2135,6 @@
   "escalation_assessment": null,
   "flag_assessment": {
     "flags": [
-      {
-        "flag_id": "HIGH_EXCLUSION_RATE",
-        "severity": "warning",
-        "description": "151 of 151 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.",
-        "details": {
-          "n_total": 151,
-          "n_excluded": 151,
-          "exclusion_fraction": 1.0
-        }
-      },
       {
         "flag_id": "SINGLE_QUALIFIED_SUPPLIER",
         "severity": "warning",
