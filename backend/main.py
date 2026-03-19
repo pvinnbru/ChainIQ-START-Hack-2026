@@ -67,6 +67,21 @@ def _start_slack_bot():
 
 threading.Thread(target=_start_slack_bot, daemon=True, name="slack-bot").start()
 
+
+def _prewarm_evaluation_pipeline():
+    try:
+        from services.evaluation import _ensure_paths
+        _ensure_paths()
+        from evaluate_request import _get_pipeline
+        print("⏳ Pre-warming evaluation pipeline...")
+        _get_pipeline()
+        print("✅ Evaluation pipeline ready.")
+    except Exception as e:
+        print(f"⚠️  Evaluation pipeline pre-warm failed: {e}")
+
+
+threading.Thread(target=_prewarm_evaluation_pipeline, daemon=True, name="eval-prewarm").start()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],

@@ -1,8 +1,8 @@
 {
   "ruleset_id": "approval_thresholds",
-  "data_hash": "4921ef9152a628150dc48adabc12ed9a212b41db347eb0caa8bd0d0ea8a26bbe",
+  "data_hash": "a5dac4b6fe9243e93b7ae597d431a3f533e64fa949d80fb32480adcaac54eb11",
   "is_low_confidence": false,
-  "created_at": "2026-03-19T14:31:52.542064+00:00",
+  "created_at": "2026-03-19T18:00:41.185311+00:00",
   "sorted_actions": [
     [
       "ALI",
@@ -256,35 +256,35 @@
     },
     "6": {
       "rule_id": "AT-012",
-      "rule_description": "Requires Procurement Manager escalation for budgets between 27,000 and 108,000 USD"
+      "rule_description": "Requires Procurement Manager escalation for USD budgets between 27,000 and 108,000"
     },
     "7": {
       "rule_id": "AT-012",
-      "rule_description": "Sets minimum supplier quotes to 2 for budgets between 27,000 and 108,000 USD"
+      "rule_description": "Sets minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000"
     },
     "8": {
       "rule_id": "AT-011",
-      "rule_description": "Requires business sign-off for USD budgets between 0 and 27,000"
+      "rule_description": "Requires business sign-off for budgets between 0 and 27000 USD."
     },
     "9": {
       "rule_id": "AT-011",
-      "rule_description": "Sets minimum supplier quotes to 1 for USD budgets between 0 and 27,000"
+      "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 27000 USD."
     },
     "10": {
       "rule_id": "AT-010",
-      "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF."
+      "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF"
     },
     "11": {
       "rule_id": "AT-010",
-      "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF."
+      "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF"
     },
     "12": {
       "rule_id": "AT-009",
-      "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 CHF"
+      "rule_description": "Requires Head of Strategic Sourcing approval for CHF budgets between 500,000 and 4,999,999.99"
     },
     "13": {
       "rule_id": "AT-009",
-      "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 CHF"
+      "rule_description": "Sets minimum supplier quotes to 3 for CHF budgets between 500,000 and 4,999,999.99"
     },
     "14": {
       "rule_id": "AT-008",
@@ -296,15 +296,15 @@
     },
     "16": {
       "rule_id": "AT-007",
-      "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF"
+      "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF."
     },
     "17": {
       "rule_id": "AT-007",
-      "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF"
+      "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF."
     },
     "18": {
       "rule_id": "AT-006",
-      "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF."
+      "rule_description": "Sets the minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF."
     },
     "19": {
       "rule_id": "AT-005",
@@ -316,31 +316,31 @@
     },
     "21": {
       "rule_id": "AT-004",
-      "rule_description": "Requires escalation to Head of Strategic Sourcing for EUR budgets between 500,000 and 4,999,999.99"
+      "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR."
     },
     "22": {
       "rule_id": "AT-004",
-      "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 500,000 and 4,999,999.99"
+      "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR."
     },
     "23": {
       "rule_id": "AT-003",
-      "rule_description": "Requires Head of Category escalation for EUR budgets between 100,000 and 499,999.99"
+      "rule_description": "Requires Head of Category escalation for budgets between 100,000 and 499,999.99 EUR"
     },
     "24": {
       "rule_id": "AT-003",
-      "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 100,000 and 499,999.99"
+      "rule_description": "Sets minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR"
     },
     "25": {
       "rule_id": "AT-002",
-      "rule_description": "Requires Procurement Manager approval for EUR budgets between 25,000 and 99,999.99"
+      "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 EUR"
     },
     "26": {
       "rule_id": "AT-002",
-      "rule_description": "Sets minimum supplier quotes to 2 for EUR budgets between 25,000 and 99,999.99"
+      "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 EUR"
     },
     "27": {
       "rule_id": "AT-001",
-      "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 EUR."
+      "rule_description": "Sets the minimum number of supplier quotes to 1 for budgets between 0 and 24,999.99 EUR."
     }
   }
 }

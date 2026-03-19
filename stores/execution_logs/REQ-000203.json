@@ -1,6 +1,6 @@
 {
   "request_id": "REQ-000203",
-  "timestamp": "2026-03-19T14:38:23.902318+00:00",
+  "timestamp": "2026-03-19T18:01:09.204552+00:00",
   "global_context_snapshot": {
     "category_l1": "Marketing",
     "category_l2": "Social Media Advertising",
@@ -1358,7 +1358,7 @@
       "final_compliance_score": null,
       "final_normalized_rank": null,
       "excluded": true,
-      "exclusion_reason": "no matching pricing tier for this region/quantity"
+      "exclusion_reason": "quantity exceeds all available pricing tiers for this supplier"
     },
     {
       "supplier_id": "SUP-0040",
@@ -1428,7 +1428,7 @@
       "final_compliance_score": null,
       "final_normalized_rank": null,
       "excluded": true,
-      "exclusion_reason": "no matching pricing tier for this region/quantity"
+      "exclusion_reason": "quantity exceeds all available pricing tiers for this supplier"
     },
     {
       "supplier_id": "SUP-0041",
@@ -1484,7 +1484,7 @@
       "final_compliance_score": null,
       "final_normalized_rank": null,
       "excluded": true,
-      "exclusion_reason": "no matching pricing tier for this region/quantity"
+      "exclusion_reason": "quantity exceeds all available pricing tiers for this supplier"
     },
     {
       "supplier_id": "SUP-0042",
@@ -1526,7 +1526,7 @@
       "final_compliance_score": null,
       "final_normalized_rank": null,
       "excluded": true,
-      "exclusion_reason": "no matching pricing tier for this region/quantity"
+      "exclusion_reason": "quantity exceeds all available pricing tiers for this supplier"
     },
     {
       "supplier_id": "SUP-0043",
@@ -2138,11 +2138,19 @@
       {
         "flag_id": "HIGH_EXCLUSION_RATE",
         "severity": "warning",
-        "description": "151 of 151 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.",
+        "description": "4 of 4 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.",
         "details": {
-          "n_total": 151,
-          "n_excluded": 151,
+          "n_total": 4,
+          "n_excluded": 4,
           "exclusion_fraction": 1.0
+        }
+      },
+      {
+        "flag_id": "QUANTITY_EXCEEDS_TIER_MAXIMUM",
+        "severity": "warning",
+        "description": "4 supplier(s) were excluded because the requested quantity exceeds all available pricing tiers. Consider reducing the order size or splitting the order across multiple requests.",
+        "details": {
+          "n_excluded": 4
         }
       },
       {

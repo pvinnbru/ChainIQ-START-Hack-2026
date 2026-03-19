@@ -1,6 +1,6 @@
 {
   "request_id": "REQ-000234",
-  "timestamp": "2026-03-19T14:39:07.557468+00:00",
+  "timestamp": "2026-03-19T18:01:10.465464+00:00",
   "global_context_snapshot": {
     "category_l1": "Facilities",
     "category_l2": "Reception and Lounge Furniture",
@@ -868,7 +868,7 @@
       "final_compliance_score": null,
       "final_normalized_rank": null,
       "excluded": true,
-      "exclusion_reason": "no matching pricing tier for this region/quantity"
+      "exclusion_reason": "quantity exceeds all available pricing tiers for this supplier"
     },
     {
       "supplier_id": "SUP-0021",
@@ -924,7 +924,7 @@
       "final_compliance_score": null,
       "final_normalized_rank": null,
       "excluded": true,
-      "exclusion_reason": "no matching pricing tier for this region/quantity"
+      "exclusion_reason": "quantity exceeds all available pricing tiers for this supplier"
     },
     {
       "supplier_id": "SUP-0022",
@@ -966,7 +966,7 @@
       "final_compliance_score": null,
       "final_normalized_rank": null,
       "excluded": true,
-      "exclusion_reason": "no matching pricing tier for this region/quantity"
+      "exclusion_reason": "quantity exceeds all available pricing tiers for this supplier"
     },
     {
       "supplier_id": "SUP-0023",
@@ -2138,11 +2138,19 @@
       {
         "flag_id": "HIGH_EXCLUSION_RATE",
         "severity": "warning",
-        "description": "151 of 151 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.",
+        "description": "3 of 3 candidate suppliers (100%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.",
         "details": {
-          "n_total": 151,
-          "n_excluded": 151,
+          "n_total": 3,
+          "n_excluded": 3,
           "exclusion_fraction": 1.0
+        }
+      },
+      {
+        "flag_id": "QUANTITY_EXCEEDS_TIER_MAXIMUM",
+        "severity": "warning",
+        "description": "3 supplier(s) were excluded because the requested quantity exceeds all available pricing tiers. Consider reducing the order size or splitting the order across multiple requests.",
+        "details": {
+          "n_excluded": 3
         }
       },
       {

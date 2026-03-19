@@ -47,7 +47,7 @@ SCHEMA_PATH = _MODULE_DIR / "start_dict.csv"
 SUPPLIERS_PATH = DATA_DIR / "suppliers.csv"
 PRICING_PATH = DATA_DIR / "pricing.csv"
 RANKING_STORE_PATH = STORE_DIR / "ranking_actions.json"
-EXAMPLE_REQUEST_PATH = _HERE / "examples/example_request.json"
+EXAMPLE_REQUEST_PATH =   "examples/example_request.json"
 
 
 # ---------------------------------------------------------------------------

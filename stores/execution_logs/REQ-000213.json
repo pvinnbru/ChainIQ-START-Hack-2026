@@ -1,6 +1,6 @@
 {
   "request_id": "REQ-000213",
-  "timestamp": "2026-03-19T14:38:39.991175+00:00",
+  "timestamp": "2026-03-19T18:01:11.523818+00:00",
   "global_context_snapshot": {
     "category_l1": "IT",
     "category_l2": "Docking Stations",
@@ -74,7 +74,7 @@
         {
           "action_index": 0,
           "rule_id": "AT-001",
-          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.",
+          "rule_description": "Sets the minimum number of supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -93,12 +93,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 1,
           "rule_id": "AT-002",
-          "rule_description": "Sets minimum supplier quotes to 2 for EUR budgets between 25,000 and 99,999.99",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -117,12 +120,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": 2,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": false
         },
         {
           "action_index": 2,
           "rule_id": "AT-002",
-          "rule_description": "Requires Procurement Manager approval for EUR budgets between 25,000 and 99,999.99",
+          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -141,12 +147,15 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": true,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": false
         },
         {
           "action_index": 3,
           "rule_id": "AT-003",
-          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 100,000 and 499,999.99",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -165,12 +174,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 4,
           "rule_id": "AT-003",
-          "rule_description": "Requires Head of Category escalation for EUR budgets between 100,000 and 499,999.99",
+          "rule_description": "Requires Head of Category escalation for budgets between 100,000 and 499,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -189,12 +201,15 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 5,
           "rule_id": "AT-004",
-          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 500,000 and 4,999,999.99",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -213,12 +228,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 6,
           "rule_id": "AT-004",
-          "rule_description": "Requires escalation to Head of Strategic Sourcing for EUR budgets between 500,000 and 4,999,999.99",
+          "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -237,7 +255,10 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 7,
@@ -261,7 +282,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 8,
@@ -285,12 +309,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 9,
           "rule_id": "AT-006",
-          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.",
+          "rule_description": "Sets the minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -309,12 +336,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 10,
           "rule_id": "AT-007",
-          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -333,12 +363,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 11,
           "rule_id": "AT-007",
-          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF",
+          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -357,7 +390,10 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 12,
@@ -381,7 +417,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 13,
@@ -405,12 +444,15 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 14,
           "rule_id": "AT-009",
-          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 CHF",
+          "rule_description": "Sets minimum supplier quotes to 3 for CHF budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -429,12 +471,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 15,
           "rule_id": "AT-009",
-          "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 CHF",
+          "rule_description": "Requires Head of Strategic Sourcing approval for CHF budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -453,12 +498,15 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 16,
           "rule_id": "AT-010",
-          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF.",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -477,12 +525,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 17,
           "rule_id": "AT-010",
-          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF.",
+          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -501,12 +552,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 18,
           "rule_id": "AT-011",
-          "rule_description": "Sets minimum supplier quotes to 1 for USD budgets between 0 and 27,000",
+          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 27000 USD.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -525,12 +579,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 19,
           "rule_id": "AT-011",
-          "rule_description": "Requires business sign-off for USD budgets between 0 and 27,000",
+          "rule_description": "Requires business sign-off for budgets between 0 and 27000 USD.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -549,12 +606,15 @@
           "output_key": "escalate_to_requester",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 20,
           "rule_id": "AT-012",
-          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 27,000 and 108,000 USD",
+          "rule_description": "Sets minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -573,12 +633,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 21,
           "rule_id": "AT-012",
-          "rule_description": "Requires Procurement Manager escalation for budgets between 27,000 and 108,000 USD",
+          "rule_description": "Requires Procurement Manager escalation for USD budgets between 27,000 and 108,000",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -597,7 +660,10 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 22,
@@ -621,7 +687,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 23,
@@ -645,7 +714,10 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 24,
@@ -669,7 +741,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 25,
@@ -693,7 +768,10 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 26,
@@ -717,7 +795,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 27,
@@ -741,12 +822,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 28,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.2 * esg_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -765,12 +849,15 @@
           "output_key": "_rep_esg",
           "output_value_before": null,
           "output_value_after": 14.600000000000001,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 29,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.5 * quality_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -789,12 +876,15 @@
           "output_key": "_rep_quality",
           "output_value_before": null,
           "output_value_after": 42.5,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 30,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate -0.3 * risk_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -813,12 +903,15 @@
           "output_key": "_rep_risk_neg",
           "output_value_before": null,
           "output_value_after": -4.5,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 31,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.3 * (100 - risk_score) for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -837,12 +930,15 @@
           "output_key": "_rep_risk",
           "output_value_before": null,
           "output_value_after": 25.5,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 32,
-          "rule_id": "RANKING",
-          "rule_description": "Sum quality and risk components for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -861,12 +957,15 @@
           "output_key": "_rep_quality_risk",
           "output_value_before": null,
           "output_value_after": 68.0,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 33,
-          "rule_id": "RANKING",
-          "rule_description": "Add ESG component to compute final reputation_score.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -885,12 +984,15 @@
           "output_key": "reputation_score",
           "output_value_before": null,
           "output_value_after": 82.6,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 34,
-          "rule_id": "RANKING",
-          "rule_description": "Compute total cost (cost_total) as quantity * unit_price.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -909,12 +1011,15 @@
           "output_key": "cost_total",
           "output_value_before": null,
           "output_value_after": 165.0,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 35,
-          "rule_id": "RANKING",
-          "rule_description": "Compute raw cost rank score (_crs_raw) as 10000000 / (cost_total + 1).",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -933,12 +1038,15 @@
           "output_key": "_crs_denom",
           "output_value_before": null,
           "output_value_after": 166.0,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 36,
-          "rule_id": "RANKING",
-          "rule_description": "Cap cost_rank_score at 100 (or use raw value directly if capping unavailable).",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -957,12 +1065,15 @@
           "output_key": "_crs_raw",
           "output_value_before": null,
           "output_value_after": 60240.96385542169,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 37,
-          "rule_id": "RANKING",
-          "rule_description": "Compute cost component of rank as cost_rank_score * 100.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -981,12 +1092,15 @@
           "output_key": "cost_rank_score",
           "output_value_before": null,
           "output_value_after": false,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 38,
-          "rule_id": "RANKING",
-          "rule_description": "Combine cost component and reputation_score to compute final rank.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "SRM",
           "action_tuple": [
             "SRM",
@@ -1005,7 +1119,10 @@
           "output_key": "_rank_cost_component",
           "output_value_before": null,
           "output_value_after": 0,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 39,
@@ -1029,7 +1146,10 @@
           "output_key": "rank",
           "output_value_before": null,
           "output_value_after": 82.6,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         }
       ],
       "final_state": {
@@ -1078,7 +1198,9 @@
         "_rank_cost_component": 0,
         "rank": 82.6,
         "text_compliance_score": 0.8,
+        "_historic_score_is_dummy": true,
         "preferred_supplier_bonus_applied": true,
+        "rank_without_preferred_bonus": 0.77752,
         "normalized_rank": 0.855272,
         "blended_avg_unit_price": 160.875,
         "budget_penalty": 1.0
@@ -1176,7 +1298,7 @@
         {
           "action_index": 0,
           "rule_id": "AT-001",
-          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.",
+          "rule_description": "Sets the minimum number of supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1195,12 +1317,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 1,
           "rule_id": "AT-002",
-          "rule_description": "Sets minimum supplier quotes to 2 for EUR budgets between 25,000 and 99,999.99",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1219,12 +1344,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": 2,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": false
         },
         {
           "action_index": 2,
           "rule_id": "AT-002",
-          "rule_description": "Requires Procurement Manager approval for EUR budgets between 25,000 and 99,999.99",
+          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1243,12 +1371,15 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": true,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": false
         },
         {
           "action_index": 3,
           "rule_id": "AT-003",
-          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 100,000 and 499,999.99",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1267,12 +1398,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 4,
           "rule_id": "AT-003",
-          "rule_description": "Requires Head of Category escalation for EUR budgets between 100,000 and 499,999.99",
+          "rule_description": "Requires Head of Category escalation for budgets between 100,000 and 499,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1291,12 +1425,15 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 5,
           "rule_id": "AT-004",
-          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 500,000 and 4,999,999.99",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1315,12 +1452,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 6,
           "rule_id": "AT-004",
-          "rule_description": "Requires escalation to Head of Strategic Sourcing for EUR budgets between 500,000 and 4,999,999.99",
+          "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1339,7 +1479,10 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 7,
@@ -1363,7 +1506,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 8,
@@ -1387,12 +1533,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 9,
           "rule_id": "AT-006",
-          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.",
+          "rule_description": "Sets the minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1411,12 +1560,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 10,
           "rule_id": "AT-007",
-          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1435,12 +1587,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 11,
           "rule_id": "AT-007",
-          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF",
+          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1459,7 +1614,10 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 12,
@@ -1483,7 +1641,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 13,
@@ -1507,12 +1668,15 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 14,
           "rule_id": "AT-009",
-          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 CHF",
+          "rule_description": "Sets minimum supplier quotes to 3 for CHF budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1531,12 +1695,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 15,
           "rule_id": "AT-009",
-          "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 CHF",
+          "rule_description": "Requires Head of Strategic Sourcing approval for CHF budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1555,12 +1722,15 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 16,
           "rule_id": "AT-010",
-          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF.",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1579,12 +1749,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 17,
           "rule_id": "AT-010",
-          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF.",
+          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1603,12 +1776,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 18,
           "rule_id": "AT-011",
-          "rule_description": "Sets minimum supplier quotes to 1 for USD budgets between 0 and 27,000",
+          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 27000 USD.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1627,12 +1803,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 19,
           "rule_id": "AT-011",
-          "rule_description": "Requires business sign-off for USD budgets between 0 and 27,000",
+          "rule_description": "Requires business sign-off for budgets between 0 and 27000 USD.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1651,12 +1830,15 @@
           "output_key": "escalate_to_requester",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 20,
           "rule_id": "AT-012",
-          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 27,000 and 108,000 USD",
+          "rule_description": "Sets minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1675,12 +1857,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 21,
           "rule_id": "AT-012",
-          "rule_description": "Requires Procurement Manager escalation for budgets between 27,000 and 108,000 USD",
+          "rule_description": "Requires Procurement Manager escalation for USD budgets between 27,000 and 108,000",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -1699,7 +1884,10 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 22,
@@ -1723,7 +1911,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 23,
@@ -1747,7 +1938,10 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 24,
@@ -1771,7 +1965,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 25,
@@ -1795,7 +1992,10 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 26,
@@ -1819,7 +2019,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 27,
@@ -1843,12 +2046,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 28,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.2 * esg_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1867,12 +2073,15 @@
           "output_key": "_rep_esg",
           "output_value_before": null,
           "output_value_after": 13.200000000000001,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 29,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.5 * quality_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1891,12 +2100,15 @@
           "output_key": "_rep_quality",
           "output_value_before": null,
           "output_value_after": 41.5,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 30,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate -0.3 * risk_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1915,12 +2127,15 @@
           "output_key": "_rep_risk_neg",
           "output_value_before": null,
           "output_value_after": -7.8,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 31,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.3 * (100 - risk_score) for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1939,12 +2154,15 @@
           "output_key": "_rep_risk",
           "output_value_before": null,
           "output_value_after": 22.2,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 32,
-          "rule_id": "RANKING",
-          "rule_description": "Sum quality and risk components for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1963,12 +2181,15 @@
           "output_key": "_rep_quality_risk",
           "output_value_before": null,
           "output_value_after": 63.7,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 33,
-          "rule_id": "RANKING",
-          "rule_description": "Add ESG component to compute final reputation_score.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -1987,12 +2208,15 @@
           "output_key": "reputation_score",
           "output_value_before": null,
           "output_value_after": 76.9,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 34,
-          "rule_id": "RANKING",
-          "rule_description": "Compute total cost (cost_total) as quantity * unit_price.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2011,12 +2235,15 @@
           "output_key": "cost_total",
           "output_value_before": null,
           "output_value_after": 163.35,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 35,
-          "rule_id": "RANKING",
-          "rule_description": "Compute raw cost rank score (_crs_raw) as 10000000 / (cost_total + 1).",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2035,12 +2262,15 @@
           "output_key": "_crs_denom",
           "output_value_before": null,
           "output_value_after": 164.35,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 36,
-          "rule_id": "RANKING",
-          "rule_description": "Cap cost_rank_score at 100 (or use raw value directly if capping unavailable).",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2059,12 +2289,15 @@
           "output_key": "_crs_raw",
           "output_value_before": null,
           "output_value_after": 60845.75600851841,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 37,
-          "rule_id": "RANKING",
-          "rule_description": "Compute cost component of rank as cost_rank_score * 100.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -2083,12 +2316,15 @@
           "output_key": "cost_rank_score",
           "output_value_before": null,
           "output_value_after": false,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 38,
-          "rule_id": "RANKING",
-          "rule_description": "Combine cost component and reputation_score to compute final rank.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "SRM",
           "action_tuple": [
             "SRM",
@@ -2107,7 +2343,10 @@
           "output_key": "_rank_cost_component",
           "output_value_before": null,
           "output_value_after": 0,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 39,
@@ -2131,7 +2370,10 @@
           "output_key": "rank",
           "output_value_before": null,
           "output_value_after": 76.9,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         }
       ],
       "final_state": {
@@ -2180,7 +2422,9 @@
         "_rank_cost_component": 0,
         "rank": 76.9,
         "text_compliance_score": 0.8,
+        "_historic_score_is_dummy": true,
         "preferred_supplier_bonus_applied": true,
+        "rank_without_preferred_bonus": 0.783865,
         "normalized_rank": 0.862252,
         "blended_avg_unit_price": 160.875,
         "budget_penalty": 1.0
@@ -2418,7 +2662,7 @@
         {
           "action_index": 0,
           "rule_id": "AT-001",
-          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.",
+          "rule_description": "Sets the minimum number of supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2437,12 +2681,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 1,
           "rule_id": "AT-002",
-          "rule_description": "Sets minimum supplier quotes to 2 for EUR budgets between 25,000 and 99,999.99",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2461,12 +2708,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": 2,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": false
         },
         {
           "action_index": 2,
           "rule_id": "AT-002",
-          "rule_description": "Requires Procurement Manager approval for EUR budgets between 25,000 and 99,999.99",
+          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2485,12 +2735,15 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": true,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": false
         },
         {
           "action_index": 3,
           "rule_id": "AT-003",
-          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 100,000 and 499,999.99",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2509,12 +2762,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 4,
           "rule_id": "AT-003",
-          "rule_description": "Requires Head of Category escalation for EUR budgets between 100,000 and 499,999.99",
+          "rule_description": "Requires Head of Category escalation for budgets between 100,000 and 499,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2533,12 +2789,15 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 5,
           "rule_id": "AT-004",
-          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 500,000 and 4,999,999.99",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2557,12 +2816,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 6,
           "rule_id": "AT-004",
-          "rule_description": "Requires escalation to Head of Strategic Sourcing for EUR budgets between 500,000 and 4,999,999.99",
+          "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2581,7 +2843,10 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 7,
@@ -2605,7 +2870,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 8,
@@ -2629,12 +2897,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 9,
           "rule_id": "AT-006",
-          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.",
+          "rule_description": "Sets the minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2653,12 +2924,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 10,
           "rule_id": "AT-007",
-          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2677,12 +2951,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 11,
           "rule_id": "AT-007",
-          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF",
+          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2701,7 +2978,10 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 12,
@@ -2725,7 +3005,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 13,
@@ -2749,12 +3032,15 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 14,
           "rule_id": "AT-009",
-          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 CHF",
+          "rule_description": "Sets minimum supplier quotes to 3 for CHF budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2773,12 +3059,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 15,
           "rule_id": "AT-009",
-          "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 CHF",
+          "rule_description": "Requires Head of Strategic Sourcing approval for CHF budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2797,12 +3086,15 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 16,
           "rule_id": "AT-010",
-          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF.",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2821,12 +3113,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 17,
           "rule_id": "AT-010",
-          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF.",
+          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2845,12 +3140,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 18,
           "rule_id": "AT-011",
-          "rule_description": "Sets minimum supplier quotes to 1 for USD budgets between 0 and 27,000",
+          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 27000 USD.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2869,12 +3167,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 19,
           "rule_id": "AT-011",
-          "rule_description": "Requires business sign-off for USD budgets between 0 and 27,000",
+          "rule_description": "Requires business sign-off for budgets between 0 and 27000 USD.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2893,12 +3194,15 @@
           "output_key": "escalate_to_requester",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 20,
           "rule_id": "AT-012",
-          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 27,000 and 108,000 USD",
+          "rule_description": "Sets minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2917,12 +3221,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 21,
           "rule_id": "AT-012",
-          "rule_description": "Requires Procurement Manager escalation for budgets between 27,000 and 108,000 USD",
+          "rule_description": "Requires Procurement Manager escalation for USD budgets between 27,000 and 108,000",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -2941,7 +3248,10 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 22,
@@ -2965,7 +3275,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 23,
@@ -2989,7 +3302,10 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 24,
@@ -3013,7 +3329,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 25,
@@ -3037,7 +3356,10 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 26,
@@ -3061,7 +3383,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 27,
@@ -3085,12 +3410,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 28,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.2 * esg_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -3109,12 +3437,15 @@
           "output_key": "_rep_esg",
           "output_value_before": null,
           "output_value_after": 14.4,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 29,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.5 * quality_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -3133,12 +3464,15 @@
           "output_key": "_rep_quality",
           "output_value_before": null,
           "output_value_after": 41.0,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 30,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate -0.3 * risk_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -3157,12 +3491,15 @@
           "output_key": "_rep_risk_neg",
           "output_value_before": null,
           "output_value_after": -5.7,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 31,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.3 * (100 - risk_score) for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -3181,12 +3518,15 @@
           "output_key": "_rep_risk",
           "output_value_before": null,
           "output_value_after": 24.3,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 32,
-          "rule_id": "RANKING",
-          "rule_description": "Sum quality and risk components for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -3205,12 +3545,15 @@
           "output_key": "_rep_quality_risk",
           "output_value_before": null,
           "output_value_after": 65.3,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 33,
-          "rule_id": "RANKING",
-          "rule_description": "Add ESG component to compute final reputation_score.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -3229,12 +3572,15 @@
           "output_key": "reputation_score",
           "output_value_before": null,
           "output_value_after": 79.7,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 34,
-          "rule_id": "RANKING",
-          "rule_description": "Compute total cost (cost_total) as quantity * unit_price.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -3253,12 +3599,15 @@
           "output_key": "cost_total",
           "output_value_before": null,
           "output_value_after": 158.4,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 35,
-          "rule_id": "RANKING",
-          "rule_description": "Compute raw cost rank score (_crs_raw) as 10000000 / (cost_total + 1).",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -3277,12 +3626,15 @@
           "output_key": "_crs_denom",
           "output_value_before": null,
           "output_value_after": 159.4,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 36,
-          "rule_id": "RANKING",
-          "rule_description": "Cap cost_rank_score at 100 (or use raw value directly if capping unavailable).",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -3301,12 +3653,15 @@
           "output_key": "_crs_raw",
           "output_value_before": null,
           "output_value_after": 62735.25721455458,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 37,
-          "rule_id": "RANKING",
-          "rule_description": "Compute cost component of rank as cost_rank_score * 100.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -3325,12 +3680,15 @@
           "output_key": "cost_rank_score",
           "output_value_before": null,
           "output_value_after": false,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 38,
-          "rule_id": "RANKING",
-          "rule_description": "Combine cost component and reputation_score to compute final rank.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "SRM",
           "action_tuple": [
             "SRM",
@@ -3349,7 +3707,10 @@
           "output_key": "_rank_cost_component",
           "output_value_before": null,
           "output_value_after": 0,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 39,
@@ -3373,7 +3734,10 @@
           "output_key": "rank",
           "output_value_before": null,
           "output_value_after": 79.7,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         }
       ],
       "final_state": {
@@ -3422,7 +3786,9 @@
         "_rank_cost_component": 0,
         "rank": 79.7,
         "text_compliance_score": 1.0,
+        "_historic_score_is_dummy": true,
         "preferred_supplier_bonus_applied": true,
+        "rank_without_preferred_bonus": 0.994925,
         "normalized_rank": 1.0,
         "blended_avg_unit_price": 160.875,
         "budget_penalty": 1.0
@@ -3534,7 +3900,7 @@
         {
           "action_index": 0,
           "rule_id": "AT-001",
-          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.",
+          "rule_description": "Sets the minimum number of supplier quotes to 1 for budgets between 0 and 24,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3553,12 +3919,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 1,
           "rule_id": "AT-002",
-          "rule_description": "Sets minimum supplier quotes to 2 for EUR budgets between 25,000 and 99,999.99",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3577,12 +3946,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": 2,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": false
         },
         {
           "action_index": 2,
           "rule_id": "AT-002",
-          "rule_description": "Requires Procurement Manager approval for EUR budgets between 25,000 and 99,999.99",
+          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3601,12 +3973,15 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": true,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": false
         },
         {
           "action_index": 3,
           "rule_id": "AT-003",
-          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 100,000 and 499,999.99",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3625,12 +4000,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 4,
           "rule_id": "AT-003",
-          "rule_description": "Requires Head of Category escalation for EUR budgets between 100,000 and 499,999.99",
+          "rule_description": "Requires Head of Category escalation for budgets between 100,000 and 499,999.99 EUR",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3649,12 +4027,15 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 5,
           "rule_id": "AT-004",
-          "rule_description": "Sets minimum supplier quotes to 3 for EUR budgets between 500,000 and 4,999,999.99",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3673,12 +4054,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 6,
           "rule_id": "AT-004",
-          "rule_description": "Requires escalation to Head of Strategic Sourcing for EUR budgets between 500,000 and 4,999,999.99",
+          "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3697,7 +4081,10 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 7,
@@ -3721,7 +4108,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 8,
@@ -3745,12 +4135,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 9,
           "rule_id": "AT-006",
-          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.",
+          "rule_description": "Sets the minimum supplier quotes to 1 for budgets between 0 and 24,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3769,12 +4162,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 10,
           "rule_id": "AT-007",
-          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF",
+          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 25,000 and 99,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3793,12 +4189,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 11,
           "rule_id": "AT-007",
-          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF",
+          "rule_description": "Requires Procurement Manager approval for budgets between 25,000 and 99,999.99 CHF.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3817,7 +4216,10 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 12,
@@ -3841,7 +4243,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 13,
@@ -3865,12 +4270,15 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 14,
           "rule_id": "AT-009",
-          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 CHF",
+          "rule_description": "Sets minimum supplier quotes to 3 for CHF budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3889,12 +4297,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 15,
           "rule_id": "AT-009",
-          "rule_description": "Requires escalation to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 CHF",
+          "rule_description": "Requires Head of Strategic Sourcing approval for CHF budgets between 500,000 and 4,999,999.99",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3913,12 +4324,15 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 16,
           "rule_id": "AT-010",
-          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF.",
+          "rule_description": "Sets minimum supplier quotes to 3 for budgets between 5,000,000 and 999,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3937,12 +4351,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 17,
           "rule_id": "AT-010",
-          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF.",
+          "rule_description": "Requires CPO approval for budgets between 5,000,000 and 999,999,999.99 CHF",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3961,12 +4378,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 18,
           "rule_id": "AT-011",
-          "rule_description": "Sets minimum supplier quotes to 1 for USD budgets between 0 and 27,000",
+          "rule_description": "Sets minimum supplier quotes to 1 for budgets between 0 and 27000 USD.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -3985,12 +4405,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 19,
           "rule_id": "AT-011",
-          "rule_description": "Requires business sign-off for USD budgets between 0 and 27,000",
+          "rule_description": "Requires business sign-off for budgets between 0 and 27000 USD.",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -4009,12 +4432,15 @@
           "output_key": "escalate_to_requester",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 20,
           "rule_id": "AT-012",
-          "rule_description": "Sets minimum supplier quotes to 2 for budgets between 27,000 and 108,000 USD",
+          "rule_description": "Sets minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -4033,12 +4459,15 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 21,
           "rule_id": "AT-012",
-          "rule_description": "Requires Procurement Manager escalation for budgets between 27,000 and 108,000 USD",
+          "rule_description": "Requires Procurement Manager escalation for USD budgets between 27,000 and 108,000",
           "action_type": "ALI",
           "action_tuple": [
             "ALI",
@@ -4057,7 +4486,10 @@
           "output_key": "escalate_to_procurement_manager",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 22,
@@ -4081,7 +4513,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 23,
@@ -4105,7 +4540,10 @@
           "output_key": "escalate_to_head_of_category",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 24,
@@ -4129,7 +4567,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 25,
@@ -4153,7 +4594,10 @@
           "output_key": "escalate_to_head_of_strategic_sourcing",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 26,
@@ -4177,7 +4621,10 @@
           "output_key": "min_supplier_quotes",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 27,
@@ -4201,12 +4648,15 @@
           "output_key": "escalate_to_cpo",
           "output_value_before": null,
           "output_value_after": null,
-          "skipped": true
+          "skipped": true,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 28,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.2 * esg_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -4225,12 +4675,15 @@
           "output_key": "_rep_esg",
           "output_value_before": null,
           "output_value_after": 12.4,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 29,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.5 * quality_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -4249,12 +4702,15 @@
           "output_key": "_rep_quality",
           "output_value_before": null,
           "output_value_after": 42.0,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 30,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate -0.3 * risk_score for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -4273,12 +4729,15 @@
           "output_key": "_rep_risk_neg",
           "output_value_before": null,
           "output_value_after": -10.2,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 31,
-          "rule_id": "RANKING",
-          "rule_description": "Compute intermediate 0.3 * (100 - risk_score) for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -4297,12 +4756,15 @@
           "output_key": "_rep_risk",
           "output_value_before": null,
           "output_value_after": 19.8,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 32,
-          "rule_id": "RANKING",
-          "rule_description": "Sum quality and risk components for reputation_score calculation.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -4321,12 +4783,15 @@
           "output_key": "_rep_quality_risk",
           "output_value_before": null,
           "output_value_after": 61.8,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 33,
-          "rule_id": "RANKING",
-          "rule_description": "Add ESG component to compute final reputation_score.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -4345,12 +4810,15 @@
           "output_key": "reputation_score",
           "output_value_before": null,
           "output_value_after": 74.2,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 34,
-          "rule_id": "RANKING",
-          "rule_description": "Compute total cost (cost_total) as quantity * unit_price.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -4369,12 +4837,15 @@
           "output_key": "cost_total",
           "output_value_before": null,
           "output_value_after": 156.75,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 35,
-          "rule_id": "RANKING",
-          "rule_description": "Compute raw cost rank score (_crs_raw) as 10000000 / (cost_total + 1).",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -4393,12 +4864,15 @@
           "output_key": "_crs_denom",
           "output_value_before": null,
           "output_value_after": 157.75,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 36,
-          "rule_id": "RANKING",
-          "rule_description": "Cap cost_rank_score at 100 (or use raw value directly if capping unavailable).",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -4417,12 +4891,15 @@
           "output_key": "_crs_raw",
           "output_value_before": null,
           "output_value_after": 63391.442155309036,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 37,
-          "rule_id": "RANKING",
-          "rule_description": "Compute cost component of rank as cost_rank_score * 100.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "OSLM",
           "action_tuple": [
             "OSLM",
@@ -4441,12 +4918,15 @@
           "output_key": "cost_rank_score",
           "output_value_before": null,
           "output_value_after": false,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 38,
-          "rule_id": "RANKING",
-          "rule_description": "Combine cost component and reputation_score to compute final rank.",
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
           "action_type": "SRM",
           "action_tuple": [
             "SRM",
@@ -4465,7 +4945,10 @@
           "output_key": "_rank_cost_component",
           "output_value_before": null,
           "output_value_after": 0,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         },
         {
           "action_index": 39,
@@ -4489,7 +4972,10 @@
           "output_key": "rank",
           "output_value_before": null,
           "output_value_after": 74.2,
-          "skipped": false
+          "skipped": false,
+          "when_error": null,
+          "action_error": null,
+          "operator_applied": true
         }
       ],
       "final_state": {
@@ -4538,6 +5024,7 @@
         "_rank_cost_component": 0,
         "rank": 74.2,
         "text_compliance_score": 0.5,
+        "_historic_score_is_dummy": true,
         "normalized_rank": 0.496775,
         "blended_avg_unit_price": 160.875,
         "budget_penalty": 1.0
@@ -6205,27 +6692,7 @@
   "global_action_logs": [],
   "escalation_assessment": null,
   "flag_assessment": {
-    "flags": [
-      {
-        "flag_id": "HIGH_EXCLUSION_RATE",
-        "severity": "warning",
-        "description": "147 of 151 candidate suppliers (97%) were excluded by hard compliance gates. The policy may be filtering out legitimate suppliers, or the supplier pool is not appropriate for this category.",
-        "details": {
-          "n_total": 151,
-          "n_excluded": 147,
-          "exclusion_fraction": 0.974
-        }
-      },
-      {
-        "flag_id": "PREFERRED_SUPPLIER_EXCLUDED",
-        "severity": "info",
-        "description": "Preferred supplier restricted due to: 'Bechtle Workplace Solutions' was explicitly requested but excluded \u2014 category_l2 mismatch ('Laptops' != 'Docking Stations').",
-        "details": {
-          "supplier_name": "Bechtle Workplace Solutions",
-          "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Docking Stations')"
-        }
-      }
-    ],
-    "has_warnings": true
+    "flags": [],
+    "has_warnings": false
   }
 }

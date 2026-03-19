@@ -60,6 +60,43 @@ def _add_audit(db: Session, request_id: str, actor_id: str, action: str, notes: 
     ))
 
 
+def _request_to_dict(req: models.Request) -> dict:
+    """Serialize a DB Request model to the same dict shape as _normalize()."""
+    countries = req.delivery_countries
+    if countries:
+        try:
+            countries = ", ".join(json.loads(countries))
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+    return {
+        "id":                          req.id,
+        "plain_text":                  req.plain_text,
+        "title":                       req.title,
+        "status":                      req.status,
+        "requester_id":                req.requester_id,
+        "business_unit":               req.business_unit,
+        "country":                     req.country,
+        "site":                        req.site,
+        "category_l1":                 req.category_l1,
+        "category_l2":                 req.category_l2,
+        "currency":                    req.currency,
+        "budget_amount":               req.budget_amount,
+        "quantity":                    req.quantity,
+        "unit_of_measure":             req.unit_of_measure,
+        "required_by_date":            str(req.required_by_date) if req.required_by_date else None,
+        "preferred_supplier_mentioned":req.preferred_supplier_mentioned,
+        "incumbent_supplier":          req.incumbent_supplier,
+        "contract_type_requested":     req.contract_type_requested,
+        "delivery_countries":          countries,
+        "data_residency_constraint":   req.data_residency_constraint,
+        "esg_requirement":             req.esg_requirement,
+        "created_at":                  req.created_at.isoformat() if req.created_at else None,
+        "updated_at":                  req.updated_at.isoformat() if req.updated_at else None,
+        "escalations":                 [],
+    }
+
+
 @router.get("")
 def list_requests(
     sort_by: str = Query("date", pattern="^(date|l1|l2|country)$"),
@@ -69,15 +106,17 @@ def list_requests(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
+    sort_key = {"date": "created_at", "l1": "category_l1", "l2": "category_l2", "country": "country"}.get(sort_by, "created_at")
+
     if USE_FILE_DATA:
-        raw = list(_load_requests_json())
-        # Sort
-        sort_key = {"date": "created_at", "l1": "category_l1", "l2": "category_l2", "country": "country"}.get(sort_by, "created_at")
-        raw.sort(key=lambda r: (r.get(sort_key) or ""), reverse=(order == "desc"))
-        # Paginate
+        file_records = [_normalize(r) for r in _load_requests_json()]
+        file_ids = {r["id"] for r in file_records}
+        db_records = db.query(models.Request).all()
+        db_dicts = [_request_to_dict(r) for r in db_records if r.id not in file_ids]
+        combined = file_records + db_dicts
+        combined.sort(key=lambda r: (r.get(sort_key) or ""), reverse=(order == "desc"))
         offset = (page - 1) * per_page
-        page_data = raw[offset: offset + per_page]
-        return [_normalize(r) for r in page_data]
+        return combined[offset: offset + per_page]
 
     offset = (page - 1) * per_page
     return (
@@ -95,7 +134,9 @@ def count_requests(
     current_user: models.User = Depends(get_current_user),
 ):
     if USE_FILE_DATA:
-        return {"total": len(_load_requests_json())}
+        file_ids = {r.get("request_id") or r.get("id") for r in _load_requests_json()}
+        db_count = db.query(models.Request).filter(~models.Request.id.in_(file_ids)).count()
+        return {"total": len(file_ids) + db_count}
     return {"total": db.query(models.Request).count()}
 
 
@@ -199,6 +240,17 @@ def create_request(
     _add_audit(db, req.id, current_user.id, "submitted")
     db.commit()
     db.refresh(req)
+
+    from services.evaluation import enrich_and_evaluate
+    enrich_and_evaluate(req, db)
+    db.refresh(req)
+
+    try:
+        from notifications import notify_evaluation_complete
+        notify_evaluation_complete(req, current_user)
+    except Exception:
+        pass
+
     return req
 
 
@@ -211,9 +263,9 @@ def get_request(
     if USE_FILE_DATA:
         raw = _load_requests_json()
         match = next((r for r in raw if r.get("request_id") == request_id or r.get("id") == request_id), None)
-        if not match:
-            raise HTTPException(status_code=404, detail="Request not found")
-        return _normalize(match)
+        if match:
+            return _normalize(match)
+        # Fall through to DB for newly created requests not in the file
     req = db.query(models.Request).filter(models.Request.id == request_id).first()
     if not req:
         raise HTTPException(status_code=404, detail="Request not found")
