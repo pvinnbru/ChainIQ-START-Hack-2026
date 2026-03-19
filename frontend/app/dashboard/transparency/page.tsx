@@ -1007,6 +1007,9 @@ export default function TransparencyPage() {
                               ? <>{String(m.leadStd)}d{m.leadExp != null ? <span className="text-muted-foreground"> / {String(m.leadExp)}d</span> : ''}</>
                               : <span className="text-muted-foreground">—</span>}
                           </td>
+                          <td className="px-4 py-3">{scoreBar(m.quality as number | null) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
+                          <td className="px-4 py-3">{scoreBar(m.risk as number | null, true) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
+                          <td className="px-4 py-3">{scoreBar(m.esg as number | null) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
                           <td className="px-4 py-3">{s.final_cost_rank_score != null ? (
                             <div className="flex items-center gap-1.5">
                               <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
@@ -1015,9 +1018,6 @@ export default function TransparencyPage() {
                               <span className="text-xs font-mono w-5 text-right text-muted-foreground">{Math.round(s.final_cost_rank_score)}</span>
                             </div>
                           ) : <span className="text-xs text-muted-foreground">—</span>}</td>
-                          <td className="px-4 py-3">{scoreBar(m.quality as number | null) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
-                          <td className="px-4 py-3">{scoreBar(m.risk as number | null, true) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
-                          <td className="px-4 py-3">{scoreBar(m.esg as number | null) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
                         </tr>
                       );
                     })}
