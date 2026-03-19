@@ -706,7 +706,7 @@ function AiChatSidebar({
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
         {messages.length === 0 && (
           <div className="py-6">
-            <p className="text-sm text-muted-foreground mb-3">Ask me anything — I'll explain what happened in plain English, no technical jargon.</p>
+            <p className="text-sm text-muted-foreground mb-3">Ask me anything — I&apos;ll explain what happened in plain English, no technical jargon.</p>
             <div className="space-y-2">
               {SUGGESTIONS.map(s => (
                 <button
@@ -883,8 +883,8 @@ export default function TransparencyPage() {
   return (
     <div className="flex h-screen overflow-hidden relative print:block print:h-auto print:overflow-visible">
       {/* Main content */}
-      <div className="flex-1 overflow-y-auto py-6 pr-4 print:flex-none print:overflow-visible print:h-auto print:w-full print:pr-0 print:py-0">
-        <div className="w-full max-w-6xl mx-auto space-y-6 print:py-6 print:px-6">
+      <div className="flex-1 overflow-y-auto py-6 pr-4 print:flex-none print:overflow-visible print:h-auto print:w-full print:pr-0 print:py-0 print:flex print:justify-center">
+        <div className="w-full max-w-6xl mx-auto space-y-6 print:py-6 print:px-0 print:w-[185mm] print:max-w-[185mm]">
 
           {/* Header */}
           <div className="flex items-start justify-between gap-4 flex-wrap print:hidden">
@@ -1072,7 +1072,7 @@ export default function TransparencyPage() {
           {/* ── End print audit report ─────────────────────────────────────── */}
 
           {/* AI Summary + Request Details — side by side */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:grid print:grid-cols-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:hidden">
             {/* AI Summary */}
             <Card className="border-primary/20 bg-primary/5 dark:bg-primary/10">
               <CardHeader className="pb-2">
@@ -1144,7 +1144,7 @@ export default function TransparencyPage() {
           </div>
 
           {/* Supplier Ranking — ranked list */}
-          <Card>
+          <Card className="print:hidden">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Supplier Ranking</CardTitle>
             </CardHeader>
@@ -1362,6 +1362,20 @@ export default function TransparencyPage() {
         requestId={requestId}
         executionLog={log}
       />
+
+      <style jsx global>{`
+        @page {
+          size: A4 portrait;
+          margin: 12mm;
+        }
+
+        @media print {
+          html, body {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+        }
+      `}</style>
     </div>
   );
 }
