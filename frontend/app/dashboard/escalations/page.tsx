@@ -138,7 +138,7 @@ export default function EscalationsPage() {
                   ) : (
                     <>
                       <Button size="sm" variant="outline" className="gap-1"
-                        onClick={() => router.push(`/dashboard/analysis?id=${esc.request_id}`)}>
+                        onClick={() => router.push(`/dashboard/transparency?id=${esc.request_id}`)}>
                         View Request <ArrowUpRight className="h-3 w-3" />
                       </Button>
                       <Button size="sm" className="gap-1 bg-emerald-600 hover:bg-emerald-700"

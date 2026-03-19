@@ -136,7 +136,7 @@ export default function CasesPage() {
   const handleView = (req: Request) => {
     sessionStorage.setItem('currentRequest', JSON.stringify(req));
     // In file mode the backend returns request_id (REQ-XXXXXX) mapped to id; use it directly
-    router.push(`/dashboard/analysis?id=${req.id}`);
+    router.push(`/dashboard/transparency?id=${req.id}`);
   };
 
   const handleWithdraw = async (notes: string) => {

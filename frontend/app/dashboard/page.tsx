@@ -152,7 +152,7 @@ export default function DashboardPage() {
                     onClick={() => router.push(
                       isRequester
                         ? `/dashboard/clarify/${esc.request_id}`
-                        : `/dashboard/analysis?id=${esc.request_id}`
+                        : `/dashboard/transparency?id=${esc.request_id}`
                     )}
                   >
                     <div className="min-w-0 flex-1">
@@ -200,7 +200,7 @@ export default function DashboardPage() {
                   <div
                     key={entry.id}
                     className="px-6 py-3 hover:bg-muted/30 cursor-pointer"
-                    onClick={() => router.push(`/dashboard/analysis?id=${entry.request_id}`)}
+                    onClick={() => router.push(`/dashboard/transparency?id=${entry.request_id}`)}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
