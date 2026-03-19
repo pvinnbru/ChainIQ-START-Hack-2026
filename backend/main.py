@@ -9,6 +9,45 @@ from routers import auth, requests, escalations, transparency
 
 Base.metadata.create_all(bind=engine)
 
+
+def _ensure_escalation_users():
+    """Create demo escalation-reviewer users if they don't exist yet."""
+    from database import SessionLocal
+    DEMO_USERS = [
+        {
+            "id": "user-carol",
+            "name": "Carol Dupont",
+            "email": "carol@chainiq.demo",
+            "role": "category_head",
+            "business_unit": "IT",
+            "country": "FR",
+            "site": "Paris",
+            "requester_role": "Head of IT Category",
+        },
+        {
+            "id": "user-dave",
+            "name": "Dave Patel",
+            "email": "dave@chainiq.demo",
+            "role": "compliance_reviewer",
+            "business_unit": "Legal & Compliance",
+            "country": "GB",
+            "site": "London",
+            "requester_role": "Compliance Reviewer",
+        },
+    ]
+    db = SessionLocal()
+    try:
+        for u in DEMO_USERS:
+            if not db.query(models.User).filter(models.User.id == u["id"]).first():
+                db.add(models.User(**u))
+                print(f"✅ Created demo user: {u['name']} [{u['role']}]")
+        db.commit()
+    finally:
+        db.close()
+
+
+_ensure_escalation_users()
+
 app = FastAPI(title="ChainIQ API", version="0.1.0")
 
 

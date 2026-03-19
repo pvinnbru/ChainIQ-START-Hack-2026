@@ -19,7 +19,7 @@ client = AzureOpenAI(
     azure_endpoint=AZURE_OPENAI_ENDPOINT
 )
 
-DATA_DIR = r"c:\Users\Dimka\OneDrive\Desktop\LOS\ChainIQ-START-Hack-2026-\data"
+DATA_DIR = r"./data"
 
 # ===== Test-Modus =====
 # True  → nur die ersten 5 Requests verarbeiten (zum schnellen Testen)
