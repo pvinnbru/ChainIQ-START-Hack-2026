@@ -2,8 +2,15 @@
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Anchor, Truck, AlertTriangle, ShieldAlert, ClipboardList, Ban } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FileText, Anchor, Truck, AlertTriangle, ShieldAlert, ClipboardList, Ban, Send, CheckCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
+import { useAuth } from '@/context/auth-context';
+import { ActionDialog } from '@/components/ui/action-dialog';
+
+type DialogAction = 'approve' | 'reject' | 'review' | null;
 
 const MOCK_OUTPUT = {
   "request_id": "REQ-000004",
@@ -193,15 +200,93 @@ function getSeverityColor(severity: string) {
   }
 }
 
+// Map from mock output "escalate_to" labels to backend escalation types
+const ESCALATION_TYPE_MAP: Record<string, string> = {
+  'Requester Clarification': 'requester_clarification',
+  'Procurement Manager': 'procurement_manager',
+  'Head of Category': 'category_head',
+  'Compliance': 'compliance',
+};
+
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
+
+interface MyEscalation { id: string; request_id: string; type: string; status: string; }
+
 export default function AnalysisPage() {
   const [loading, setLoading] = useState(true);
+  const [sentEscalations, setSentEscalations] = useState<Record<string, boolean>>({});
+  const [myEscalation, setMyEscalation] = useState<MyEscalation | null>(null);
+  const [dialogAction, setDialogAction] = useState<DialogAction>(null);
+  const searchParams = useSearchParams();
+  const requestId = searchParams.get('id');
+  const { user } = useAuth();
+  const isReviewer = user && user.role !== 'requester';
+
+  useEffect(() => { setLoading(false); }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!requestId || !isReviewer) return;
+    fetch(`${API}/escalations/me`, { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data: MyEscalation[]) => {
+        const match = data.find((e) => e.request_id === requestId && e.status === 'pending');
+        setMyEscalation(match ?? null);
+      })
+      .catch(() => {});
+  }, [requestId, isReviewer]);
+
+  const handleConfirm = async (notes: string) => {
+    if (!requestId || !dialogAction) return;
+    const action = dialogAction;
+    setDialogAction(null);
+    try {
+      const endpoint = action === 'review' ? 'review' : action;
+      const res = await fetch(`${API}/requests/${requestId}/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ notes: notes || null }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success(
+        action === 'approve' ? 'Request approved' :
+        action === 'reject'  ? 'Request rejected' :
+        'Request marked as reviewed'
+      );
+      setMyEscalation(null);
+    } catch {
+      toast.error('Action failed');
+    }
+  };
+
+  const sendEscalation = async (escalateTo: string, trigger: string, rule: string) => {
+    if (!requestId) {
+      toast.error('No request ID — open this page from the cases list.');
+      return;
+    }
+    const type = ESCALATION_TYPE_MAP[escalateTo];
+    if (!type) {
+      toast.error(`Unknown escalation target: ${escalateTo}`);
+      return;
+    }
+    try {
+      const res = await fetch(`${API}/escalations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          request_id: requestId,
+          type,
+          message: `[${rule}] ${trigger}`,
+        }),
+      });
+      if (!res.ok) throw new Error('Failed');
+      setSentEscalations((prev) => ({ ...prev, [escalateTo]: true }));
+      toast.success(`Escalation sent to ${escalateTo}`);
+    } catch {
+      toast.error(`Failed to send escalation to ${escalateTo}`);
+    }
+  };
 
   if (loading) {
     return (
@@ -225,6 +310,27 @@ export default function AnalysisPage() {
           {recommendation.status.replace('_', ' ')}
         </Badge>
       </div>
+
+      {/* Action panel for reviewers with a pending escalation on this request */}
+      {myEscalation && (
+        <div className="bg-amber-50 border border-amber-300 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex-1">
+            <p className="font-semibold text-amber-800">Action required — this request is assigned to you for review.</p>
+            <p className="text-sm text-amber-700 mt-0.5">Approve, reject, or mark as reviewed without changing the request status.</p>
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <Button size="sm" className="gap-1 bg-emerald-600 hover:bg-emerald-700" onClick={() => setDialogAction('approve')}>
+              <ThumbsUp className="h-3 w-3" /> Approve
+            </Button>
+            <Button size="sm" variant="destructive" className="gap-1" onClick={() => setDialogAction('reject')}>
+              <ThumbsDown className="h-3 w-3" /> Reject
+            </Button>
+            <Button size="sm" variant="outline" className="gap-1" onClick={() => setDialogAction('review')}>
+              <CheckCircle className="h-3 w-3" /> Mark Reviewed
+            </Button>
+          </div>
+        </div>
+      )}
 
       {recommendation.status === 'cannot_proceed' && (
         <div className="bg-destructive/10 border-l-4 border-destructive p-4 rounded-r-lg flex gap-4 items-start">
@@ -497,23 +603,71 @@ export default function AnalysisPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {escalations.map((esc) => (
-                <div key={esc.escalation_id} className="text-sm border-b pb-3 last:border-0 last:pb-0">
-                  <div className="flex justify-between mb-1">
-                    <span className="font-semibold">{esc.rule}</span>
-                    <Badge variant={esc.blocking ? 'secondary' : 'outline'} className="text-[10px]">
-                      {esc.blocking ? 'BLOCKING' : 'INFO'}
-                    </Badge>
+              {escalations.map((esc) => {
+                const sent = sentEscalations[esc.escalate_to];
+                return (
+                  <div key={esc.escalation_id} className="text-sm border-b pb-3 last:border-0 last:pb-0">
+                    <div className="flex justify-between mb-1">
+                      <span className="font-semibold">{esc.rule}</span>
+                      <Badge variant={esc.blocking ? 'secondary' : 'outline'} className="text-[10px]">
+                        {esc.blocking ? 'BLOCKING' : 'INFO'}
+                      </Badge>
+                    </div>
+                    <p className="text-muted-foreground mb-2">{esc.trigger}</p>
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-xs">Escalate to: <span className="text-primary">{esc.escalate_to}</span></p>
+                      {sent ? (
+                        <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
+                          <CheckCircle className="h-3 w-3" /> Sent
+                        </span>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-6 px-2 text-xs gap-1"
+                          onClick={() => sendEscalation(esc.escalate_to, esc.trigger, esc.rule)}
+                        >
+                          <Send className="h-3 w-3" />
+                          Send
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-muted-foreground mb-2">{esc.trigger}</p>
-                  <p className="font-medium text-xs">Escalate to: <span className="text-primary">{esc.escalate_to}</span></p>
-                </div>
-              ))}
+                );
+              })}
             </CardContent>
           </Card>
 
         </div>
       </div>
+
+      <ActionDialog
+        open={dialogAction === 'approve'}
+        onOpenChange={(v) => !v && setDialogAction(null)}
+        title="Approve Request"
+        description="This will mark the request as approved. Add an optional note to explain your decision."
+        confirmLabel="Approve"
+        confirmClassName="bg-emerald-600 hover:bg-emerald-700 text-white"
+        onConfirm={handleConfirm}
+      />
+      <ActionDialog
+        open={dialogAction === 'reject'}
+        onOpenChange={(v) => !v && setDialogAction(null)}
+        title="Reject Request"
+        description="This will mark the request as rejected. Please provide a reason so the requester knows what to fix."
+        confirmLabel="Reject"
+        confirmClassName="bg-destructive hover:bg-destructive/90 text-white"
+        notesLabel="Reason for rejection (recommended)"
+        onConfirm={handleConfirm}
+      />
+      <ActionDialog
+        open={dialogAction === 'review'}
+        onOpenChange={(v) => !v && setDialogAction(null)}
+        title="Mark as Reviewed"
+        description="This will mark the request as reviewed without approving or rejecting it."
+        confirmLabel="Mark Reviewed"
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }

@@ -37,12 +37,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${oswald.variable} ${notoSerifGeorgian.variable} ${robotoMono.variable} antialiased`}
       >
         <Providers>
-          <main className="bg-white">
+          <main>
             <Navbar/>
               {children}
             <Footer/>
