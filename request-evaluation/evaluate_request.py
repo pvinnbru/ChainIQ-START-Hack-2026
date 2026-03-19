@@ -262,11 +262,12 @@ def evaluate_request(request_json: str) -> str:
             "request_id": request_id,
             "timestamp": timestamp,
             "error":     f"Invalid JSON input: {exc}",
-            "global_outputs":    {},
-            "ranked_suppliers":  [],
-            "escalation_assessment": None,
-            "flag_assessment":   None,
-            "execution_log":     None,
+            "global_outputs":         {},
+            "ranked_suppliers":        [],
+            "escalation_assessment":  None,
+            "flag_assessment":        None,
+            "confidence_assessment":  None,
+            "execution_log":          None,
         }, indent=2)
 
     try:
@@ -321,9 +322,10 @@ def evaluate_request(request_json: str) -> str:
             "error":       None,
             "global_outputs":   outcome.get("global_outputs", {}),
             "ranked_suppliers": ranked_suppliers,
-            "escalation_assessment": _to_serializable(outcome.get("escalation_assessment")),
-            "flag_assessment":       _to_serializable(outcome.get("flag_assessment")),
-            "execution_log":         _to_serializable(exec_log),
+            "escalation_assessment":  _to_serializable(outcome.get("escalation_assessment")),
+            "flag_assessment":        _to_serializable(outcome.get("flag_assessment")),
+            "confidence_assessment":  _to_serializable(outcome.get("confidence_assessment")),
+            "execution_log":          _to_serializable(exec_log),
         }
 
     except Exception as exc:  # noqa: BLE001
@@ -333,11 +335,12 @@ def evaluate_request(request_json: str) -> str:
             "request_id": request_id,
             "timestamp": timestamp,
             "error":     f"{type(exc).__name__}: {exc}",
-            "global_outputs":    {},
-            "ranked_suppliers":  [],
-            "escalation_assessment": None,
-            "flag_assessment":   None,
-            "execution_log":     None,
+            "global_outputs":         {},
+            "ranked_suppliers":        [],
+            "escalation_assessment":  None,
+            "flag_assessment":        None,
+            "confidence_assessment":  None,
+            "execution_log":          None,
         }
 
     return json.dumps(result, indent=2, default=str)
@@ -436,6 +439,25 @@ def evaluate_request(request_json: str) -> str:
 #                           "QUANTITY_EXCEEDS_TIER_MAXIMUM"
 #     severity     string   "warning" | "info"
 #     description  string   Human-readable explanation of the flag
+#
+# confidence_assessment  object | null  How much to trust the ranking.
+#                        Distinct from normalized_rank: expresses *reliability of the
+#                        ordering*, not which supplier is better.  Shape:
+#
+#   score        number   Composite reliability score in [0, 1].
+#   label        string   "high" (≥0.75) | "medium" (≥0.50) | "low" (≥0.25) | "very_low"
+#   explanation  string   One-sentence summary of the main limiting factor.
+#   breakdown    object   Per-dimension detail:
+#     dimensions   object  Scores for each of the five dimensions (each 0–1):
+#       input_completeness    quantity / budget / category present and valid
+#       market_coverage       competing suppliers survived; low exclusion rate
+#       ranking_decisiveness  gap between #1 and #2; absolute rank level
+#       data_reliability      historical data points; z-score vs fallback
+#       compliance_quality    top supplier compliance; systemic penalty if all penalized
+#     weights      object  Fixed weights applied to each dimension (sum to 1.0)
+#     worst_dimension  string  The dimension with the lowest raw score
+#     meta         object  Supporting stats: n_surviving_suppliers, n_excluded,
+#                          n_hist_data_points, hist_std_dev_available, used_zscore_sigmoid
 #
 # execution_log  object   Full RequestExecutionLog serialized to JSON.
 #                         Contains everything needed to reproduce or audit the run:

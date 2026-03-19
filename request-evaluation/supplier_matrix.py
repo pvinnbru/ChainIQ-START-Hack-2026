@@ -190,6 +190,7 @@ class RequestExecutionLog:
     global_action_logs: list[ActionLogEntry]   # Reserved for future global (non-supplier) actions
     escalation_assessment: Any | None = None   # EscalationAssessment, set post-evaluation
     flag_assessment:       Any | None = None   # FlagAssessment, set post-evaluation
+    confidence_assessment: Any | None = None   # ConfidenceAssessment, set post-evaluation
 
 # ---------------------------------------------------------------------------
 # Schema loader
@@ -1741,8 +1742,9 @@ def run_procurement_evaluation(
             escalation_rules=escalation_rules or [],
         )
 
-    # Result-quality flags — always evaluated regardless of escalation config.
-    from result_flags import evaluate_flags  # local import avoids circular
+    # Result-quality flags and confidence score — always evaluated regardless
+    # of escalation config.
+    from result_flags import evaluate_flags, compute_confidence_score  # local import avoids circular
 
     # ISSUE-009: HIGH_EXCLUSION_RATE should use the category-matched supplier
     # pool as its denominator, not the full unfiltered pool.  Using len(suppliers)
@@ -1778,12 +1780,24 @@ def run_procurement_evaluation(
         all_supplier_logs=all_supplier_log_dicts,
     )
 
+    confidence_assessment = compute_confidence_score(
+        request=request,
+        supplier_results=supplier_results,
+        n_total_suppliers=n_category_matched,
+        n_excluded=n_compliance_excluded,
+        hist_n_data_points=n_hist,
+        hist_std_dev=hist_std_dev,
+        hist_avg=hist_avg,
+    )
+    execution_log.confidence_assessment = confidence_assessment
+
     return (
         {
             "global_outputs":         global_outputs,
             "supplier_results":       supplier_results,
             "escalation_assessment":  execution_log.escalation_assessment,
             "flag_assessment":        execution_log.flag_assessment,
+            "confidence_assessment":  confidence_assessment,
         },
         execution_log,
     )

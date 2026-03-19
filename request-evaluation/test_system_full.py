@@ -27,7 +27,8 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, timezone
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -44,10 +45,9 @@ from supplier_matrix import (
     load_pricing_index,
     load_schema,
     load_suppliers,
-    save_generated_actions,
-    load_generated_actions,
+    run_procurement_evaluation,
+    save_log,
 )
-from test_example_request import run_batch
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -230,6 +230,136 @@ def pipeline():
         "cache_hits":         cache_hits,
         "data_hash":          data_hash,
     }
+
+
+# ---------------------------------------------------------------------------
+# Request normalisation
+# ---------------------------------------------------------------------------
+
+def _days_until(date_str: str | None) -> int:
+    if not date_str:
+        return 0
+    try:
+        d = date.fromisoformat(date_str[:10])
+        return max(0, (d - date.today()).days)
+    except ValueError:
+        return 0
+
+
+def normalize_request(raw: dict[str, Any]) -> dict[str, Any] | None:
+    delivery_countries: list[str] = raw.get("delivery_countries") or []
+    delivery_country = delivery_countries[0] if delivery_countries else None
+    if not delivery_country:
+        return None
+
+    category_l1 = raw.get("category_l1")
+    category_l2 = raw.get("category_l2")
+    if not category_l1 or not category_l2:
+        return None
+
+    budget = raw.get("budget_amount")
+    currency = raw.get("currency")
+    if budget is None or not currency:
+        return None
+
+    quantity = raw.get("quantity")
+    if quantity is None:
+        quantity = 1
+
+    return {
+        "request_id": raw.get("request_id"),
+        "category_l1": category_l1,
+        "category_l2": category_l2,
+        "budget": budget,
+        "currency": currency,
+        "quantity": quantity,
+        "amount_unit": raw.get("unit_of_measure") or "",
+        "delivery_country": delivery_country,
+        "days_until_required": _days_until(raw.get("required_by_date")),
+        "preferred_supplier_mentioned": raw.get("preferred_supplier_mentioned"),
+        "incumbent_supplier": raw.get("incumbent_supplier"),
+        "data_residency_constraint": raw.get("data_residency_constraint", False),
+        "esg_requirement": raw.get("esg_requirement", False),
+        "request_text": raw.get("request_text") or "",
+    }
+
+
+# ---------------------------------------------------------------------------
+# Batch processing
+# ---------------------------------------------------------------------------
+
+def run_batch(
+    requests_path: str | Path,
+    pipeline: dict,
+    logs_dir: Path = LOGS_DIR,
+    max_workers: int = 50,
+) -> list[dict]:
+    """
+    Load all requests from *requests_path* and evaluate them in parallel.
+
+    Returns a list of dicts with keys:
+      request_id, status ("ok" | "skipped" | "error"), supplier_count,
+      ranking, global_outputs.
+    """
+    with open(requests_path, encoding="utf-8") as fh:
+        raw_requests: list[dict] = json.load(fh)
+
+    logs_dir.mkdir(parents=True, exist_ok=True)
+
+    def _process_one(raw: dict) -> dict:
+        request_id = raw.get("request_id", "<unknown>")
+        request = normalize_request(raw)
+        if request is None:
+            return {"request_id": request_id, "status": "skipped",
+                    "skip_reason": "failed normalization", "supplier_count": 0,
+                    "ranking": [], "global_outputs": {}}
+        try:
+            outcome, exec_log = run_procurement_evaluation(
+                request=request,
+                schema=pipeline["schema"],
+                sorted_actions=pipeline["sorted_actions"],
+                suppliers=pipeline["suppliers"],
+                fix_in_keys=pipeline["fix_in_keys"],
+                pricing_index=pipeline["pricing_index"],
+                attribution=pipeline.get("attribution"),
+            )
+            log_path = str(logs_dir / request_id)
+            save_log(exec_log, log_path)
+
+            supplier_results = outcome.get("supplier_results", [])
+            ranking = [
+                {
+                    "position": pos + 1,
+                    "supplier_id": identity.get("supplier_id"),
+                    "supplier_name": identity.get("supplier_name"),
+                    "normalized_rank": _safe_round(fs.get("normalized_rank")),
+                    "cost_total": _safe_round(fs.get("cost_total")),
+                }
+                for pos, (identity, _, fs) in enumerate(supplier_results)
+            ]
+            return {
+                "request_id": request_id,
+                "status": "ok",
+                "supplier_count": len(supplier_results),
+                "ranking": ranking,
+                "global_outputs": outcome.get("global_outputs", {}),
+            }
+        except Exception as exc:  # noqa: BLE001
+            return {"request_id": request_id, "status": "error",
+                    "error": str(exc), "supplier_count": 0,
+                    "ranking": [], "global_outputs": {}}
+
+    results: list[dict] = [None] * len(raw_requests)  # type: ignore[list-item]
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_to_idx = {
+            executor.submit(_process_one, raw): idx
+            for idx, raw in enumerate(raw_requests)
+        }
+        for future in as_completed(future_to_idx):
+            idx = future_to_idx[future]
+            results[idx] = future.result()
+
+    return results
 
 
 # ---------------------------------------------------------------------------

@@ -63,6 +63,7 @@ PREFERRED_SUPPLIER_NOT_FOUND
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -114,6 +115,30 @@ class FlagAssessment:
     """All result flags for a single evaluation."""
     flags:        list[ResultFlag] = field(default_factory=list)
     has_warnings: bool = False   # True if any "warning"-severity flag fired
+
+
+@dataclass
+class ConfidenceAssessment:
+    """
+    How much to trust the ranking produced for this evaluation.
+
+    ``score`` is in [0, 1].  It is NOT the same as normalized_rank: it
+    expresses *reliability of the ordering*, not which supplier is better.
+
+    Dimensions (each 0–1, independently interpretable):
+    - input_completeness:    Are quantity / budget / category all present?
+    - market_coverage:       Enough competing suppliers; low exclusion rate.
+    - ranking_decisiveness:  Clear gap between #1 and #2; scores not all low.
+    - data_reliability:      Historical baseline is solid; z-score used.
+    - compliance_quality:    Top supplier (and ideally all) cleanly pass policy.
+
+    label:       "high" | "medium" | "low" | "very_low"
+    explanation: One-sentence human-readable summary of the main limiting factor.
+    """
+    score:                float
+    label:                str
+    breakdown:            dict
+    explanation:          str
 
 
 # ---------------------------------------------------------------------------
@@ -484,6 +509,261 @@ def _flag_preferred_bonus_decisive(supplier_results: list[tuple]) -> ResultFlag 
             "rank_without_bonus":  rank_without,
             "second_rank":         second_rank,
         },
+    )
+
+
+# ---------------------------------------------------------------------------
+# Confidence score
+# ---------------------------------------------------------------------------
+
+def compute_confidence_score(
+    request:           dict[str, Any],
+    supplier_results:  list[tuple],   # (identity, rank, final_state), sorted DESC
+    n_total_suppliers: int,           # category-matched candidates (before exclusions)
+    n_excluded:        int,           # excluded by hard compliance gates
+    hist_n_data_points: int | None,  # number of historical awards for this category
+    hist_std_dev:       float | None, # std dev of historical unit prices (None = no data)
+    hist_avg:           float | None, # historical average unit price (None = no data)
+) -> ConfidenceAssessment:
+    """
+    Compute a 0–1 confidence score expressing how much to trust the ranking.
+
+    Parameters
+    ----------
+    request:
+        The normalised request dict (same as passed to evaluate_flags).
+    supplier_results:
+        Surviving suppliers sorted by normalized_rank DESC.
+    n_total_suppliers:
+        Category-matched candidate count before compliance exclusions.
+    n_excluded:
+        Number excluded by hard compliance gates.
+    hist_n_data_points:
+        How many historical awards exist for this category pair. None / 0 means
+        the cost score used the fallback ratio instead of the z-score sigmoid.
+    hist_std_dev:
+        Standard deviation of historical unit prices. None / 0 means no variance
+        data — z-score is unstable or the fallback formula was used.
+    hist_avg:
+        Historical average unit price. Used to gauge whether the std_dev is
+        reasonable relative to the market (coefficient of variation check).
+
+    Returns
+    -------
+    ConfidenceAssessment with ``score``, ``label``, ``breakdown``, ``explanation``.
+    """
+
+    # ------------------------------------------------------------------
+    # Dimension 1 — Input Completeness (weight 0.25)
+    # ------------------------------------------------------------------
+    # Cost scoring relies on quantity (cost_total = qty * unit_price) and
+    # budget (penalty function).  Missing either degrades ranking quality.
+    # Category is needed for historical lookup and supplier filtering.
+
+    qty = request.get("quantity")
+    try:
+        qty_val = float(qty) if qty is not None else 0.0
+    except (TypeError, ValueError):
+        qty_val = 0.0
+
+    budget = float(request.get("budget") or 0)
+    category_l2 = request.get("category_l2")
+
+    quantity_ok  = 1.0 if qty_val > 0 else 0.0  # most impactful: cost_total breaks
+    budget_ok    = 1.0 if budget > 0 else 0.0
+    category_ok  = 1.0 if category_l2 else 0.0
+
+    input_completeness = 0.50 * quantity_ok + 0.30 * budget_ok + 0.20 * category_ok
+
+    # ------------------------------------------------------------------
+    # Dimension 2 — Market Coverage (weight 0.25)
+    # ------------------------------------------------------------------
+    # Confidence in the *ranking* is only meaningful when multiple suppliers
+    # competed.  A high exclusion rate also signals the pool is mis-matched.
+
+    n_surviving = len(supplier_results)
+
+    # Monotone step function: more survivors → higher coverage factor
+    _count_table = {0: 0.00, 1: 0.20, 2: 0.50, 3: 0.72, 4: 0.86}
+    count_score = _count_table.get(n_surviving, 1.0)  # 5+ → 1.0
+
+    # Exclusion rate: 0% excluded → 1.0, 100% excluded → 0.0
+    if n_total_suppliers > 0:
+        excl_fraction = min(1.0, n_excluded / n_total_suppliers)
+    else:
+        excl_fraction = 0.0
+    exclusion_factor = 1.0 - excl_fraction
+
+    market_coverage = 0.70 * count_score + 0.30 * exclusion_factor
+
+    # ------------------------------------------------------------------
+    # Dimension 3 — Ranking Decisiveness (weight 0.25)
+    # ------------------------------------------------------------------
+    # A ranking is most valuable when #1 leads #2 by a comfortable margin
+    # and the absolute score level is not uniformly poor.
+
+    if n_surviving == 0:
+        ranking_decisiveness = 0.0
+    elif n_surviving == 1:
+        # Single supplier: winner by default, no competitive signal
+        rank_1 = float(supplier_results[0][2].get("normalized_rank") or 0)
+        ranking_decisiveness = 0.30 * min(1.0, rank_1 / 0.50)
+    else:
+        rank_1 = float(supplier_results[0][2].get("normalized_rank") or 0)
+        rank_2 = float(supplier_results[1][2].get("normalized_rank") or 0)
+        gap    = rank_1 - rank_2
+
+        # Gap score: a 0.15 gap = full confidence; sub-0.05 gaps are near-ties
+        gap_score = min(1.0, gap / 0.15)
+
+        # Level score: if even the winner scores below 0.50 the category is
+        # likely budget-constrained or compliance-restricted — less trustworthy
+        level_score = min(1.0, rank_1 / 0.50)
+
+        ranking_decisiveness = 0.60 * gap_score + 0.40 * level_score
+
+    # ------------------------------------------------------------------
+    # Dimension 4 — Data Reliability (weight 0.15)
+    # ------------------------------------------------------------------
+    # The z-score sigmoid is the preferred cost scoring method.  It requires
+    # a historical average AND a non-zero std_dev.  When either is missing the
+    # system falls back to a simple ratio (blended_avg / unit_price), which is
+    # less discriminating.  More data points → more stable baseline.
+
+    n_hist = hist_n_data_points or 0
+
+    if n_hist == 0:
+        hist_factor = 0.25   # fallback ratio used — low reliability
+    elif n_hist < 5:
+        hist_factor = 0.25 + 0.08 * n_hist          # 0.33 … 0.57
+    elif n_hist < 15:
+        hist_factor = 0.57 + 0.03 * (n_hist - 5)   # 0.57 … 0.87
+    elif n_hist < 30:
+        hist_factor = 0.87 + 0.008 * (n_hist - 15) # 0.87 … 0.99
+    else:
+        hist_factor = min(1.0, 0.99 + 0.002 * (n_hist - 30))
+
+    # Std-dev stability check: coefficient of variation (CV) outside a
+    # reasonable range makes z-scores noisy (very high CV) or degenerate
+    # (very low CV — tiny price differences flip rankings).
+    if hist_std_dev and hist_std_dev > 0 and hist_avg and hist_avg > 0:
+        cv = hist_std_dev / hist_avg
+        if 0.02 <= cv <= 0.50:
+            std_factor = 1.0   # healthy variance
+        elif cv > 0.50:
+            std_factor = 0.75  # high variance → z-score noisy
+        else:
+            std_factor = 0.70  # near-zero variance → scores unstable
+    else:
+        std_factor = 0.65  # no std_dev → fallback formula used
+
+    data_reliability = hist_factor * std_factor
+
+    # ------------------------------------------------------------------
+    # Dimension 5 — Compliance Quality (weight 0.10)
+    # ------------------------------------------------------------------
+    # If the top supplier was compliance-penalized, our confidence in
+    # recommending it should be lower.  Systemic penalization (all suppliers
+    # penalized) is an additional signal that the policy may be misconfigured.
+
+    if not supplier_results:
+        compliance_quality = 0.0
+    else:
+        top_compliance = max(0.0, min(1.0, float(
+            supplier_results[0][2].get("compliance_score") or 1.0
+        )))
+
+        all_penalized = all(
+            float(fs.get("compliance_score") or 1.0) < 1.0
+            for _, _, fs in supplier_results
+        )
+
+        if all_penalized:
+            # Average compliance of the pool, further discounted for systemic issues
+            avg_compliance = sum(
+                float(fs.get("compliance_score") or 1.0)
+                for _, _, fs in supplier_results
+            ) / len(supplier_results)
+            compliance_quality = 0.70 * avg_compliance
+        else:
+            compliance_quality = top_compliance
+
+    # ------------------------------------------------------------------
+    # Composite score + label
+    # ------------------------------------------------------------------
+    WEIGHTS = {
+        "input_completeness":   0.25,
+        "market_coverage":      0.25,
+        "ranking_decisiveness": 0.25,
+        "data_reliability":     0.15,
+        "compliance_quality":   0.10,
+    }
+    dimensions = {
+        "input_completeness":   round(input_completeness,   4),
+        "market_coverage":      round(market_coverage,      4),
+        "ranking_decisiveness": round(ranking_decisiveness, 4),
+        "data_reliability":     round(data_reliability,     4),
+        "compliance_quality":   round(compliance_quality,   4),
+    }
+    score = sum(WEIGHTS[k] * dimensions[k] for k in WEIGHTS)
+    score = round(min(1.0, max(0.0, score)), 4)
+
+    if score >= 0.75:
+        label = "high"
+    elif score >= 0.50:
+        label = "medium"
+    elif score >= 0.25:
+        label = "low"
+    else:
+        label = "very_low"
+
+    # ------------------------------------------------------------------
+    # One-line explanation: surface the weakest dimension
+    # ------------------------------------------------------------------
+    # Use raw (un-weighted) scores so a low-weight dimension that scores 1.0
+    # is not flagged as the "worst" just because its weight is small.
+    worst_dim = min(dimensions, key=dimensions.get)  # type: ignore[arg-type]
+
+    _explanations = {
+        "input_completeness": (
+            "Request is missing quantity, budget, or category — cost-based "
+            "ranking is unreliable."
+        ),
+        "market_coverage": (
+            "Too few suppliers qualified or the exclusion rate is high — "
+            "competitive pricing cannot be guaranteed."
+        ),
+        "ranking_decisiveness": (
+            "Suppliers' scores are tightly clustered or uniformly low — "
+            "the ranking adds little decision value."
+        ),
+        "data_reliability": (
+            "Insufficient historical pricing data for this category — "
+            "the cost score uses a less accurate fallback formula."
+        ),
+        "compliance_quality": (
+            "The top-ranked supplier carries a compliance penalty — "
+            "manual review of policy fit is recommended."
+        ),
+    }
+    explanation = _explanations[worst_dim]
+
+    return ConfidenceAssessment(
+        score=score,
+        label=label,
+        breakdown={
+            "dimensions": dimensions,
+            "weights":    WEIGHTS,
+            "worst_dimension": worst_dim,
+            "meta": {
+                "n_surviving_suppliers":   n_surviving,
+                "n_excluded":              n_excluded,
+                "n_hist_data_points":      n_hist,
+                "hist_std_dev_available":  hist_std_dev is not None and hist_std_dev > 0,
+                "used_zscore_sigmoid":     bool(hist_std_dev and hist_std_dev > 0),
+            },
+        },
+        explanation=explanation,
     )
 
 
