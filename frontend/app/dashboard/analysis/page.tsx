@@ -9,6 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/auth-context';
 import { ActionDialog } from '@/components/ui/action-dialog';
+import { STATUS_TIMELINE_DOT } from '@/lib/colors';
 
 type DialogAction = 'approve' | 'reject' | 'review' | null;
 
@@ -213,15 +214,6 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
 interface MyEscalation { id: string; request_id: string; type: string; status: string; }
 interface AuditEntry { id: string; actor_id: string; action: string; notes: string | null; created_at: string; }
 
-const AUDIT_ACTION_COLORS: Record<string, string> = {
-  submitted: 'bg-blue-500',
-  approved: 'bg-emerald-500',
-  rejected: 'bg-red-500',
-  reviewed: 'bg-indigo-500',
-  escalated: 'bg-orange-500',
-  clarified: 'bg-amber-500',
-  withdrawn: 'bg-gray-400',
-};
 
 export default function AnalysisPage() {
   const [loading, setLoading] = useState(true);
@@ -542,7 +534,7 @@ export default function AnalysisPage() {
                 <ol className="relative border-l border-border ml-3 space-y-4">
                   {auditTrail.map((entry, i) => (
                     <li key={entry.id} className="ml-4">
-                      <span className={`absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-background ${AUDIT_ACTION_COLORS[entry.action] ?? 'bg-gray-400'}`} />
+                      <span className={`absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-background ${STATUS_TIMELINE_DOT[entry.action] ?? STATUS_TIMELINE_DOT.withdrawn}`} />
                       <div className="flex items-baseline justify-between gap-2">
                         <p className="text-sm font-medium capitalize">{entry.action}</p>
                         <time className="text-xs text-muted-foreground whitespace-nowrap">

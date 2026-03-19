@@ -6,6 +6,7 @@ import { useAuth } from '@/context/auth-context';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { ArrowRight, Building2, MapPin, Briefcase } from 'lucide-react';
+import { ROLE_BADGE, ROLE_AVATAR, ROLE_LABELS } from '@/lib/colors';
 
 interface DemoUser {
   id: string;
@@ -17,20 +18,6 @@ interface DemoUser {
   site: string | null;
   requester_role: string | null;
 }
-
-const ROLE_LABELS: Record<string, string> = {
-  requester: 'Requester',
-  approver: 'Procurement Manager',
-  category_head: 'Category Head',
-  compliance_reviewer: 'Compliance Reviewer',
-};
-
-const ROLE_COLORS: Record<string, string> = {
-  requester: 'text-blue-700 border-blue-300 bg-blue-50',
-  approver: 'text-emerald-700 border-emerald-300 bg-emerald-50',
-  category_head: 'text-purple-700 border-purple-300 bg-purple-50',
-  compliance_reviewer: 'text-amber-700 border-amber-300 bg-amber-50',
-};
 
 const ROLE_DESCRIPTIONS: Record<string, string> = {
   requester: 'Submit and track procurement requests',
@@ -44,13 +31,6 @@ const AVATARS: Record<string, string> = {
   'user-bob': 'BS',
   'user-carol': 'CD',
   'user-dave': 'DP',
-};
-
-const AVATAR_COLORS: Record<string, string> = {
-  requester: 'bg-blue-100 text-blue-700',
-  approver: 'bg-emerald-100 text-emerald-700',
-  category_head: 'bg-purple-100 text-purple-700',
-  compliance_reviewer: 'bg-amber-100 text-amber-700',
 };
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
@@ -152,12 +132,12 @@ export default function LoginPage() {
                   `}
                 >
                   <div className="flex items-start justify-between gap-2 mb-3">
-                    <div className={`h-10 w-10 rounded-full flex items-center justify-center font-semibold text-sm shrink-0 ${AVATAR_COLORS[u.role] ?? 'bg-muted'}`}>
+                    <div className={`h-10 w-10 rounded-full flex items-center justify-center font-semibold text-sm shrink-0 ${ROLE_AVATAR[u.role] ?? 'bg-muted'}`}>
                       {isLoading ? (
                         <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                       ) : initials}
                     </div>
-                    <Badge variant="outline" className={`text-[10px] px-1.5 shrink-0 ${ROLE_COLORS[u.role] ?? ''}`}>
+                    <Badge variant="outline" className={`text-[10px] px-1.5 shrink-0 ${ROLE_BADGE[u.role] ?? ''}`}>
                       {ROLE_LABELS[u.role] ?? u.role}
                     </Badge>
                   </div>

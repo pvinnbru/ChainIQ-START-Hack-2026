@@ -10,6 +10,7 @@ import {
   FileText, Clock, CheckCircle, AlertCircle,
   ArrowUpRight, Plus, ChevronRight, Activity,
 } from 'lucide-react';
+import { STATUS_DOT, STATUS_TEXT, STATUS_KPI } from '@/lib/colors';
 
 interface Stats {
   by_status: Record<string, number>;
@@ -35,15 +36,6 @@ interface Escalation {
   created_at: string;
 }
 
-const ACTION_COLORS: Record<string, string> = {
-  submitted: 'text-blue-600',
-  approved: 'text-emerald-600',
-  rejected: 'text-red-600',
-  reviewed: 'text-indigo-600',
-  escalated: 'text-orange-600',
-  clarified: 'text-amber-600',
-  withdrawn: 'text-gray-500',
-};
 
 const TYPE_LABELS: Record<string, string> = {
   requester_clarification: 'Clarification needed',
@@ -88,16 +80,16 @@ export default function DashboardPage() {
 
   const kpis = isRequester
     ? [
-        { label: 'Total Requests', value: stats?.total ?? 0, icon: FileText, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-950/30', href: '/dashboard/cases' },
-        { label: 'Pending Review', value: (s.new ?? 0) + (s.pending_review ?? 0), icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-950/30', href: '/dashboard/cases' },
-        { label: 'Approved', value: s.approved ?? 0, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-950/30', href: '/dashboard/cases' },
-        { label: 'Needs Attention', value: escalations.length, icon: AlertCircle, color: 'text-orange-600', bg: 'bg-orange-50 dark:bg-orange-950/30', href: '/dashboard/escalations' },
+        { label: 'Total Requests',  value: stats?.total ?? 0,                               icon: FileText,    ...STATUS_KPI.new,          href: '/dashboard/cases' },
+        { label: 'Pending Review',  value: (s.new ?? 0) + (s.pending_review ?? 0),          icon: Clock,       ...STATUS_KPI.pending_review, href: '/dashboard/cases' },
+        { label: 'Approved',        value: s.approved ?? 0,                                  icon: CheckCircle, ...STATUS_KPI.approved,      href: '/dashboard/cases' },
+        { label: 'Needs Attention', value: escalations.length,                               icon: AlertCircle, ...STATUS_KPI.attention,     href: '/dashboard/escalations' },
       ]
     : [
-        { label: 'Total Requests', value: stats?.total ?? 0, icon: FileText, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-950/30', href: '/dashboard/cases' },
-        { label: 'Pending Review', value: (s.new ?? 0) + (s.pending_review ?? 0), icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-950/30', href: '/dashboard/cases' },
-        { label: 'Escalated', value: s.escalated ?? 0, icon: AlertCircle, color: 'text-orange-600', bg: 'bg-orange-50 dark:bg-orange-950/30', href: '/dashboard/cases' },
-        { label: 'Approved', value: s.approved ?? 0, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-950/30', href: '/dashboard/cases' },
+        { label: 'Total Requests',  value: stats?.total ?? 0,                               icon: FileText,    ...STATUS_KPI.new,          href: '/dashboard/cases' },
+        { label: 'Pending Review',  value: (s.new ?? 0) + (s.pending_review ?? 0),          icon: Clock,       ...STATUS_KPI.pending_review, href: '/dashboard/cases' },
+        { label: 'Escalated',       value: s.escalated ?? 0,                                 icon: AlertCircle, ...STATUS_KPI.escalated,     href: '/dashboard/cases' },
+        { label: 'Approved',        value: s.approved ?? 0,                                  icon: CheckCircle, ...STATUS_KPI.approved,      href: '/dashboard/cases' },
       ];
 
   return (
@@ -215,7 +207,7 @@ export default function DashboardPage() {
                         <p className="text-sm truncate">
                           <span className="font-medium">{entry.actor_name}</span>
                           {' '}
-                          <span className={ACTION_COLORS[entry.action] ?? 'text-muted-foreground'}>
+                          <span className={STATUS_TEXT[entry.action] ?? 'text-muted-foreground'}>
                             {entry.action}
                           </span>
                         </p>
@@ -242,22 +234,13 @@ export default function DashboardPage() {
               {Object.entries(s)
                 .sort((a, b) => b[1] - a[1])
                 .map(([status, count]) => {
-                  const dot: Record<string, string> = {
-                    new:            'bg-blue-400',
-                    pending_review: 'bg-amber-400',
-                    escalated:      'bg-orange-400',
-                    reviewed:       'bg-indigo-400',
-                    approved:       'bg-emerald-400',
-                    rejected:       'bg-red-400',
-                    withdrawn:      'bg-gray-400',
-                  };
                   return (
                     <div
                       key={status}
                       className="flex items-center gap-2 px-3 py-1.5 rounded-full border bg-card hover:bg-muted/40 cursor-pointer transition-colors"
                       onClick={() => router.push('/dashboard/cases')}
                     >
-                      <span className={`h-2 w-2 rounded-full shrink-0 ${dot[status] ?? 'bg-gray-400'}`} />
+                      <span className={`h-2 w-2 rounded-full shrink-0 ${STATUS_DOT[status] ?? STATUS_DOT.withdrawn}`} />
                       <span className="text-sm font-semibold tabular-nums">{count}</span>
                       <span className="text-xs text-muted-foreground capitalize">{status.replace(/_/g, ' ')}</span>
                     </div>

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ActionDialog } from '@/components/ui/action-dialog';
 import { AlertCircle, ArrowUpRight, CheckCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { toast } from 'sonner';
+import { STATUS_BADGE } from '@/lib/colors';
 
 interface Escalation {
   id: string;
@@ -116,7 +117,7 @@ export default function EscalationsPage() {
                     <AlertCircle className="h-4 w-4 text-amber-500" />
                     {TYPE_LABELS[esc.type] ?? esc.type}
                   </CardTitle>
-                  <Badge variant="outline" className="text-amber-700 border-amber-300 bg-amber-50 text-xs">
+                  <Badge variant="outline" className={`${STATUS_BADGE.escalated} text-xs`}>
                     pending
                   </Badge>
                 </div>

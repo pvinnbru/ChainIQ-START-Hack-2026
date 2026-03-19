@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { ActionDialog } from '@/components/ui/action-dialog';
 import { Search, ArrowUpRight, ArrowUp, ArrowDown, PackageSearch, Undo2, Download } from 'lucide-react';
 import { toast } from 'sonner';
+import { STATUS_BADGE } from '@/lib/colors';
 
 interface Request {
   id: string;
@@ -62,15 +63,7 @@ function UrgencyChip({ dateStr, status }: { dateStr: string | null; status: stri
 }
 
 function getStatusColor(status: string) {
-  switch (status) {
-    case 'new': return 'text-blue-700 border-blue-300 bg-blue-50';
-    case 'pending_review': return 'text-amber-700 border-amber-300 bg-amber-50';
-    case 'escalated': return 'text-orange-700 border-orange-300 bg-orange-50';
-    case 'reviewed': return 'text-indigo-700 border-indigo-300 bg-indigo-50';
-    case 'approved': return 'text-emerald-700 border-emerald-300 bg-emerald-50';
-    case 'rejected': return 'text-red-700 border-red-300 bg-red-50';
-    default: return 'text-gray-700 border-gray-300 bg-gray-50';
-  }
+  return STATUS_BADGE[status] ?? STATUS_BADGE.withdrawn;
 }
 
 const SORT_LABELS: Record<SortBy, string> = {

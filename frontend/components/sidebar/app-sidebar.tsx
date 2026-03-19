@@ -10,6 +10,7 @@ import { NavMain } from "@/components/sidebar/nav-main"
 import { useAuth } from "@/context/auth-context"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { ROLE_BADGE, ROLE_AVATAR, ROLE_LABELS } from "@/lib/colors"
 import {
   Sidebar,
   SidebarContent,
@@ -22,19 +23,6 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar"
 
-const ROLE_LABELS: Record<string, string> = {
-  requester: "Requester",
-  approver: "Procurement Manager",
-  category_head: "Category Head",
-  compliance_reviewer: "Compliance Reviewer",
-}
-
-const ROLE_COLORS: Record<string, string> = {
-  requester: "text-blue-700 border-blue-300 bg-blue-50",
-  approver: "text-emerald-700 border-emerald-300 bg-emerald-50",
-  category_head: "text-purple-700 border-purple-300 bg-purple-50",
-  compliance_reviewer: "text-amber-700 border-amber-300 bg-amber-50",
-}
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
 
@@ -109,14 +97,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {user && (
           <>
             <div className="flex items-center gap-2 px-1">
-              <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 ${ROLE_COLORS[user.role] ?? "bg-muted text-muted-foreground"}`}>
+              <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 ${ROLE_AVATAR[user.role] ?? "bg-muted text-muted-foreground"}`}>
                 {user.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{user.name}</p>
                 <Badge
                   variant="outline"
-                  className={`text-[10px] mt-0.5 ${ROLE_COLORS[user.role] ?? ""}`}
+                  className={`text-[10px] mt-0.5 ${ROLE_BADGE[user.role] ?? ""}`}
                 >
                   {ROLE_LABELS[user.role] ?? user.role}
                 </Badge>
