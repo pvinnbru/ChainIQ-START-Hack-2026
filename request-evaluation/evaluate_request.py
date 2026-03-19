@@ -230,26 +230,209 @@ def _to_serializable(obj: Any) -> Any:
 
 
 # ---------------------------------------------------------------------------
+# Rank explanation builder
+# ---------------------------------------------------------------------------
+
+def _build_rank_explanation(pos: int, fs: dict, request: dict | None = None) -> str:
+    """
+    Build a plain-English explanation of a supplier's rank position by
+    interpreting the key scoring signals stored in *fs* (final_state).
+
+    The explanation is ordered by signal weight / impact:
+      1. Cost position vs. market average      (80% of raw_rank)
+      2. Budget penalty                        (explicitly shown for any non-trivial case)
+      3. Preferred supplier bonus              (with decisiveness language when it matters)
+      4. Compliance penalty                    (multiplicative on rank)
+      5. Reputation                            (10% of raw_rank, only if notable)
+      6. Historical track record               (10% of raw_rank; absent data called out)
+      7. Overdue request                       (sourced from request.days_until_required)
+      8. Low-confidence warning                (action evaluation errors)
+
+    Parameters
+    ----------
+    pos:
+        0-based rank position (0 = best).
+    fs:
+        The supplier's final_state dict from run_procurement_evaluation.
+    request:
+        The original request dict; used to surface days_until_required < 0.
+
+    Returns a string of the form:
+        "Ranked #N: <clause>, <clause>, ...."
+    """
+    clauses: list[str] = []
+
+    # --- 1. Cost position (vs. blended market average) ---
+    try:
+        up  = float(fs["unit_price"])             if fs.get("unit_price")             is not None else None
+        avg = float(fs["blended_avg_unit_price"])  if fs.get("blended_avg_unit_price")  is not None else None
+    except (TypeError, ValueError):
+        up = avg = None
+
+    if up and avg and avg > 0:
+        pct = (avg - up) / avg * 100
+        if pct >= 5.0:
+            clauses.append(f"strong cost position ({pct:.0f}% below market avg)")
+        elif pct >= 1.0:
+            clauses.append(f"{pct:.0f}% below market avg")
+        elif pct > -1.0:
+            clauses.append("at market average")
+        elif pct > -5.0:
+            clauses.append(f"{abs(pct):.0f}% above market avg")
+        else:
+            clauses.append(f"expensive relative to market ({abs(pct):.0f}% above market avg)")
+    else:
+        clauses.append("no market benchmark available")
+
+    # --- 2. Budget penalty ---
+    # The logistic curve produces bp = 0.85 for a supplier priced exactly at
+    # budget, rising toward 1.0 for prices well below budget.  Any bp below
+    # the at-budget baseline (≈ 0.87 after the curve levels off) means the
+    # supplier's total cost is pressing against or exceeding the budget and the
+    # penalty is actively dragging the cost_score down.
+    try:
+        bp = float(fs["budget_penalty"]) if fs.get("budget_penalty") is not None else None
+    except (TypeError, ValueError):
+        bp = None
+
+    if bp is not None:
+        if bp < 0.30:
+            clauses.append("significantly over budget (heavy penalty applied)")
+        elif bp < 0.55:
+            clauses.append("over budget (penalty applied)")
+        elif bp < 0.82:
+            clauses.append("slightly over budget (penalty applied)")
+        elif bp < 0.87:
+            # Supplier is right at the budget limit; the logistic penalty is at
+            # its inflection point (≈ 0.85) and is explicitly affecting the score.
+            clauses.append("at budget limit (logistic penalty applied)")
+        # bp ≥ 0.87: supplier is comfortably within budget — omit for conciseness
+
+    # --- 3. Preferred supplier bonus ---
+    # When rank_without_preferred_bonus is available, quantify the bonus delta.
+    # Mark the bonus "decisive" when the supplier is #1 and the delta alone
+    # (≥ 0.03 pts) would plausibly have changed the winner.
+    if fs.get("preferred_supplier_bonus_applied"):
+        try:
+            rank_now    = float(fs["normalized_rank"])            if fs.get("normalized_rank")            is not None else None
+            rank_before = float(fs["rank_without_preferred_bonus"]) if fs.get("rank_without_preferred_bonus") is not None else None
+        except (TypeError, ValueError):
+            rank_now = rank_before = None
+
+        if rank_now is not None and rank_before is not None:
+            delta = round(rank_now - rank_before, 3)
+            if pos == 0 and delta >= 0.03:
+                clauses.append(
+                    f"preferred supplier bonus decisive for top ranking "
+                    f"(+{delta:.3f} pts; score without bonus: {rank_before:.3f})"
+                )
+            else:
+                clauses.append(
+                    f"preferred supplier bonus applied (+{delta:.3f} pts)"
+                )
+        else:
+            clauses.append("preferred supplier bonus applied")
+
+    # --- 4. Compliance penalty ---
+    try:
+        cs = float(fs["compliance_score"]) if fs.get("compliance_score") is not None else None
+    except (TypeError, ValueError):
+        cs = None
+
+    if cs is not None and cs < 1.0:
+        clauses.append(f"compliance penalty ({cs:.0%} score)")
+
+    # --- 5. Reputation (only mention if notably high or low) ---
+    try:
+        rep = float(fs["reputation_score"]) if fs.get("reputation_score") is not None else None
+    except (TypeError, ValueError):
+        rep = None
+
+    if rep is not None:
+        if rep >= 75:
+            clauses.append(f"strong reputation ({rep:.0f}/100)")
+        elif rep < 40:
+            clauses.append(f"below-average reputation ({rep:.0f}/100)")
+
+    # --- 6. Historical track record ---
+    # _historic_score_is_dummy=True means no store entry exists for this
+    # (supplier, category) pair — the score is the neutral prior 0.5 by
+    # default, not a computed value from real awards data.
+    # Values outside [0.45, 0.55] with is_dummy=False reflect actual history.
+    try:
+        hs = float(fs["_historic_score"]) if fs.get("_historic_score") is not None else None
+    except (TypeError, ValueError):
+        hs = None
+
+    if fs.get("_historic_score_is_dummy"):
+        clauses.append("no historical data (scored as neutral)")
+    elif hs is not None:
+        if hs >= 0.65:
+            clauses.append("strong historical track record")
+        elif hs <= 0.35:
+            clauses.append("weak historical track record")
+        elif 0.45 <= hs <= 0.55:
+            clauses.append("limited historical data (score near neutral prior)")
+
+    # --- 7. Overdue request ---
+    # days_until_required < 0 means the delivery date has already passed.
+    # Surface this in every supplier explanation so the reader knows the
+    # ranking was produced under urgency constraints.
+    if request is not None:
+        try:
+            days = request.get("days_until_required")
+            if days is not None and float(days) < 0:
+                clauses.append(f"request {abs(int(days))} day(s) overdue")
+        except (TypeError, ValueError):
+            pass
+
+    # --- 8. Low-confidence warning ---
+    if fs.get("is_low_confidence"):
+        clauses.append("some rule evaluation errors occurred")
+
+    return f"Ranked #{pos + 1}: {', '.join(clauses)}."
+
+
+# ---------------------------------------------------------------------------
 # Input validation
 # ---------------------------------------------------------------------------
 
 _ALLOWED_CURRENCIES: frozenset[str] = frozenset({"EUR", "CHF", "USD"})
 
+# days_until_required: values above this are non-blocking but flagged as
+# likely data-entry mistakes (a year-plus planning horizon is unusual).
+_DAYS_WARNING_THRESHOLD: int = 365
 
-def _validate_request(request: dict[str, Any]) -> list[dict[str, str]]:
+
+def _validate_request(
+    request: dict[str, Any],
+) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
     """
     Validate the parsed request dict against the pipeline's field contracts.
 
-    Returns a list of ``{"field": str, "reason": str}`` dicts, one per
-    violation.  An empty list means the request is valid.
+    Returns ``(errors, warnings)``:
 
-    Checks:
-      - budget    must be a number > 0
-      - quantity  must be a number > 0
-      - category_l1 / category_l2  must be non-empty strings
-      - currency  must be one of EUR | CHF | USD
+    errors   — blocking violations; a non-empty list causes the request to be
+                rejected with status='error'.  Each entry is
+                ``{"field": str, "reason": str}``.
+
+    warnings — non-blocking observations; the request still proceeds but the
+                caller should surface these to the requester.  Same structure
+                as errors.
+
+    Hard checks (errors):
+      - budget              must be a number > 0
+      - quantity            must be a number > 0
+      - category_l1 / l2   must be non-empty strings
+      - currency            must be one of EUR | CHF | USD
+      - days_until_required if present, must be a number (not bool, not string)
+
+    Soft checks (warnings):
+      - days_until_required > _DAYS_WARNING_THRESHOLD (365)  →  likely a
+        data-entry error (hours entered as days, or wrong date arithmetic).
     """
-    errors: list[dict[str, str]] = []
+    errors:   list[dict[str, str]] = []
+    warnings: list[dict[str, str]] = []
 
     # --- budget > 0 ---
     budget = request.get("budget")
@@ -288,7 +471,178 @@ def _validate_request(request: dict[str, Any]) -> list[dict[str, str]]:
             "reason": f"must be one of {allowed}, got {currency!r}",
         })
 
-    return errors
+    # --- days_until_required: type check (hard) + range check (soft) ---
+    days = request.get("days_until_required")
+    if days is not None:
+        if isinstance(days, bool) or not isinstance(days, (int, float)):
+            errors.append({
+                "field":  "days_until_required",
+                "reason": f"must be a number, got {type(days).__name__!r}",
+            })
+        elif days > _DAYS_WARNING_THRESHOLD:
+            warnings.append({
+                "field":  "days_until_required",
+                "reason": (
+                    f"value {days} exceeds {_DAYS_WARNING_THRESHOLD} days — "
+                    f"this may be a data-entry error (e.g. hours entered as days "
+                    f"or an incorrect required-by date)."
+                ),
+            })
+
+    return errors, warnings
+
+
+# ---------------------------------------------------------------------------
+# Post-process display filters
+# ---------------------------------------------------------------------------
+
+# Suppliers whose normalized_rank is below this threshold are suppressed from output.
+_RANK_DISPLAY_MIN: float = 0.05
+
+# If the overall confidence_assessment score is below this level, all supplier
+# suggestions are suppressed — the ranking is too unreliable to act on.
+_CONFIDENCE_DISPLAY_MIN: float = 0.20
+
+# A supplier whose standard_lead_time_days exceeds days_until_required by more than
+# this many days is suppressed (cannot meet the required delivery window).
+_DELIVERY_SLACK_DAYS: int = 1
+
+
+def _apply_post_process_filters(
+    ranked_suppliers: list[dict],
+    supplier_results: list[tuple],
+    request: dict[str, Any],
+    confidence_assessment: Any | None,
+) -> tuple[list[dict], list[str]]:
+    """
+    Apply post-process display filters to the ranked supplier list.
+
+    Three filters are applied in order:
+
+    1. Global confidence check (suppresses ALL suppliers):
+       confidence_assessment.score < _CONFIDENCE_DISPLAY_MIN (0.20)
+
+    2. Per-supplier rank threshold:
+       normalized_rank < _RANK_DISPLAY_MIN (0.05) → suppress that supplier.
+
+    3. Per-supplier delivery feasibility:
+       standard_lead_time_days > days_until_required + _DELIVERY_SLACK_DAYS (1)
+       → suppress that supplier.  Only applied when days_until_required >= 0
+       (overdue requests bypass this filter because the window has already passed).
+
+    Returns (filtered_suppliers, suppression_notes).
+    Positions in the filtered list are re-numbered starting from 1.
+    """
+    notes: list[str] = []
+
+    # Filter 1 — global confidence gate (all-or-nothing)
+    if confidence_assessment is not None:
+        conf_score = float(getattr(confidence_assessment, "score", 1.0))
+        if conf_score < _CONFIDENCE_DISPLAY_MIN:
+            notes.append(
+                f"All suppliers suppressed: overall ranking confidence "
+                f"({conf_score:.2f}) is below the minimum display threshold "
+                f"({_CONFIDENCE_DISPLAY_MIN}). Human review is required before "
+                f"any supplier recommendation can be issued."
+            )
+            return [], notes
+
+    # Resolve delivery deadline (None or negative → skip delivery filter)
+    days_raw = request.get("days_until_required")
+    try:
+        days_int: int | None = int(float(days_raw)) if days_raw is not None else None
+    except (TypeError, ValueError):
+        days_int = None
+
+    apply_delivery_filter = days_int is not None and days_int >= 0
+
+    filtered: list[dict] = []
+    for s, (_, _, fs) in zip(ranked_suppliers, supplier_results):
+        name = s.get("supplier_name", "?")
+
+        # Filter 2 — rank score too low
+        rank = s.get("normalized_rank")
+        try:
+            rank_f = float(rank) if rank is not None else None
+        except (TypeError, ValueError):
+            rank_f = None
+
+        if rank_f is not None and rank_f < _RANK_DISPLAY_MIN:
+            notes.append(
+                f"{name} suppressed: normalized_rank {rank_f:.3f} is below "
+                f"minimum display threshold ({_RANK_DISPLAY_MIN})."
+            )
+            continue
+
+        # Filter 3 — lead time exceeds deadline
+        if apply_delivery_filter:
+            lead_time = fs.get("standard_lead_time_days")
+            try:
+                lead_int = int(lead_time) if lead_time is not None else None
+            except (TypeError, ValueError):
+                lead_int = None
+
+            if lead_int is not None and lead_int > days_int + _DELIVERY_SLACK_DAYS:
+                notes.append(
+                    f"{name} suppressed: standard lead time {lead_int} day(s) "
+                    f"exceeds required delivery window of {days_int} day(s) "
+                    f"(allowed slack: {_DELIVERY_SLACK_DAYS} day(s))."
+                )
+                continue
+
+        filtered.append(s)
+
+    # Re-number positions after filtering
+    for i, s in enumerate(filtered):
+        s["position"] = i + 1
+
+    return filtered, notes
+
+
+def _inject_no_supplier_escalation(
+    outcome: dict[str, Any],
+    filter_notes: list[str],
+) -> None:
+    """
+    Inject a blocking EscalationRecord into the existing EscalationAssessment
+    when no displayable suppliers remain after post-process filtering.
+
+    Modifies ``outcome["escalation_assessment"]`` in place so the serialized
+    output reflects the correct state.  If no assessment object exists, a
+    minimal one is created.
+    """
+    from escalation_engine import EscalationAssessment, EscalationRecord
+
+    assessment = outcome.get("escalation_assessment")
+    if assessment is None:
+        assessment = EscalationAssessment()
+        outcome["escalation_assessment"] = assessment
+
+    reason = (
+        "No qualifying suppliers remain after post-process display filters were applied. "
+        + (" ".join(filter_notes) if filter_notes else "")
+    ).strip()
+
+    no_supplier_record = EscalationRecord(
+        person_to_escalate_to="Procurement Manager",
+        reasons=[reason],
+        tasks=[
+            "Review the filter criteria and the original supplier pool. "
+            "Either expand the approved supplier list, relax the delivery or "
+            "ranking thresholds, or obtain emergency sourcing approval."
+        ],
+        severity="blocking",
+        sources=["POST_PROCESS_NO_SUPPLIER"],
+        source_types=["engine"],
+    )
+
+    # Prepend so it appears first (most critical)
+    assessment.records.insert(0, no_supplier_record)
+    assessment.has_blocking = True
+    assessment.needs_escalation = True
+    assessment.context_notes.append(
+        "Post-process filters removed all suppliers — no recommendation can be issued."
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -320,11 +674,12 @@ def evaluate_request(request_json: str) -> str:
         request_id = str(request.get("request_id", "<unknown>"))
     except (json.JSONDecodeError, ValueError) as exc:
         return json.dumps({
-            "status":            "error",
-            "request_id":        request_id,
-            "timestamp":         timestamp,
-            "error":             f"Invalid JSON input: {exc}",
-            "validation_errors": [],
+            "status":              "error",
+            "request_id":          request_id,
+            "timestamp":           timestamp,
+            "error":               f"Invalid JSON input: {exc}",
+            "validation_errors":   [],
+            "validation_warnings": [],
             "global_outputs":        {},
             "ranked_suppliers":       [],
             "escalation":            None,
@@ -333,18 +688,45 @@ def evaluate_request(request_json: str) -> str:
             "execution_log":         None,
         }, indent=2)
 
-    validation_errors = _validate_request(request)
+    validation_errors, validation_warnings = _validate_request(request)
     if validation_errors:
         fields = ", ".join(e["field"] for e in validation_errors)
+        missing_field_names = ", ".join(e["field"] for e in validation_errors)
+        _validation_escalation = {
+            "needs_escalation": True,
+            "has_blocking":     True,
+            "has_advisory":     False,
+            "records": [
+                {
+                    "person_to_escalate_to": "Procurement Manager",
+                    "reasons": [
+                        f"This procurement request is incomplete and cannot be evaluated. "
+                        f"The following required fields are missing or invalid: {missing_field_names}."
+                    ],
+                    "tasks": [
+                        "Return the request to the requester for completion. "
+                        "All required fields (budget, quantity, category_l1, category_l2, currency) "
+                        "must be provided before sourcing evaluation can proceed."
+                    ],
+                    "severity":      "blocking",
+                    "sources":       ["input_validation"],
+                    "source_types":  ["engine"],
+                }
+            ],
+            "context_notes": [
+                "Request failed input validation — no supplier evaluation was performed."
+            ],
+        }
         return json.dumps({
-            "status":            "error",
-            "request_id":        request_id,
-            "timestamp":         timestamp,
-            "error":             f"Request validation failed: {fields}",
-            "validation_errors": validation_errors,
+            "status":              "error",
+            "request_id":          request_id,
+            "timestamp":           timestamp,
+            "error":               f"Request validation failed: {fields}",
+            "validation_errors":   validation_errors,
+            "validation_warnings": validation_warnings,
             "global_outputs":        {},
             "ranked_suppliers":       [],
-            "escalation":            None,
+            "escalation":            _validation_escalation,
             "flag_assessment":       None,
             "confidence_assessment": None,
             "execution_log":         None,
@@ -381,6 +763,7 @@ def evaluate_request(request_json: str) -> str:
                 "supplier_name":   identity.get("supplier_name"),
                 "category_l2":     identity.get("category_l2"),
                 "normalized_rank": fs.get("normalized_rank"),
+                "rank_explanation": _build_rank_explanation(pos, fs, request),
                 "cost_total":      fs.get("cost_total"),
                 "unit_price":      fs.get("unit_price"),
                 "currency":        fs.get("currency"),
@@ -395,12 +778,26 @@ def evaluate_request(request_json: str) -> str:
             for pos, (identity, _, fs) in enumerate(supplier_results)
         ]
 
+        # Apply post-process display filters
+        ranked_suppliers, filter_notes = _apply_post_process_filters(
+            ranked_suppliers,
+            supplier_results,
+            request,
+            outcome.get("confidence_assessment"),
+        )
+
+        # If no suppliers survive the filters, escalate and suppress recommendations.
+        # Nothing else should be acted on — the escalation record is the only output.
+        if not ranked_suppliers:
+            _inject_no_supplier_escalation(outcome, filter_notes)
+
         result = {
             "status":      "ok",
             "request_id":  request_id,
             "timestamp":   exec_log.timestamp,
             "error":       None,
-            "validation_errors": [],
+            "validation_errors":   [],
+            "validation_warnings": validation_warnings,
             "global_outputs":    outcome.get("global_outputs", {}),
             "ranked_suppliers":  ranked_suppliers,
             "escalation":        _to_serializable(outcome.get("escalation_assessment")),
@@ -412,11 +809,12 @@ def evaluate_request(request_json: str) -> str:
     except Exception as exc:  # noqa: BLE001
         logger.exception("evaluate_request failed for %s", request_id)
         result = {
-            "status":            "error",
-            "request_id":        request_id,
-            "timestamp":         timestamp,
-            "error":             f"{type(exc).__name__}: {exc}",
-            "validation_errors": [],
+            "status":              "error",
+            "request_id":          request_id,
+            "timestamp":           timestamp,
+            "error":               f"{type(exc).__name__}: {exc}",
+            "validation_errors":   [],
+            "validation_warnings": [],
             "global_outputs":        {},
             "ranked_suppliers":       [],
             "escalation":            None,
@@ -481,6 +879,11 @@ def evaluate_request(request_json: str) -> str:
 #   supplier_name             string    Supplier display name
 #   category_l2               string    Matched L2 category
 #   normalized_rank           number    Cross-comparable score in [0, 1]; higher = better.
+#   rank_explanation          string    Plain-English summary of the key scoring drivers,
+#                                       e.g. "Ranked #1: strong cost position (12% below
+#                                       market avg), preferred supplier bonus applied,
+#                                       limited historical data."  Clauses are omitted
+#                                       when the signal is neutral or expected.
 #                                       Composed of cost score (95%), reputation (2.5%),
 #                                       and historic score (2.5%), multiplied by the
 #                                       compliance_score penalty multiplier.

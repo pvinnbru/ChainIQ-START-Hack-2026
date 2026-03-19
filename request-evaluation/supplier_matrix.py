@@ -1649,6 +1649,12 @@ def run_procurement_evaluation(
         / _PENALTY_LOGISTIC_K
     )
     _SIGMOID_K          = 1.5    # steepness of cost z-score sigmoid; higher = sharper spread
+    # Safe upper bound for math.exp() arguments.  Python raises OverflowError
+    # ("math range error") for arguments above ~709.78.  Extreme quantities or
+    # budgets can produce z-scores or overage fractions in the thousands; clamping
+    # to ±700 before exp() keeps both logistic curves numerically stable while
+    # preserving their asymptotic values (0 or 1) for extreme inputs.
+    _EXP_MAX            = 700.0
 
     # Historical stats + blended average
     category_l1 = str(global_context.get("category_l1", ""))
@@ -1724,7 +1730,7 @@ def run_procurement_evaluation(
                 _std_dev_floor = blended_avg * 0.02
                 _effective_std_dev = max(_std_dev_for_zscore, _std_dev_floor)
                 z = (blended_avg - unit_price) / _effective_std_dev
-                base_cost_score = 1.0 / (1.0 + math.exp(-_SIGMOID_K * z))
+                base_cost_score = 1.0 / (1.0 + math.exp(max(-_EXP_MAX, min(_EXP_MAX, -_SIGMOID_K * z))))
             else:
                 # No variance estimate possible (no hist_avg and no current prices
                 # to form blended_avg) — fall back to simple ratio.
@@ -1738,7 +1744,7 @@ def run_procurement_evaluation(
         cost_total = float(final_state.get("cost_total") or 0)
         if budget > 0 and cost_total > 0:
             overage = (cost_total - budget) / budget
-            penalty = 1.0 / (1.0 + math.exp(_PENALTY_LOGISTIC_K * (overage - _PENALTY_LOGISTIC_C)))
+            penalty = 1.0 / (1.0 + math.exp(min(_EXP_MAX, _PENALTY_LOGISTIC_K * (overage - _PENALTY_LOGISTIC_C))))
         else:
             penalty = 1.0
 
@@ -1759,10 +1765,19 @@ def run_procurement_evaluation(
         # Returns 0.5 (neutral) when no historical data exists for this supplier
         # in this category — neither a boost nor a penalty.
         supplier_id_for_hist = identity.get("supplier_id", "")
-        historic_score = get_supplier_historic_score(
-            supplier_id_for_hist, category_l1, category_l2, hist_store
+        _hist_entry = (
+            hist_store.get("supplier_scores", {})
+            .get(category_l1, {})
+            .get(category_l2, {})
+            .get(supplier_id_for_hist)
         )
-        final_state["_historic_score_is_dummy"] = False
+        # _historic_score_is_dummy=True when there is NO record in the store for
+        # this (supplier, category) pair — the score is the neutral prior (0.5),
+        # not a computed value.  This lets _build_rank_explanation distinguish
+        # "no data at all" from "genuinely around 0.5 from real history".
+        historic_score = float(_hist_entry["historic_score"]) if _hist_entry is not None else 0.5
+        final_state["_historic_score"]          = round(historic_score, 6)
+        final_state["_historic_score_is_dummy"] = _hist_entry is None
 
         # --- Compliance multiplier ---
         # Clamped to [0, 1]. OSLM actions reduce this from 1.0 for soft

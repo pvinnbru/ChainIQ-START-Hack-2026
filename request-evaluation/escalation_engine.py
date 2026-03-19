@@ -128,13 +128,17 @@ class EscalationRecord:
     string derived at runtime from policy rules or the engine, not a hardcoded
     field name.  Any escalate_to_<role> action output or engine trigger maps to
     one of these records regardless of what role names the policy uses.
+
+    Multiple triggers for the same recipient are merged into one record:
+    reasons and tasks are combined into lists; severity is the highest across
+    all contributing triggers.
     """
-    person_to_escalate_to:  str   # e.g. "CPO", "Procurement Manager", "Requester"
-    reason_for_escalation:  str   # human-readable explanation of why escalation is needed
-    task_for_escalation:    str   # what the escalation recipient is expected to do
-    severity:               str   # "blocking" | "advisory"
-    source:                 str   # trigger_id or action key, e.g. "escalate_to_cpo" / "CR_C01_..."
-    source_type:            str   # "policy_rule" | "engine" | "confidence"
+    person_to_escalate_to:  str         # e.g. "CPO", "Procurement Manager", "Requester"
+    reasons:                list[str]   # human-readable explanations of why escalation is needed
+    tasks:                  list[str]   # what the escalation recipient is expected to do (deduplicated)
+    severity:               str         # "blocking" | "advisory"  (highest across merged triggers)
+    sources:                list[str]   # trigger_ids or action keys
+    source_types:           list[str]   # "policy_rule" | "engine" | "confidence"
 
 
 @dataclass
@@ -237,6 +241,7 @@ _TRIGGER_TASKS: dict[str, str] = {
     "min_quotes_gap":         "Review whether a policy deviation is appropriate, or confirm the additional quote is still required.",
     "insufficient_suppliers": "Expand the approved supplier pool or review scope and category mapping for this request.",
     "confidence":             "Manually review the ranking output before issuing a purchase order or advancing the sourcing process.",
+    "overdue":                "Determine whether this procurement is still required and, if so, arrange emergency sourcing or obtain post-hoc approval.",
 }
 
 
@@ -303,27 +308,75 @@ def build_action_escalations(
 
         records.append(EscalationRecord(
             person_to_escalate_to=person,
-            reason_for_escalation=reason,
-            task_for_escalation=task,
+            reasons=[reason],
+            tasks=[task],
             severity=severity,
-            source=key,
-            source_type="policy_rule",
+            sources=[key],
+            source_types=["policy_rule"],
         ))
     return records
 
 
 def _trigger_to_record(trigger: EscalationTrigger) -> EscalationRecord:
     """Convert an internal EscalationTrigger into a public EscalationRecord."""
-    source_type = "confidence" if trigger.trigger_type == "confidence" else "engine"
+    if trigger.trigger_type == "confidence":
+        source_type = "confidence"
+    elif trigger.trigger_type == "overdue":
+        source_type = "engine"
+    else:
+        source_type = "engine"
     task = _TRIGGER_TASKS.get(trigger.trigger_type, "Review and take appropriate action.")
     return EscalationRecord(
         person_to_escalate_to=trigger.escalate_to or "Procurement Manager",
-        reason_for_escalation=trigger.description,
-        task_for_escalation=task,
+        reasons=[trigger.description],
+        tasks=[task],
         severity=trigger.severity,
-        source=trigger.trigger_id,
-        source_type=source_type,
+        sources=[trigger.trigger_id],
+        source_types=[source_type],
     )
+
+
+def _merge_records(records: list[EscalationRecord]) -> list[EscalationRecord]:
+    """
+    Merge escalation records that share the same recipient into one record.
+
+    Merging rules:
+    - severity: "blocking" beats "advisory" (highest wins).
+    - reasons / tasks: concatenated in arrival order; duplicate task strings are
+      deduplicated while preserving order.
+    - sources / source_types: concatenated in arrival order.
+    - Record order in the output mirrors the first occurrence of each recipient.
+    """
+    _SEVERITY_RANK = {"blocking": 1, "advisory": 0}
+
+    seen: dict[str, EscalationRecord] = {}
+    order: list[str] = []
+
+    for rec in records:
+        key = rec.person_to_escalate_to
+        if key not in seen:
+            seen[key] = EscalationRecord(
+                person_to_escalate_to=rec.person_to_escalate_to,
+                reasons=list(rec.reasons),
+                tasks=list(rec.tasks),
+                severity=rec.severity,
+                sources=list(rec.sources),
+                source_types=list(rec.source_types),
+            )
+            order.append(key)
+        else:
+            merged = seen[key]
+            merged.reasons.extend(rec.reasons)
+            # Deduplicate tasks while preserving insertion order
+            for t in rec.tasks:
+                if t not in merged.tasks:
+                    merged.tasks.append(t)
+            merged.sources.extend(rec.sources)
+            merged.source_types.extend(rec.source_types)
+            if _SEVERITY_RANK.get(rec.severity, 0) > _SEVERITY_RANK.get(merged.severity, 0):
+                merged.severity = rec.severity
+
+    return [seen[k] for k in order]
 
 
 # ---------------------------------------------------------------------------
@@ -883,7 +936,7 @@ def _apply_context_adjustments(
         # 1. Re-classify severity with budget-adjusted thresholds.
         #    insufficient_suppliers and confidence triggers are always at least
         #    their originally-computed severity (confidence triggers set their own).
-        if t.trigger_type in ("insufficient_suppliers", "confidence"):
+        if t.trigger_type in ("insufficient_suppliers", "confidence", "overdue"):
             new_severity = t.severity
         elif t.rank_impact >= eff_blocking:
             new_severity = "blocking"
@@ -1001,6 +1054,28 @@ def evaluate_escalations(
         float(getattr(confidence_assessment, "score", 1.0))
         if confidence_assessment is not None else None
     )
+    # --- Overdue trigger ---
+    # A past-due delivery date is a structural blocker: the requested window has
+    # already passed, so the request requires human decision before any sourcing
+    # action is taken.  This fires BEFORE context adjustments so it is not
+    # suppressed by urgency logic (overdue != urgent).
+    if days_until_required is not None and days_until_required < 0:
+        overdue_days = abs(days_until_required)
+        triggers.append(EscalationTrigger(
+            trigger_id="overdue_delivery_date",
+            trigger_type="overdue",
+            severity="blocking",
+            rank_impact=1.0,
+            description=(
+                f"The requested delivery date has already passed by "
+                f"{overdue_days:.0f} day(s). This procurement cannot proceed "
+                f"automatically — human review is required to determine whether "
+                f"it is still needed and, if so, how to proceed."
+            ),
+            escalate_to="Procurement Manager",
+            details={"days_overdue": overdue_days},
+        ))
+
     triggers, context_notes = _apply_context_adjustments(
         triggers, days_until_required, budget, confidence_score
     )
@@ -1020,7 +1095,9 @@ def evaluate_escalations(
 
     # Merge: policy-rule records first (they fire from explicit thresholds),
     # then engine records (structural / confidence issues).
-    all_records = action_records + engine_records
+    # _merge_records deduplicates by recipient, keeping the highest severity and
+    # combining reasons/tasks so each person gets exactly one record.
+    all_records = _merge_records(action_records + engine_records)
 
     assessment = EscalationAssessment(records=all_records, context_notes=context_notes)
     assessment.has_blocking    = any(r.severity == "blocking"  for r in all_records)

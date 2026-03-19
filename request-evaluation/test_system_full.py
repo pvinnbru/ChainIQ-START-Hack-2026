@@ -489,6 +489,349 @@ def _safe_round(value: Any, ndigits: int = 4) -> Any:
         return value
 
 
+def _run_with_escalation(pipeline: dict, request: dict) -> dict:
+    """
+    Run run_procurement_evaluation with field_impact_map and escalation_rules
+    so that EscalationAssessment is populated in the outcome.
+
+    The escalation_rules store is cached by the session-level fixture, so this
+    call is cheap (cache hit).
+    """
+    from actions_store import get_or_build_actions_store
+    from escalation_engine import build_field_impact_map
+
+    escalation_store = get_or_build_actions_store("escalation_rules")
+    escalation_rules = escalation_store.get("raw_rules", [])
+    field_impact_map = build_field_impact_map(pipeline["sorted_actions"], pipeline["fix_in_keys"])
+
+    outcome, _ = run_procurement_evaluation(
+        request=request,
+        schema=pipeline["schema"],
+        sorted_actions=pipeline["sorted_actions"],
+        suppliers=pipeline["suppliers"],
+        fix_in_keys=pipeline["fix_in_keys"],
+        pricing_index=pipeline["pricing_index"],
+        attribution=pipeline.get("attribution"),
+        field_impact_map=field_impact_map,
+        escalation_rules=escalation_rules,
+    )
+    return outcome
+
+
+def _flag_ids(outcome: dict) -> list[str]:
+    """Return all flag_ids from the outcome's flag_assessment."""
+    fa = outcome.get("flag_assessment")
+    if fa is None:
+        return []
+    return [f.flag_id for f in fa.flags]
+
+
+# ---------------------------------------------------------------------------
+# Targeted scenario tests
+# ---------------------------------------------------------------------------
+
+def test_all_suppliers_over_budget(pipeline):
+    """
+    When every supplier's total cost exceeds the budget by more than 20%, the
+    pipeline must still produce a ranked list (not crash / return empty) AND
+    fire the BUDGET_INSUFFICIENT flag.
+
+    Scenario: IT/Laptops, budget=400 CHF for 1 unit.
+    Laptop unit prices in the dataset range from ~817 to ~1190 — all are well
+    above the 400 × 1.20 = 480 threshold.
+    """
+    request = {
+        "request_id": "TEST-BUDGET-001",
+        "category_l1": "IT",
+        "category_l2": "Laptops",
+        "budget": 400.0,
+        "currency": "CHF",
+        "quantity": 1,
+        "amount_unit": "devices",
+        "delivery_country": "DE",
+        "days_until_required": 30,
+        "preferred_supplier_mentioned": None,
+        "incumbent_supplier": None,
+        "data_residency_constraint": False,
+        "esg_requirement": False,
+    }
+
+    outcome = _run_with_escalation(pipeline, request)
+
+    supplier_results = outcome.get("supplier_results", [])
+    assert len(supplier_results) > 0, (
+        "Expected ranked suppliers even when all are over budget, got empty list"
+    )
+
+    flags = _flag_ids(outcome)
+    assert "BUDGET_INSUFFICIENT" in flags, (
+        f"Expected BUDGET_INSUFFICIENT flag; got flags: {flags}"
+    )
+
+    # Every surviving supplier should have a cost_total above budget
+    for identity, _, fs in supplier_results:
+        cost = fs.get("cost_total")
+        if cost is not None:
+            assert float(cost) > 400.0, (
+                f"Supplier {identity.get('supplier_name')} cost_total={cost} "
+                f"unexpectedly within 400 budget"
+            )
+
+    print(
+        f"\n[test_all_suppliers_over_budget] "
+        f"{len(supplier_results)} suppliers ranked, flags={flags}"
+    )
+
+
+def test_quantity_zero_returns_validation_error(pipeline):
+    """
+    A request with quantity=0 must be rejected at the validation layer:
+    status='error', validation_errors contains an entry for 'quantity',
+    and ranked_suppliers is empty.
+
+    Uses evaluate_request() so the full validation path is exercised.
+    The pipeline module-level cache is already warm from the session fixture,
+    so no LLM calls are made.
+    """
+    import json as _json
+    from evaluate_request import evaluate_request
+
+    request_json = _json.dumps({
+        "request_id": "TEST-QTY-ZERO-001",
+        "category_l1": "IT",
+        "category_l2": "Laptops",
+        "budget": 50000.0,
+        "currency": "EUR",
+        "quantity": 0,
+        "amount_unit": "devices",
+        "delivery_country": "DE",
+        "days_until_required": 14,
+        "preferred_supplier_mentioned": None,
+        "incumbent_supplier": None,
+        "data_residency_constraint": False,
+        "esg_requirement": False,
+    })
+
+    result = _json.loads(evaluate_request(request_json))
+
+    assert result["status"] == "error", (
+        f"Expected status='error' for quantity=0, got {result['status']!r}"
+    )
+    assert result["ranked_suppliers"] == [], (
+        "Expected empty ranked_suppliers for validation failure"
+    )
+
+    val_errors = result.get("validation_errors", [])
+    qty_errors = [e for e in val_errors if e.get("field") == "quantity"]
+    assert qty_errors, (
+        f"Expected a validation_error for field='quantity'; got: {val_errors}"
+    )
+
+    print(
+        f"\n[test_quantity_zero_returns_validation_error] "
+        f"validation_errors={val_errors}"
+    )
+
+
+def test_single_qualified_supplier_flag_and_escalation(pipeline):
+    """
+    When only one supplier survives filtering, the pipeline must fire the
+    SINGLE_QUALIFIED_SUPPLIER flag and raise at least one escalation record.
+
+    Scenario: IT/Smartphones, delivery_country=UK.
+    - Apple Business Channel (SUP-0004) covers UK.
+    - Samsung Knox Devices (SUP-0005) does NOT cover UK.
+    Only one non-restricted supplier remains, satisfying the flag condition.
+    """
+    request = {
+        "request_id": "TEST-SINGLE-SUP-001",
+        "category_l1": "IT",
+        "category_l2": "Smartphones",
+        "budget": 50000.0,
+        "currency": "EUR",
+        "quantity": 10,
+        "amount_unit": "devices",
+        "delivery_country": "UK",
+        "days_until_required": 30,
+        "preferred_supplier_mentioned": None,
+        "incumbent_supplier": None,
+        "data_residency_constraint": False,
+        "esg_requirement": False,
+    }
+
+    outcome = _run_with_escalation(pipeline, request)
+
+    supplier_results = outcome.get("supplier_results", [])
+    assert len(supplier_results) <= 1, (
+        f"Expected at most 1 surviving supplier for UK Smartphones; "
+        f"got {len(supplier_results)}: "
+        f"{[r[0].get('supplier_name') for r in supplier_results]}"
+    )
+
+    flags = _flag_ids(outcome)
+    assert "SINGLE_QUALIFIED_SUPPLIER" in flags, (
+        f"Expected SINGLE_QUALIFIED_SUPPLIER flag; got flags: {flags}"
+    )
+
+    escalation = outcome.get("escalation_assessment")
+    assert escalation is not None, "Expected escalation_assessment in outcome"
+    assert escalation.needs_escalation, (
+        "Expected needs_escalation=True when only one supplier qualifies"
+    )
+    assert len(escalation.records) > 0, (
+        "Expected at least one EscalationRecord for single-supplier scenario"
+    )
+
+    print(
+        f"\n[test_single_qualified_supplier_flag_and_escalation] "
+        f"survivors={len(supplier_results)}, flags={flags}, "
+        f"escalation_records={len(escalation.records)}, "
+        f"has_blocking={escalation.has_blocking}"
+    )
+
+
+def test_preferred_supplier_restricted_takes_precedence(pipeline):
+    """
+    When the requester names a restricted supplier as their preferred supplier,
+    the restriction must take precedence: the supplier is excluded from the
+    ranked list and the PREFERRED_SUPPLIER_EXCLUDED flag fires.
+
+    Scenario: IT/Laptops, preferred_supplier_mentioned='Computacenter Devices'.
+    SUP-0008 (Computacenter Devices) is marked is_restricted=True in this
+    category in the dataset.
+    """
+    request = {
+        "request_id": "TEST-PREF-RESTRICTED-001",
+        "category_l1": "IT",
+        "category_l2": "Laptops",
+        "budget": 100000.0,
+        "currency": "EUR",
+        "quantity": 50,
+        "amount_unit": "devices",
+        "delivery_country": "DE",
+        "days_until_required": 30,
+        "preferred_supplier_mentioned": "Computacenter Devices",
+        "incumbent_supplier": None,
+        "data_residency_constraint": False,
+        "esg_requirement": False,
+    }
+
+    outcome = _run_with_escalation(pipeline, request)
+
+    # Restricted supplier must not appear in the ranked list
+    supplier_results = outcome.get("supplier_results", [])
+    ranked_ids = [identity.get("supplier_id") for identity, _, _ in supplier_results]
+    assert "SUP-0008" not in ranked_ids, (
+        f"Restricted supplier SUP-0008 (Computacenter Devices) must not appear "
+        f"in ranked results; got: {ranked_ids}"
+    )
+
+    # PREFERRED_SUPPLIER_EXCLUDED flag must fire
+    flags = _flag_ids(outcome)
+    assert "PREFERRED_SUPPLIER_EXCLUDED" in flags, (
+        f"Expected PREFERRED_SUPPLIER_EXCLUDED flag; got flags: {flags}"
+    )
+
+    # At least one other (non-restricted) supplier should still be ranked
+    assert len(supplier_results) > 0, (
+        "Expected at least one non-restricted supplier to be ranked after exclusion"
+    )
+
+    print(
+        f"\n[test_preferred_supplier_restricted_takes_precedence] "
+        f"ranked_ids={ranked_ids}, flags={flags}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Validation error escalation test
+# ---------------------------------------------------------------------------
+
+
+def test_validation_error_returns_escalation():
+    """
+    An incomplete request (missing required fields) must return status='error'
+    AND a structured escalation object pointing to Procurement Manager, so the
+    caller always has an actionable escalation path even for invalid input.
+    """
+    from evaluate_request import evaluate_request
+    result = json.loads(evaluate_request("{}"))
+
+    assert result["status"] == "error", "expected status=error for empty request"
+    assert result["validation_errors"], "expected at least one validation error"
+    assert result["ranked_suppliers"] == [], "expected no ranked suppliers"
+
+    esc = result.get("escalation")
+    assert esc is not None, "escalation must not be None for invalid requests"
+    assert esc["needs_escalation"] is True, "needs_escalation must be True"
+    assert esc["has_blocking"] is True, "must be blocking (request cannot proceed)"
+    assert len(esc["records"]) >= 1, "at least one escalation record expected"
+
+    rec = esc["records"][0]
+    assert rec["severity"] == "blocking"
+    assert rec["person_to_escalate_to"], "must name a person to escalate to"
+    assert any("input_validation" in s for s in rec["sources"]), (
+        "source must indicate input_validation"
+    )
+
+    print(
+        f"\n[test_validation_error_returns_escalation] "
+        f"validation_errors={[e['field'] for e in result['validation_errors']]}, "
+        f"escalation_to={rec['person_to_escalate_to']}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Overdue request escalation test
+# ---------------------------------------------------------------------------
+
+
+def test_overdue_request_triggers_blocking_escalation(pipeline):
+    """
+    A request whose days_until_required is negative (delivery date in the past)
+    must trigger a dedicated blocking escalation record from source
+    'overdue_delivery_date', independent of other policy triggers.
+    """
+    from evaluate_request import evaluate_request
+    result = json.loads(
+        evaluate_request(
+            json.dumps({
+                "request_id":         "TEST-OVERDUE-001",
+                "category_l1":        "IT",
+                "category_l2":        "Laptops",
+                "budget":             50000,
+                "currency":           "EUR",
+                "quantity":           10,
+                "amount_unit":        "devices",
+                "delivery_country":   "DE",
+                "days_until_required": -7,
+            })
+        )
+    )
+
+    assert result["status"] == "ok", f"unexpected error: {result.get('error')}"
+
+    esc = result.get("escalation", {})
+    assert esc.get("needs_escalation") is True, "needs_escalation must be True for overdue"
+    assert esc.get("has_blocking") is True, "overdue must produce blocking severity"
+
+    all_sources = [s for rec in esc.get("records", []) for s in rec.get("sources", [])]
+    assert "overdue_delivery_date" in all_sources, (
+        f"expected 'overdue_delivery_date' source in escalation records, got: {all_sources}"
+    )
+
+    # The overdue reason must appear in at least one record
+    all_reasons = [r for rec in esc.get("records", []) for r in rec.get("reasons", [])]
+    assert any("passed" in reason.lower() or "overdue" in reason.lower() for reason in all_reasons), (
+        f"expected overdue language in reasons, got: {all_reasons}"
+    )
+
+    print(
+        f"\n[test_overdue_request_triggers_blocking_escalation] "
+        f"records={len(esc.get('records', []))}, sources={all_sources}"
+    )
+
+
 # ---------------------------------------------------------------------------
 # Direct execution
 # ---------------------------------------------------------------------------

@@ -21,9 +21,14 @@ LOW_RANK_CLUSTER
     specified — scores are uniformly low and indistinguishable.
 
 INDISTINGUISHABLE_RANKS
-    ≥ 3 suppliers whose ranks span < 0.05. Any of them could be selected;
-    minor price fluctuations would flip the order. The ranking adds little
-    decision value.
+    The gap between position #1 and position #2 is < 0.05. The top choice
+    is not meaningfully better than the runner-up; minor price fluctuations
+    would flip the order. Requires ≥ 2 surviving suppliers.
+
+NARROW_RANK_SPREAD
+    ≥ 3 surviving suppliers whose full score range (position #1 minus last)
+    is < 0.10. The scoring cannot meaningfully differentiate the field —
+    all suppliers are effectively equivalent from a ranking perspective.
 
 SINGLE_QUALIFIED_SUPPLIER
     Fewer than 2 suppliers survived evaluation. Market coverage is
@@ -59,6 +64,19 @@ PREFERRED_SUPPLIER_COMPLIANCE_CONCERN
 
 PREFERRED_SUPPLIER_NOT_FOUND
     The named preferred supplier does not appear in the evaluated pool at all.
+
+PREFERRED_BONUS_DECISIVE
+    The organisational preferred-supplier bonus (10% soft squash) changed who
+    ranked #1.  Without the bonus the top-ranked supplier would have scored
+    below the runner-up.  Requires ≥ 2 surviving suppliers.  Severity: warning
+    — the procurement decision was influenced by policy preference, not merit
+    alone, and should be subject to independent review.
+
+QUANTITY_EXCEEDS_TIER_MAXIMUM
+    One or more suppliers were excluded because the requested quantity exceeds
+    every available pricing tier in the master pricing sheet.  The exclusion
+    reduces the competitive pool; consider splitting the order or negotiating
+    an off-tier quote.
 """
 
 from __future__ import annotations
@@ -79,9 +97,13 @@ BUDGET_OVERAGE_THRESHOLD: float = 0.20
 LOW_RANK_MAX:    float = 0.30
 LOW_RANK_SPREAD: float = 0.10
 
-# INDISTINGUISHABLE_RANKS: min suppliers and max spread
-INDISTINGUISHABLE_MIN_SUPPLIERS: int   = 3
-INDISTINGUISHABLE_MAX_SPREAD:    float = 0.05
+# INDISTINGUISHABLE_RANKS: min suppliers; max gap between #1 and #2
+INDISTINGUISHABLE_MIN_SUPPLIERS: int   = 2
+INDISTINGUISHABLE_MAX_GAP:       float = 0.05
+
+# NARROW_RANK_SPREAD: min suppliers; max full range (first minus last)
+NARROW_RANK_SPREAD_MIN_SUPPLIERS: int   = 3
+NARROW_RANK_SPREAD_THRESHOLD:     float = 0.10
 
 # DOMINANT_SUPPLIER: min rank gap between #1 and #2
 DOMINANT_GAP: float = 0.40
@@ -134,6 +156,17 @@ class ConfidenceAssessment:
 
     label:       "high" | "medium" | "low" | "very_low"
     explanation: One-sentence human-readable summary of the main limiting factor.
+
+    Dimensions (each 0–1, independently interpretable):
+    - input_completeness:    Are quantity / budget / category all present?
+    - market_coverage:       Enough competing suppliers; low exclusion rate.
+    - ranking_decisiveness:  Clear gap between #1 and #2; scores not all low.
+    - data_reliability:      Historical baseline is solid; z-score used.
+    - compliance_quality:    Top supplier (and ideally all) cleanly pass policy.
+    - temporal_validity:     Request is not overdue and has sufficient lead time.
+                             Overdue or same-day requests produce stale rankings
+                             because supplier availability and pricing may have
+                             changed since the request was created.
     """
     score:                float
     label:                str
@@ -214,24 +247,66 @@ def _flag_low_rank_cluster(supplier_results: list[tuple]) -> ResultFlag | None:
 
 
 def _flag_indistinguishable_ranks(supplier_results: list[tuple]) -> ResultFlag | None:
+    # Requires at least 2 suppliers so there is a #1/#2 gap to measure.
     if len(supplier_results) < INDISTINGUISHABLE_MIN_SUPPLIERS:
+        return None
+
+    rank_1 = float(supplier_results[0][2].get("normalized_rank") or 0)
+    rank_2 = float(supplier_results[1][2].get("normalized_rank") or 0)
+    gap = rank_1 - rank_2
+
+    if gap >= INDISTINGUISHABLE_MAX_GAP:
+        return None
+
+    top_name    = supplier_results[0][0].get("supplier_name", "?")
+    second_name = supplier_results[1][0].get("supplier_name", "?")
+    return ResultFlag(
+        flag_id="INDISTINGUISHABLE_RANKS",
+        severity="warning",
+        description=(
+            f"The gap between #1 '{top_name}' ({rank_1:.4f}) and "
+            f"#2 '{second_name}' ({rank_2:.4f}) is {gap:.4f} "
+            f"(threshold: {INDISTINGUISHABLE_MAX_GAP}). "
+            f"The top choice is not meaningfully better than the runner-up — "
+            f"minor price or data changes would flip the order."
+        ),
+        details={
+            "rank_1": round(rank_1, 4),
+            "rank_2": round(rank_2, 4),
+            "gap":    round(gap, 4),
+            "top_supplier":    top_name,
+            "second_supplier": second_name,
+        },
+    )
+
+
+def _flag_narrow_rank_spread(supplier_results: list[tuple]) -> ResultFlag | None:
+    # Requires at least 3 suppliers — spread across a field of 2 is already
+    # captured by INDISTINGUISHABLE_RANKS.
+    if len(supplier_results) < NARROW_RANK_SPREAD_MIN_SUPPLIERS:
         return None
 
     ranks = [float(fs.get("normalized_rank") or 0) for _, _, fs in supplier_results]
     spread = max(ranks) - min(ranks)
 
-    if spread >= INDISTINGUISHABLE_MAX_SPREAD:
+    if spread >= NARROW_RANK_SPREAD_THRESHOLD:
         return None
 
     return ResultFlag(
-        flag_id="INDISTINGUISHABLE_RANKS",
+        flag_id="NARROW_RANK_SPREAD",
         severity="warning",
         description=(
-            f"{len(ranks)} suppliers are ranked within {spread:.4f} points of each other "
-            f"(threshold: {INDISTINGUISHABLE_MAX_SPREAD}). "
-            f"The ranking adds little decision value — any quote may be equivalent."
+            f"{len(ranks)} suppliers span only {spread:.4f} rank points "
+            f"(threshold: {NARROW_RANK_SPREAD_THRESHOLD}). "
+            f"The scoring cannot meaningfully differentiate this supplier field — "
+            f"all quotes are effectively equivalent."
         ),
-        details={"n_suppliers": len(ranks), "rank_spread": round(spread, 4)},
+        details={
+            "n_suppliers": len(ranks),
+            "rank_spread": round(spread, 4),
+            "rank_max":    round(max(ranks), 4),
+            "rank_min":    round(min(ranks), 4),
+        },
     )
 
 
@@ -479,35 +554,60 @@ def _flag_quantity_exceeds_tier(all_supplier_logs: list[dict]) -> ResultFlag | N
 
 def _flag_preferred_bonus_decisive(supplier_results: list[tuple]) -> ResultFlag | None:
     """ISSUE-021: Fire when the preferred-supplier 10% bonus was the deciding factor
-    in placing a supplier at rank #1 — i.e. they would have ranked lower without it."""
+    in placing a supplier at rank #1 — i.e. on a level playing field (no bonuses
+    applied to either supplier) they would have ranked below the runner-up.
+
+    Comparison logic
+    ----------------
+    #1's without-bonus score  vs.  #2's without-bonus score (when #2 also received
+    a bonus) or #2's actual score (when #2 received no bonus).
+
+    Using #2's with-bonus score when #2 is also preferred would cause the flag to
+    over-fire: if #1 loses to #2's already-boosted score but would have beaten #2
+    without any bonus, the bonus was not the decisive factor — both suppliers were
+    treated equally and #1 still emerges on top when both are stripped of their
+    bonuses.
+    """
     if len(supplier_results) < 2:
         return None
 
-    top_identity, _, top_state = supplier_results[0]
+    top_identity, _, top_state   = supplier_results[0]
+    _,            _, second_state = supplier_results[1]
+
     if not top_state.get("preferred_supplier_bonus_applied"):
         return None
 
     rank_with    = float(top_state.get("normalized_rank") or 0)
     rank_without = float(top_state.get("rank_without_preferred_bonus") or rank_with)
-    second_rank  = float(supplier_results[1][2].get("normalized_rank") or 0)
 
-    if rank_without >= second_rank:
-        return None  # would have won anyway — bonus not decisive
+    # Use #2's without-bonus score when it also received the bonus so the
+    # comparison is symmetric: both suppliers evaluated without any preference lift.
+    second_rank_actual   = float(second_state.get("normalized_rank") or 0)
+    second_rank_no_bonus = float(
+        second_state.get("rank_without_preferred_bonus") or second_rank_actual
+    )
 
+    if rank_without >= second_rank_no_bonus:
+        return None  # #1 would have ranked first regardless of the bonus
+
+    gap = round(second_rank_no_bonus - rank_without, 4)
     return ResultFlag(
         flag_id="PREFERRED_BONUS_DECISIVE",
-        severity="info",
+        severity="warning",
         description=(
-            f"The preferred-supplier 10% bonus elevated "
-            f"'{top_identity.get('supplier_name', '?')}' from rank {rank_without:.4f} "
-            f"to {rank_with:.4f}, above the next-ranked supplier at {second_rank:.4f}. "
-            f"Without the bonus this supplier would not have ranked #1."
+            f"The organisational preferred-supplier bonus changed the ranking outcome. "
+            f"'{top_identity.get('supplier_name', '?')}' scored {rank_without:.4f} on merit "
+            f"but {rank_with:.4f} after the bonus — {gap:.4f} points below the runner-up "
+            f"({second_rank_no_bonus:.4f}) on a level playing field. "
+            f"The #1 position was determined by policy preference, not merit alone. "
+            f"Independent review of the award decision is recommended."
         ),
         details={
-            "top_supplier":        top_identity.get("supplier_name"),
-            "rank_with_bonus":     rank_with,
-            "rank_without_bonus":  rank_without,
-            "second_rank":         second_rank,
+            "top_supplier":            top_identity.get("supplier_name"),
+            "rank_with_bonus":         rank_with,
+            "rank_without_bonus":      rank_without,
+            "runner_up_rank_no_bonus": second_rank_no_bonus,
+            "merit_gap":               gap,
         },
     )
 
@@ -689,14 +789,71 @@ def compute_confidence_score(
             compliance_quality = top_compliance
 
     # ------------------------------------------------------------------
+    # Dimension 6 — Temporal Validity (weight 0.10)
+    # ------------------------------------------------------------------
+    # An overdue request is effectively stale: delivery has already been missed,
+    # supplier availability and spot pricing may have changed, and any lead-time
+    # comparison in the ranking is meaningless.  Near-deadline requests also
+    # carry elevated uncertainty because few suppliers can respond in time.
+    #
+    # Scoring table (days_until_required):
+    #   None / missing → 1.00  (unknown delivery date — no penalty)
+    #   > 7 days       → 1.00  (comfortable window — full confidence)
+    #   4–7 days       → 0.80  (tight but likely achievable)
+    #   1–3 days       → 0.60  (very urgent; most lead times unmet)
+    #   0 days         → 0.40  (on-deadline or clipped past date)
+    #   < 0 days       → linear decay from 0.40 at days=0 to 0.15 at days=-14,
+    #                    floor at 0.15 for any further overdue
+    #
+    # The floor (0.15) reflects that some signal remains in the ranking even for
+    # badly overdue requests (supplier pool validity, price benchmarks), but the
+    # temporal context is no longer reliable for sourcing decisions.
+
+    _TV_TIGHT_DAYS          = 7    # days ≤ this: tight window
+    _TV_URGENT_DAYS         = 3    # days ≤ this: very urgent
+    _TV_OVERDUE_BASE_SCORE  = 0.40 # score at days = 0 (on-deadline / clipped)
+    _TV_OVERDUE_SEVERE_DAYS = 14   # days overdue at which the floor is reached
+    _TV_OVERDUE_FLOOR_SCORE = 0.15 # minimum score for any overdue request
+
+    days_raw = request.get("days_until_required")
+    try:
+        days_val: float | None = float(days_raw) if days_raw is not None else None
+    except (TypeError, ValueError):
+        days_val = None
+
+    if days_val is None:
+        temporal_validity = 1.00
+    elif days_val > _TV_TIGHT_DAYS:
+        temporal_validity = 1.00
+    elif days_val > _TV_URGENT_DAYS:
+        temporal_validity = 0.80
+    elif days_val > 0:
+        temporal_validity = 0.60
+    elif days_val == 0:
+        temporal_validity = _TV_OVERDUE_BASE_SCORE
+    else:
+        # days_val < 0: linear decay from _TV_OVERDUE_BASE_SCORE at 0 to
+        # _TV_OVERDUE_FLOOR_SCORE at -_TV_OVERDUE_SEVERE_DAYS, then flat floor.
+        decay = ((_TV_OVERDUE_BASE_SCORE - _TV_OVERDUE_FLOOR_SCORE)
+                 / _TV_OVERDUE_SEVERE_DAYS)
+        temporal_validity = max(
+            _TV_OVERDUE_FLOOR_SCORE,
+            _TV_OVERDUE_BASE_SCORE + days_val * decay,
+        )
+
+    # ------------------------------------------------------------------
     # Composite score + label
     # ------------------------------------------------------------------
+    # Weights sum to 1.0.  input_completeness and market_coverage each
+    # contributed 0.025 to fund the new temporal_validity dimension (0.10),
+    # keeping all other dimension weights unchanged.
     WEIGHTS = {
-        "input_completeness":   0.25,
-        "market_coverage":      0.25,
+        "input_completeness":   0.20,
+        "market_coverage":      0.20,
         "ranking_decisiveness": 0.25,
         "data_reliability":     0.15,
         "compliance_quality":   0.10,
+        "temporal_validity":    0.10,
     }
     dimensions = {
         "input_completeness":   round(input_completeness,   4),
@@ -704,6 +861,7 @@ def compute_confidence_score(
         "ranking_decisiveness": round(ranking_decisiveness, 4),
         "data_reliability":     round(data_reliability,     4),
         "compliance_quality":   round(compliance_quality,   4),
+        "temporal_validity":    round(temporal_validity,    4),
     }
     score = sum(WEIGHTS[k] * dimensions[k] for k in WEIGHTS)
     score = round(min(1.0, max(0.0, score)), 4)
@@ -745,6 +903,10 @@ def compute_confidence_score(
             "The top-ranked supplier carries a compliance penalty — "
             "manual review of policy fit is recommended."
         ),
+        "temporal_validity": (
+            "The request delivery date has passed or is imminent — supplier "
+            "quotes and lead-time commitments may no longer be valid."
+        ),
     }
     explanation = _explanations[worst_dim]
 
@@ -761,6 +923,7 @@ def compute_confidence_score(
                 "n_hist_data_points":      n_hist,
                 "hist_std_dev_available":  hist_std_dev is not None and hist_std_dev > 0,
                 "used_zscore_sigmoid":     bool(hist_std_dev and hist_std_dev > 0),
+                "days_until_required":     days_val,
             },
         },
         explanation=explanation,
@@ -813,6 +976,7 @@ def evaluate_flags(
         _flag_budget_insufficient(supplier_results, budget),
         _flag_low_rank_cluster(supplier_results),
         _flag_indistinguishable_ranks(supplier_results),
+        _flag_narrow_rank_spread(supplier_results),
         _flag_dominant_supplier(supplier_results),
         _flag_all_compliance_penalized(supplier_results),
         _flag_high_exclusion_rate(n_total_suppliers, n_excluded),
@@ -821,12 +985,17 @@ def evaluate_flags(
         _flag_preferred_bonus_decisive(supplier_results),
     ]
 
-    # ISSUE-018: deduplicate LOW_RANK_CLUSTER and INDISTINGUISHABLE_RANKS.
-    # When INDISTINGUISHABLE_RANKS fires (spread < 0.05), LOW_RANK_CLUSTER is a
-    # strict subset of that information (spread < 0.10 is already implied).
-    # Suppress LOW_RANK_CLUSTER to avoid confusing reviewers with overlapping flags.
+    # ISSUE-018: suppress LOW_RANK_CLUSTER when a more specific spread flag fired.
+    #
+    # NARROW_RANK_SPREAD (spread < 0.10) already tells reviewers the field is
+    # undifferentiated; LOW_RANK_CLUSTER (spread < 0.10 AND all ranks < 0.30)
+    # would repeat the same spread signal with no net new information.
+    #
+    # INDISTINGUISHABLE_RANKS now fires on the #1/#2 gap (< 0.05) rather than
+    # the full spread, so it no longer implies anything about LOW_RANK_CLUSTER's
+    # spread condition — keep both when only INDISTINGUISHABLE_RANKS fires.
     fired_ids = {f.flag_id for f in candidates if f is not None}
-    if "INDISTINGUISHABLE_RANKS" in fired_ids:
+    if "NARROW_RANK_SPREAD" in fired_ids:
         candidates = [f for f in candidates if f is None or f.flag_id != "LOW_RANK_CLUSTER"]
 
     for f in candidates:
