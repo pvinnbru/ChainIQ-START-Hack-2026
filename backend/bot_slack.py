@@ -87,7 +87,7 @@ def _handle_new_request(say, text: str, user: models.User, db):
 
     snippet = text[:200] + ("…" if len(text) > 200 else "")
     say(
-        f"📋 *Request `{req.id}` submitted!*\n\n"
+        f"📋 *Request submitted!*\n\n"
         f"> {snippet}\n\n"
         f"The AI pipeline will evaluate your request. "
         f"You'll receive a DM when action is required or a decision is made.\n"

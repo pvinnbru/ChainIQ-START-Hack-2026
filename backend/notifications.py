@@ -33,7 +33,7 @@ def notify_escalation(escalation, request, target_user) -> None:
     else:
         text += (
             f"Please review this request in ChainIQ: "
-            f"http://localhost:3000/dashboard/analysis?id={request.id}"
+            f"{os.environ.get('CHAINIQ_APP_URL', 'http://localhost:3000')}/dashboard/analysis?id={request.id}"
         )
 
     if escalation.message:
@@ -50,6 +50,6 @@ def notify_decision(request, requester) -> None:
     icon = "✅" if request.status == "approved" else "❌"
     text = (
         f"{icon} Your request `{request.id}` was *{request.status.upper()}*.\n"
-        f"View details: http://localhost:3000/dashboard/analysis?id={request.id}"
+        f"View details: {os.environ.get('CHAINIQ_APP_URL', 'http://localhost:3000')}/dashboard/analysis?id={request.id}"
     )
     send_slack_dm(requester.slack_user_id, text)
