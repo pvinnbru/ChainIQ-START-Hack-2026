@@ -806,12 +806,24 @@ export default function TransparencyPage() {
   const requestId = searchParams.get('id') ?? '';
 
   const [log, setLog] = useState<ExecutionLog | null>(null);
+  const [requestTitle, setRequestTitle] = useState('');
   const [loading, setLoading] = useState(true);
   const [chatOpen, setChatOpen] = useState(true);
   const [summary, setSummary] = useState('');
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [contextOpen, setContextOpen] = useState(false);
   const [additionalDetailsOpen, setAdditionalDetailsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!requestId) return;
+    fetch(`${API}/requests/${requestId}`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data) return;
+        setRequestTitle(data.title || data.plain_text?.slice(0, 80) || '');
+      })
+      .catch(() => {});
+  }, [requestId]);
 
   useEffect(() => {
     if (!requestId) return;
@@ -881,7 +893,7 @@ export default function TransparencyPage() {
                 <ArrowLeft className="h-4 w-4" /> Back
               </Button>
               <div>
-                <h1 className="text-2xl font-bold tracking-tight">AI Decision Log</h1>
+                <h1 className="text-2xl font-bold tracking-tight">{requestTitle || 'AI Decision Log'}</h1>
                 <p className="text-muted-foreground text-sm">{new Date(log.timestamp).toLocaleString()}</p>
               </div>
             </div>
@@ -904,11 +916,160 @@ export default function TransparencyPage() {
             </div>
           </div>
 
-          {/* Print header (only visible when printing) */}
-          <div className="hidden print:block mb-4">
-            <h1 className="text-xl font-bold">AI Decision Log — {log.request_id}</h1>
-            <p className="text-sm text-muted-foreground">Evaluated: {new Date(log.timestamp).toLocaleString()}</p>
+          {/* ── Print-only audit report cover ─────────────────────────────── */}
+          <div className="hidden print:block">
+            {/* Cover header */}
+            <div className="border-b-2 border-black pb-4 mb-6">
+              <div className="flex items-end justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Procurement Audit Report</p>
+                  <h1 className="text-2xl font-bold text-black leading-tight">
+                    {requestTitle || 'AI Procurement Decision Log'}
+                  </h1>
+                  <p className="text-sm text-gray-600 mt-1">Request ID: {log.request_id}</p>
+                </div>
+                <div className="text-right text-xs text-gray-500 space-y-0.5">
+                  <p><span className="font-semibold">Generated:</span> {new Date(log.timestamp).toLocaleString()}</p>
+                  <p><span className="font-semibold">System:</span> ChainIQ AI Sourcing Platform</p>
+                  <p><span className="font-semibold">Status:</span> Confidential</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Request parameters table */}
+            <div className="mb-6">
+              <p className="text-[10px] uppercase tracking-widest font-bold text-gray-500 mb-2">1. Request Parameters</p>
+              <table className="w-full text-xs border-collapse border border-gray-300">
+                <tbody>
+                  {[
+                    ['Category', `${String(snapshot.category_l1 ?? '—')}${snapshot.category_l2 ? ` / ${String(snapshot.category_l2)}` : ''}`],
+                    ['Budget', snapshot.budget != null ? `${Number(snapshot.budget).toLocaleString()} ${String(snapshot.currency ?? '')}` : '—'],
+                    ['Quantity', snapshot.quantity != null ? `${String(snapshot.quantity)} ${String(snapshot.amount_unit ?? '')}` : '—'],
+                    ['Delivery Country', String(snapshot.delivery_country ?? '—')],
+                    ['Days Until Required', snapshot.days_until_required != null ? `${String(snapshot.days_until_required)} days` : '—'],
+                    ['Preferred Supplier', String(snapshot.preferred_supplier_mentioned ?? '—')],
+                    ['Incumbent Supplier', String(snapshot.incumbent_supplier ?? '—')],
+                    ['Data Residency Constraint', snapshot.data_residency_constraint ? 'Yes' : 'No'],
+                    ['ESG Requirement', snapshot.esg_requirement ? 'Yes' : 'No'],
+                  ].map(([label, value], i) => (
+                    <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                      <td className="border border-gray-300 px-3 py-1.5 font-semibold w-48 text-gray-700">{label}</td>
+                      <td className="border border-gray-300 px-3 py-1.5 text-gray-900">{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* AI Summary */}
+            {summary && (
+              <div className="mb-6">
+                <p className="text-[10px] uppercase tracking-widest font-bold text-gray-500 mb-2">2. AI Assessment Summary</p>
+                <div className="border border-gray-300 rounded p-3 bg-gray-50 text-xs text-gray-800 leading-relaxed whitespace-pre-line">
+                  {summary.replace(/\*\*/g, '').replace(/^[•\-]\s/gm, '• ')}
+                </div>
+              </div>
+            )}
+
+            {/* Supplier ranking */}
+            {evaluatedSuppliers.length > 0 && (
+              <div className="mb-6">
+                <p className="text-[10px] uppercase tracking-widest font-bold text-gray-500 mb-2">3. Supplier Ranking</p>
+                <table className="w-full text-xs border-collapse border border-gray-300">
+                  <thead>
+                    <tr className="bg-gray-800 text-white">
+                      <th className="border border-gray-600 px-3 py-1.5 text-left">#</th>
+                      <th className="border border-gray-600 px-3 py-1.5 text-left">Supplier</th>
+                      <th className="border border-gray-600 px-3 py-1.5 text-right">Unit Price</th>
+                      <th className="border border-gray-600 px-3 py-1.5 text-right">Total Cost</th>
+                      <th className="border border-gray-600 px-3 py-1.5 text-right">Lead Time</th>
+                      <th className="border border-gray-600 px-3 py-1.5 text-center">Quality</th>
+                      <th className="border border-gray-600 px-3 py-1.5 text-center">Risk</th>
+                      <th className="border border-gray-600 px-3 py-1.5 text-center">ESG</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...evaluatedSuppliers]
+                      .sort((a, b) => (b.final_normalized_rank ?? 0) - (a.final_normalized_rank ?? 0))
+                      .map((s, i) => {
+                        const m = supplierMetrics(s);
+                        return (
+                          <tr key={i} className={i === 0 ? 'bg-green-50 font-semibold' : i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                            <td className="border border-gray-300 px-3 py-1.5 text-center">{i + 1}</td>
+                            <td className="border border-gray-300 px-3 py-1.5">
+                              {s.supplier_name}
+                              {m.isPreferred ? ' ★' : ''}
+                              <span className="text-gray-500 font-normal"> · {s.category_l2}</span>
+                            </td>
+                            <td className="border border-gray-300 px-3 py-1.5 text-right font-mono">
+                              {m.unitPrice != null ? `${m.currency} ${Number(m.unitPrice).toLocaleString(undefined, { maximumFractionDigits: 2 })}` : '—'}
+                            </td>
+                            <td className="border border-gray-300 px-3 py-1.5 text-right font-mono">
+                              {m.totalCost != null ? `${m.currency} ${Number(m.totalCost).toLocaleString(undefined, { maximumFractionDigits: 0 })}` : '—'}
+                            </td>
+                            <td className="border border-gray-300 px-3 py-1.5 text-right">
+                              {m.leadStd != null ? `${m.leadStd}d` : '—'}
+                            </td>
+                            <td className="border border-gray-300 px-3 py-1.5 text-center">{m.quality ?? '—'}</td>
+                            <td className="border border-gray-300 px-3 py-1.5 text-center">{m.risk ?? '—'}</td>
+                            <td className="border border-gray-300 px-3 py-1.5 text-center">{m.esg ?? '—'}</td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Escalations */}
+            <div className="mb-6">
+              <p className="text-[10px] uppercase tracking-widest font-bold text-gray-500 mb-2">4. Escalations &amp; Required Actions</p>
+              {(() => {
+                const seen = new Set<string>();
+                const escs: { ruleId: string; label: string; description: string }[] = [];
+                for (const s of log.supplier_logs) {
+                  for (const a of s.action_logs ?? []) {
+                    if (a.output_key?.startsWith('escalate_') && a.output_value_after && !seen.has(a.output_key)) {
+                      seen.add(a.output_key);
+                      escs.push({ ruleId: a.rule_id, label: ESCALATION_KEY_MAP[a.output_key] ?? a.output_key.replace(/_/g, ' '), description: a.rule_description });
+                    }
+                  }
+                }
+                if (escs.length === 0) return (
+                  <p className="text-xs text-gray-600 border border-gray-300 px-3 py-2 bg-gray-50 rounded">
+                    ✓ No escalations triggered — request can proceed autonomously.
+                  </p>
+                );
+                return (
+                  <table className="w-full text-xs border-collapse border border-gray-300">
+                    <thead>
+                      <tr className="bg-gray-200">
+                        <th className="border border-gray-300 px-3 py-1.5 text-left">Rule</th>
+                        <th className="border border-gray-300 px-3 py-1.5 text-left">Escalation To</th>
+                        <th className="border border-gray-300 px-3 py-1.5 text-left">Reason</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {escs.map((e, i) => (
+                        <tr key={i} className={i % 2 === 0 ? 'bg-amber-50' : 'bg-white'}>
+                          <td className="border border-gray-300 px-3 py-1.5 font-mono">{e.ruleId}</td>
+                          <td className="border border-gray-300 px-3 py-1.5 font-semibold">{e.label}</td>
+                          <td className="border border-gray-300 px-3 py-1.5 text-gray-700">{e.description}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                );
+              })()}
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-gray-300 pt-3 flex justify-between text-[10px] text-gray-400">
+              <span>ChainIQ AI Sourcing Platform — Confidential</span>
+              <span>Generated {new Date(log.timestamp).toLocaleString()}</span>
+            </div>
           </div>
+          {/* ── End print audit report ─────────────────────────────────────── */}
 
           {/* AI Summary + Request Details — side by side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:grid print:grid-cols-2">
