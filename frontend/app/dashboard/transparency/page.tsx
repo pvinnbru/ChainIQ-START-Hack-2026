@@ -6,12 +6,11 @@ import { useAuth } from '@/context/auth-context';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
-  ArrowLeft, Bot, Printer, ChevronDown, ChevronRight, ChevronUp, Send,
+  ArrowLeft, Bot, Printer, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Send,
   AlertTriangle, CheckCircle, Minus, ArrowRight, Star, Package, Clock, ShieldCheck, TrendingUp,
 } from 'lucide-react';
 
@@ -529,7 +528,7 @@ function EscalationMap({ logs }: { logs: SupplierLog[] }) {
 
 // ── Ask AI Drawer ─────────────────────────────────────────────────────────────
 
-function AiChatDrawer({
+function AiChatSidebar({
   open,
   onOpenChange,
   requestId,
@@ -642,18 +641,28 @@ function AiChatDrawer({
     'What would make this easier to approve next time?',
   ];
 
+  if (!open) return null;
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-xl flex flex-col p-0">
-        <SheetHeader className="px-4 py-3 border-b shrink-0">
-          <SheetTitle className="flex items-center gap-2 text-base">
-            <Bot className="h-4 w-4 text-primary" />
-            Ask AI about this decision
-          </SheetTitle>
-        </SheetHeader>
+    <div className="w-96 flex flex-col border-l bg-card">
+      <div className="px-4 py-3 border-b shrink-0 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-base font-semibold">
+          <Bot className="h-4 w-4 text-primary" />
+          Ask AI
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0"
+          onClick={() => onOpenChange(false)}
+          title="Close AI Chat"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
           {messages.length === 0 && (
             <div className="py-6">
               <p className="text-sm text-muted-foreground mb-3">Ask me anything — I'll explain what happened in plain English, no technical jargon.</p>
@@ -709,32 +718,31 @@ function AiChatDrawer({
               </div>
             </div>
           ))}
-          <div ref={bottomRef} />
-        </div>
+        <div ref={bottomRef} />
+      </div>
 
-        {/* Input */}
-        <div className="border-t px-4 py-3 shrink-0">
-          <form
-            onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
-            className="flex items-center gap-2"
-          >
-            <input
-              className="flex-1 text-sm border rounded-lg px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
-              placeholder="Ask about a supplier, rule, or decision…"
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              disabled={streaming || !executionLog}
-            />
-            <Button type="submit" size="sm" disabled={!input.trim() || streaming || !executionLog} className="shrink-0">
-              <Send className="h-4 w-4" />
-            </Button>
-          </form>
-          {!executionLog && (
-            <p className="text-xs text-muted-foreground mt-1">Loading execution log…</p>
-          )}
-        </div>
-      </SheetContent>
-    </Sheet>
+      {/* Input */}
+      <div className="border-t px-4 py-3 shrink-0">
+        <form
+          onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
+          className="flex items-center gap-2"
+        >
+          <input
+            className="flex-1 text-sm border rounded-lg px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+            placeholder="Ask about a supplier, rule, or decision…"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            disabled={streaming || !executionLog}
+          />
+          <Button type="submit" size="sm" disabled={!input.trim() || streaming || !executionLog} className="shrink-0">
+            <Send className="h-4 w-4" />
+          </Button>
+        </form>
+        {!executionLog && (
+          <p className="text-xs text-muted-foreground mt-1">Loading execution log…</p>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -749,7 +757,7 @@ export default function TransparencyPage() {
 
   const [log, setLog] = useState<ExecutionLog | null>(null);
   const [loading, setLoading] = useState(true);
-  const [chatOpen, setChatOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(true);
   const [summary, setSummary] = useState('');
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [contextOpen, setContextOpen] = useState(false);
@@ -811,7 +819,10 @@ export default function TransparencyPage() {
   }
 
   return (
-    <div className="py-6 w-full max-w-6xl mx-auto space-y-6 print:py-2">
+    <div className="flex h-screen overflow-hidden relative">
+      {/* Main content */}
+      <div className="flex-1 overflow-y-auto py-6 pr-4">
+        <div className="w-full max-w-6xl mx-auto space-y-6 print:py-2">
 
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap print:hidden">
@@ -828,9 +839,18 @@ export default function TransparencyPage() {
           <Button variant="outline" size="sm" className="gap-2" onClick={() => window.print()}>
             <Printer className="h-4 w-4" /> Download PDF
           </Button>
-          <Button size="sm" className="gap-2" onClick={() => setChatOpen(true)}>
-            <Bot className="h-4 w-4" /> Ask AI
-          </Button>
+          {!chatOpen && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => setChatOpen(true)}
+              title="Open AI Chat"
+            >
+              <Bot className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
 
@@ -888,48 +908,48 @@ export default function TransparencyPage() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground">Category</span>
-                <span className="font-medium">{String(snapshot.category_l1 ?? '—')}{snapshot.category_l2 ? ` / ${String(snapshot.category_l2)}` : ''}</span>
+                <span className="font-medium text-right">{String(snapshot.category_l1 ?? '—')}{snapshot.category_l2 ? ` / ${String(snapshot.category_l2)}` : ''}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground">Budget</span>
-                <span className="font-medium">{snapshot.budget != null ? `${Number(snapshot.budget).toLocaleString()} ${String(snapshot.currency ?? '')}` : '—'}</span>
+                <span className="font-medium text-right">{snapshot.budget != null ? `${Number(snapshot.budget).toLocaleString()} ${String(snapshot.currency ?? '')}` : '—'}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground">Quantity</span>
-                <span className="font-medium">{snapshot.quantity != null ? `${String(snapshot.quantity)} ${String(snapshot.amount_unit ?? '')}` : '—'}</span>
+                <span className="font-medium text-right">{snapshot.quantity != null ? `${String(snapshot.quantity)} ${String(snapshot.amount_unit ?? '')}` : '—'}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground">Delivery</span>
-                <span className="font-medium">{String(snapshot.delivery_country ?? '—')}</span>
+                <span className="font-medium text-right">{String(snapshot.delivery_country ?? '—')}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground">Lead time</span>
-                <span className="font-medium">{snapshot.days_until_required != null ? `${String(snapshot.days_until_required)} days` : '—'}</span>
+                <span className="font-medium text-right">{snapshot.days_until_required != null ? `${String(snapshot.days_until_required)} days` : '—'}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground">Preferred</span>
-                <span className="font-medium">{String(snapshot.preferred_supplier_mentioned ?? '—')}</span>
+                <span className="font-medium text-right">{String(snapshot.preferred_supplier_mentioned ?? '—')}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground">Incumbent</span>
-                <span className="font-medium">{String(snapshot.incumbent_supplier ?? '—')}</span>
+                <span className="font-medium text-right">{String(snapshot.incumbent_supplier ?? '—')}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground">Data residency</span>
-                <span className="font-medium">{snapshot.data_residency_constraint ? 'Yes' : 'No'}</span>
+                <span className="font-medium text-right">{snapshot.data_residency_constraint ? 'Yes' : 'No'}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground">ESG required</span>
-                <span className="font-medium">{snapshot.esg_requirement ? 'Yes' : 'No'}</span>
+                <span className="font-medium text-right">{snapshot.esg_requirement ? 'Yes' : 'No'}</span>
               </div>
               {Object.entries(snapshot)
                 .filter(([key]) => !['category_l1','category_l2','budget','currency','quantity','amount_unit','delivery_country','days_until_required','preferred_supplier_mentioned','incumbent_supplier','data_residency_constraint','esg_requirement'].includes(key))
                 .map(([key, val]) => (
-                  <div key={key} className="flex justify-between">
+                  <div key={key} className="flex justify-between gap-4">
                     <span className="text-muted-foreground">{CONTEXT_LABELS[key] ?? key.replace(/_/g, ' ')}</span>
-                    <span className="font-medium">{String(val)}</span>
+                    <span className="font-medium text-right break-words">{String(val)}</span>
                   </div>
                 ))}
             </div>
@@ -946,19 +966,19 @@ export default function TransparencyPage() {
           {evaluatedSuppliers.length === 0 ? (
             <p className="px-6 py-6 text-sm text-muted-foreground">No suppliers passed the category filter for evaluation.</p>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
+            <div>
+              <table className="w-full text-xs text-left">
                 <thead>
                   <tr className="border-b text-xs text-muted-foreground uppercase tracking-wide bg-muted/30">
-                    <th className="px-4 py-2 w-10">#</th>
-                    <th className="px-4 py-2">Supplier</th>
-                    <th className="px-4 py-2 text-right">Unit Price</th>
-                    <th className="px-4 py-2 text-right">Total Cost</th>
-                    <th className="px-4 py-2 text-right">Lead Time</th>
-                    <th className="px-4 py-2 w-24">Quality</th>
-                    <th className="px-4 py-2 w-24">Risk</th>
-                    <th className="px-4 py-2 w-24">ESG</th>
-                    <th className="px-4 py-2 w-24">Supplier Score</th>
+                    <th className="px-3 py-2.5 w-6">#</th>
+                    <th className="px-3 py-2.5 min-w-max">Supplier</th>
+                    <th className="px-3 py-2.5 text-right whitespace-nowrap">Unit Price</th>
+                    <th className="px-3 py-2.5 text-right whitespace-nowrap">Total Cost</th>
+                    <th className="px-3 py-2.5 text-right whitespace-nowrap">Lead Time</th>
+                    <th className="px-3 py-2.5 w-20">Quality</th>
+                    <th className="px-3 py-2.5 w-20">Risk</th>
+                    <th className="px-3 py-2.5 w-20">ESG</th>
+                    <th className="px-3 py-2.5 w-20">Score</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -978,12 +998,12 @@ export default function TransparencyPage() {
                               : 'hover:bg-muted/30'
                           }`}
                         >
-                          <td className="px-4 py-3">
+                          <td className="px-3 py-2.5">
                             <span className={`font-bold ${isWinner ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}`}>
                               {rank}
                             </span>
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-3 py-2.5">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-medium">{s.supplier_name}</span>
                               {isWinner && <Star className="h-3.5 w-3.5 text-emerald-500 fill-emerald-400 shrink-0" />}
@@ -992,17 +1012,17 @@ export default function TransparencyPage() {
                             </div>
                             <p className="text-xs text-muted-foreground mt-0.5">{s.category_l2}</p>
                           </td>
-                          <td className="px-4 py-3 text-right font-mono text-xs">
+                          <td className="px-3 py-2.5 text-right font-mono text-xs whitespace-nowrap">
                             {m.unitPrice != null
                               ? `${m.currency} ${Number(m.unitPrice).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
                               : <span className="text-muted-foreground">—</span>}
                           </td>
-                          <td className="px-4 py-3 text-right font-mono text-xs">
+                          <td className="px-3 py-2.5 text-right font-mono text-xs whitespace-nowrap">
                             {m.totalCost != null
                               ? `${m.currency} ${Number(m.totalCost).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
                               : <span className="text-muted-foreground">—</span>}
                           </td>
-                          <td className="px-4 py-3 text-right text-xs">
+                          <td className="px-3 py-2.5 text-right text-xs whitespace-nowrap">
                             {m.leadStd != null
                               ? <>{String(m.leadStd)}d{m.leadExp != null ? <span className="text-muted-foreground"> / {String(m.leadExp)}d</span> : ''}</>
                               : <span className="text-muted-foreground">—</span>}
@@ -1015,7 +1035,7 @@ export default function TransparencyPage() {
                               <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
                                 <div className="h-full rounded-full bg-emerald-400" style={{ width: `${Math.min(100, Math.max(0, s.final_cost_rank_score))}%` }} />
                               </div>
-                              <span className="text-xs font-mono w-5 text-right text-muted-foreground">{Math.round(s.final_cost_rank_score)}</span>
+                              <span className="text-xs font-mono w-6 text-right text-muted-foreground">{Math.round(s.final_cost_rank_score)}</span>
                             </div>
                           ) : <span className="text-xs text-muted-foreground">—</span>}</td>
                         </tr>
@@ -1136,9 +1156,11 @@ export default function TransparencyPage() {
           </Card>
         </div>
       )}
+        </div>
+      </div>
 
-      {/* Ask AI Drawer */}
-      <AiChatDrawer
+      {/* Ask AI Sidebar */}
+      <AiChatSidebar
         open={chatOpen}
         onOpenChange={setChatOpen}
         requestId={requestId}
