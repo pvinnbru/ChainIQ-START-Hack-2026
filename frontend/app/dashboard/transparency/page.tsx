@@ -981,7 +981,7 @@ export default function TransparencyPage() {
                 <tbody>
                   {evaluatedSuppliers
                     .slice()
-                    .sort((a, b) => (a.final_cost_rank_score ?? 1) - (b.final_cost_rank_score ?? 1))
+                    .sort((a, b) => (b.final_cost_rank_score ?? 0) - (a.final_cost_rank_score ?? 0))
                     .map((s, i) => {
                       const rank = i + 1;
                       const m = supplierMetrics(s);
@@ -1106,7 +1106,7 @@ export default function TransparencyPage() {
                       {evaluatedSuppliers.map(s => {
                         const key = `${s.supplier_id}-${s.category_l2}`;
                         const rank = s.final_cost_rank_score != null
-                          ? `#${evaluatedSuppliers.filter(x => x.final_cost_rank_score != null).sort((a, b) => (a.final_cost_rank_score ?? 0) - (b.final_cost_rank_score ?? 0)).findIndex(x => x.supplier_id === s.supplier_id && x.category_l2 === s.category_l2) + 1}`
+                          ? `#${evaluatedSuppliers.filter(x => x.final_cost_rank_score != null).sort((a, b) => (b.final_cost_rank_score ?? 0) - (a.final_cost_rank_score ?? 0)).findIndex(x => x.supplier_id === s.supplier_id && x.category_l2 === s.category_l2) + 1}`
                           : null;
                         return (
                           <TabsTrigger key={key} value={key} className="text-xs h-8">
