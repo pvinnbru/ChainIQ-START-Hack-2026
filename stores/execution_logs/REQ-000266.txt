@@ -1,0 +1,305 @@
+REQUEST: REQ-000266
+Timestamp: 2026-03-19T07:32:20.941706+00:00
+Context: {'category_l1': 'Marketing', 'category_l2': 'Content Production Services', 'budget': 140000, 'currency': 'USD', 'quantity': 4, 'amount_unit': 'campaigns', 'delivery_country': 'ZA', 'days_until_required': 78, 'preferred_supplier_mentioned': 'Havas Group Americas', 'incumbent_supplier': None, 'data_residency_constraint': False, 'esg_requirement': False}
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Mobile Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Monitors  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Docking Stations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Replacement / Break-Fix Pool Devices  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Mobile Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Desktop Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Monitors  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Docking Stations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Desktop Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Tablets  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Smartphones  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Tablets  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Samsung Knox Devices (SUP-0005) — Smartphones  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Samsung Knox Devices (SUP-0005) — Tablets  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Samsung Knox Devices (SUP-0005) — Rugged Devices  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Panasonic Toughbook Europe (SUP-0006) — Rugged Devices  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Panasonic Toughbook Europe (SUP-0006) — Replacement / Break-Fix Pool Devices  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Monitors  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Docking Stations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Replacement / Break-Fix Pool Devices  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Mobile Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Desktop Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Monitors  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Docking Stations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Networking  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Managed Cloud Platform Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Security Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Networking  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Managed Cloud Platform Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Security Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Networking  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Managed Cloud Platform Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Security Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Cloud Networking  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Managed Cloud Platform Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Swiss Sovereign Cloud (SUP-0014) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Swiss Sovereign Cloud (SUP-0014) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Swiss Sovereign Cloud (SUP-0014) — Cloud Security Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Herman Miller Contract (SUP-0022) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Herman Miller Contract (SUP-0022) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Herman Miller Contract (SUP-0022) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Bene Office Solutions (SUP-0024) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Bene Office Solutions (SUP-0024) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Bene Office Solutions (SUP-0024) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Thoughtworks Europe (SUP-0032) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Thoughtworks Europe (SUP-0032) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Thoughtworks Europe (SUP-0032) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Deloitte Technology Advisory (SUP-0033) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Deloitte Technology Advisory (SUP-0033) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Deloitte Technology Advisory (SUP-0033) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: EPAM Delivery Services (SUP-0034) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: EPAM Delivery Services (SUP-0034) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Visium Data Engineering (SUP-0035) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Visium Data Engineering (SUP-0035) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Search Engine Marketing (SEM)  [EXCLUDED: category_l2 mismatch ('Search Engine Marketing (SEM)' != 'Content Production Services')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Content Production Services  [EXCLUDED: does not serve delivery country 'ZA']
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Marketing Analytics Services  [EXCLUDED: category_l2 mismatch ('Marketing Analytics Services' != 'Content Production Services')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Influencer Campaign Management  [EXCLUDED: category_l2 mismatch ('Influencer Campaign Management' != 'Content Production Services')]
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Search Engine Marketing (SEM)  [EXCLUDED: category_l2 mismatch ('Search Engine Marketing (SEM)' != 'Content Production Services')]
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Content Production Services  [EXCLUDED: does not serve delivery country 'ZA']
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Marketing Analytics Services  [EXCLUDED: category_l2 mismatch ('Marketing Analytics Services' != 'Content Production Services')]
+
+SUPPLIER: DEPT Agency (SUP-0042) — Search Engine Marketing (SEM)  [EXCLUDED: category_l2 mismatch ('Search Engine Marketing (SEM)' != 'Content Production Services')]
+
+SUPPLIER: DEPT Agency (SUP-0042) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: DEPT Agency (SUP-0042) — Marketing Analytics Services  [EXCLUDED: category_l2 mismatch ('Marketing Analytics Services' != 'Content Production Services')]
+
+SUPPLIER: Monks Europe (SUP-0043) — Content Production Services  [EXCLUDED: does not serve delivery country 'ZA']
+
+SUPPLIER: Monks Europe (SUP-0043) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: Monks Europe (SUP-0043) — Influencer Campaign Management  [EXCLUDED: category_l2 mismatch ('Influencer Campaign Management' != 'Content Production Services')]
+
+SUPPLIER: Artefact Analytics (SUP-0044) — Marketing Analytics Services  [EXCLUDED: category_l2 mismatch ('Marketing Analytics Services' != 'Content Production Services')]
+
+SUPPLIER: Artefact Analytics (SUP-0044) — Search Engine Marketing (SEM)  [EXCLUDED: category_l2 mismatch ('Search Engine Marketing (SEM)' != 'Content Production Services')]
+
+SUPPLIER: Boutique Creator Network (SUP-0045) — Influencer Campaign Management  [EXCLUDED: category_l2 mismatch ('Influencer Campaign Management' != 'Content Production Services')]
+
+SUPPLIER: Boutique Creator Network (SUP-0045) — Content Production Services  [EXCLUDED: does not serve delivery country 'ZA']
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Monitors  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Docking Stations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Desktop Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Cloud Security Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Managed Cloud Platform Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Desktop Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Mobile Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Tablets  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Alibaba Cloud International (SUP-0017) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Alibaba Cloud International (SUP-0017) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Alibaba Cloud International (SUP-0017) — Cloud Networking  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Steelcase Americas (SUP-0025) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Americas (SUP-0025) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Americas (SUP-0025) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Haworth International (SUP-0026) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Haworth International (SUP-0026) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Haworth International (SUP-0026) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Haworth International (SUP-0026) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Dentsu International (SUP-0046) — Search Engine Marketing (SEM)  [EXCLUDED: category_l2 mismatch ('Search Engine Marketing (SEM)' != 'Content Production Services')]
+
+SUPPLIER: Dentsu International (SUP-0046) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: Dentsu International (SUP-0046) — Marketing Analytics Services  [EXCLUDED: category_l2 mismatch ('Marketing Analytics Services' != 'Content Production Services')]
+
+SUPPLIER: Havas Group Americas (SUP-0047) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: Havas Group Americas (SUP-0047) — Content Production Services  [EXCLUDED: does not serve delivery country 'ZA']
+
+SUPPLIER: Havas Group Americas (SUP-0047) — Influencer Campaign Management  [EXCLUDED: category_l2 mismatch ('Influencer Campaign Management' != 'Content Production Services')]

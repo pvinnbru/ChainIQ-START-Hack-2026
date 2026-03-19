@@ -47,6 +47,7 @@ from supplier_matrix import (
     run_procurement_evaluation,
     save_generated_actions,
     load_generated_actions,
+    save_log,
 )
 
 # ---------------------------------------------------------------------------
@@ -55,6 +56,7 @@ from supplier_matrix import (
 
 DATA_DIR = Path("data")
 STORE_DIR = Path("stores")
+LOGS_DIR = STORE_DIR / "execution_logs"
 SCHEMA_PATH = Path("start_dict.csv")
 REQUESTS_PATH = DATA_DIR / "requests.json"
 SUPPLIERS_PATH = DATA_DIR / "suppliers.csv"
@@ -165,12 +167,14 @@ def _save_ranking_store(
     ranking_actions: list[tuple],
     data_hash: str,
     path: Path = RANKING_STORE_PATH,
+    attribution: dict | None = None,
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "data_hash": data_hash,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "ranking_actions": [list(a) for a in ranking_actions],
+        "attribution": {str(k): v for k, v in (attribution or {}).items()},
     }
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(payload, fh, indent=2)
@@ -179,17 +183,20 @@ def _save_ranking_store(
 def get_or_build_ranking_actions(
     schema: list[tuple],
     data_hash: str,
-) -> tuple[list[tuple], bool]:
+) -> tuple[list[tuple], dict, bool]:
     """
     Return cached ranking actions if the data hash matches, otherwise rebuild
     via a single LLM call using generate_ranking_actions().
 
-    Returns (ranking_actions, cache_hit).
+    Returns (ranking_actions, attribution, cache_hit).
     """
     raw = _load_raw_ranking_store()
     if raw is not None and raw.get("data_hash") == data_hash:
         actions = _strip_action_quotes([tuple(a) for a in raw["ranking_actions"]])
-        return actions, True
+        attribution = {
+            int(k): v for k, v in raw.get("attribution", {}).items()
+        }
+        return actions, attribution, True
 
     # Cache miss — call LLM to generate ranking actions
     from openai import AzureOpenAI
@@ -200,9 +207,10 @@ def get_or_build_ranking_actions(
         api_version=os.environ.get("AZURE_OPENAI_API_VERSION", "2024-02-15-preview"),
     )
 
-    ranking_actions = _strip_action_quotes(generate_ranking_actions(schema, client))
+    ranking_actions_raw, attribution = generate_ranking_actions(schema, client)
+    ranking_actions = _strip_action_quotes(ranking_actions_raw)
     _save_ranking_store(ranking_actions, data_hash)
-    return ranking_actions, False
+    return ranking_actions, attribution, False
 
 
 # ---------------------------------------------------------------------------
@@ -237,11 +245,29 @@ def pipeline():
     )
 
     # Ranking actions store
-    ranking_actions, ranking_cache_hit = get_or_build_ranking_actions(schema, data_hash)
+    ranking_actions, ranking_attribution, ranking_cache_hit = get_or_build_ranking_actions(
+        schema, data_hash
+    )
+
+    # Build combined attribution from all rulesets
+    rules_attribution: dict = {}
+    offset = 0
+    for store_key in ("approval_thresholds", "category_rules", "escalation_rules"):
+        store_map = {
+            "approval_thresholds": approval_store,
+            "category_rules": category_store,
+            "escalation_rules": escalation_store,
+        }
+        store = store_map[store_key]
+        for k, v in store.get("attribution", {}).items():
+            rules_attribution[int(k) + offset] = v
+        offset += len(store["sorted_actions"])
 
     # Combine all actions into one topologically sorted pipeline
-    sorted_actions, is_low_confidence = build_full_action_pipeline(
-        ranking_actions, rules_actions, fix_in_keys
+    sorted_actions, is_low_confidence, combined_attribution = build_full_action_pipeline(
+        ranking_actions, rules_actions, fix_in_keys,
+        ranking_attribution=ranking_attribution,
+        rules_attribution=rules_attribution,
     )
 
     # Supplier and pricing data
@@ -261,14 +287,15 @@ def pipeline():
     print(f"[pipeline] cache_hits: {cache_hits}")
 
     return {
-        "schema":            schema,
-        "fix_in_keys":       fix_in_keys,
-        "sorted_actions":    sorted_actions,
-        "is_low_confidence": is_low_confidence,
-        "suppliers":         suppliers,
-        "pricing_index":     pricing_index,
-        "cache_hits":        cache_hits,
-        "data_hash":         data_hash,
+        "schema":             schema,
+        "fix_in_keys":        fix_in_keys,
+        "sorted_actions":     sorted_actions,
+        "is_low_confidence":  is_low_confidence,
+        "attribution":        combined_attribution,
+        "suppliers":          suppliers,
+        "pricing_index":      pricing_index,
+        "cache_hits":         cache_hits,
+        "data_hash":          data_hash,
     }
 
 
@@ -306,7 +333,7 @@ def test_action_stores_are_cached(pipeline):
         "Second call to escalation_rules store should be a cache hit"
     )
 
-    _, hit = get_or_build_ranking_actions(pipeline["schema"], pipeline["data_hash"])
+    _, _attr, hit = get_or_build_ranking_actions(pipeline["schema"], pipeline["data_hash"])
     assert hit is True, "Second call to ranking actions should be a cache hit"
 
     print("\n[test_action_stores_are_cached] All stores returned cache_hit=True ✓")
@@ -332,6 +359,8 @@ def test_all_requests(pipeline):
     suppliers     = pipeline["suppliers"]
     pricing_index = pipeline["pricing_index"]
 
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
     results: list[dict] = []
     skipped      = 0
     evaluated    = 0
@@ -352,13 +381,14 @@ def test_all_requests(pipeline):
 
         evaluated += 1
         try:
-            outcome = run_procurement_evaluation(
+            outcome, exec_log = run_procurement_evaluation(
                 request=request,
                 schema=schema,
                 sorted_actions=sorted_actions,
                 suppliers=suppliers,
                 fix_in_keys=fix_in_keys,
                 pricing_index=pricing_index,
+                attribution=pipeline.get("attribution"),
             )
         except Exception as exc:  # noqa: BLE001
             errors += 1
@@ -368,6 +398,10 @@ def test_all_requests(pipeline):
                 "error": str(exc),
             })
             continue
+
+        # Persist execution log for this request
+        log_path = str(LOGS_DIR / request["request_id"])
+        save_log(exec_log, log_path)
 
         supplier_results = outcome["supplier_results"]
         if supplier_results:
@@ -432,6 +466,7 @@ def test_all_requests(pipeline):
           f"({with_suppliers / max(evaluated, 1):.0%} of evaluated)")
     print(f"  errors:          {errors}")
     print(f"  results written: {RESULTS_PATH}")
+    print(f"  logs written:    {LOGS_DIR}/ ({evaluated - errors} × .json + .txt)")
 
     # Sample: show first 3 results with suppliers
     shown = 0

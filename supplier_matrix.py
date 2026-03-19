@@ -20,9 +20,12 @@ Schema tuple format (as returned by load_schema and used throughout this module)
 from __future__ import annotations
 
 import csv
+import dataclasses
 import json
 import os
 import re
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from typing import Any
 
 # ---------------------------------------------------------------------------
@@ -121,6 +124,56 @@ SupplierRecord = dict[str, Any]   # keys: "identity", "attributes"
 _SUPPLIER_META_COLS: frozenset[str] = frozenset(
     {"supplier_id", "supplier_name", "category_l1", "category_l2", "country_hq", "service_regions"}
 )
+
+# ---------------------------------------------------------------------------
+# Execution log dataclasses
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class ActionLogEntry:
+    """Records the execution of a single action tuple for one supplier."""
+
+    action_index: int
+    rule_id: str
+    rule_description: str
+    action_type: str
+    action_tuple: tuple
+    when_condition: str | None
+    when_evaluated: bool        # True when a WHEN clause was present and evaluated
+    when_passed: bool           # True when WHEN passed (or no WHEN clause)
+    input_values: dict          # Snapshot of all params read, with actual values
+    output_key: str | None
+    output_value_before: Any    # Value of output_key before execution (None if skipped)
+    output_value_after: Any     # Value of output_key after execution (None if skipped)
+    skipped: bool               # True when WHEN did not pass (action had no effect)
+
+
+@dataclass
+class SupplierLog:
+    """Execution log for a single supplier within one request evaluation."""
+
+    supplier_id: str
+    supplier_name: str
+    category_l2: str
+    pricing_resolved: dict
+    action_logs: list[ActionLogEntry]
+    final_state: dict
+    final_cost_rank_score: float | None
+    final_reputation_score: float | None
+    excluded: bool
+    exclusion_reason: str | None
+
+
+@dataclass
+class RequestExecutionLog:
+    """Top-level log capturing everything that happened during one procurement evaluation."""
+
+    request_id: str
+    timestamp: str              # ISO-8601
+    global_context_snapshot: dict
+    supplier_logs: list[SupplierLog]
+    global_action_logs: list[ActionLogEntry]   # Reserved for future global (non-supplier) actions
 
 # ---------------------------------------------------------------------------
 # Schema loader
@@ -348,13 +401,73 @@ available use the raw value directly with a comment explaining the limitation.
    (max 100), so suppliers with even a small cost advantage always rank higher.
    Use SRM type (out_param = rank).
 
-**Output format** — return ONLY this section (no preamble, no DICT section):
+**Output format** — return ONLY these two sections (no preamble, no DICT section):
 ACTIONS: {
   (OSLM, ..., ...),
   ...
   (SRM, ..., ...),
 }
+
+ATTRIBUTION: {
+  0: {"rule_id": "RANKING", "rule_description": "<brief description of what action 0 computes>"},
+  1: {"rule_id": "RANKING", "rule_description": "<brief description of what action 1 computes>"},
+  ...
+}
+
+Where each ATTRIBUTION index is the 0-based position in the ACTIONS list.
+Use "RANKING" as the rule_id for all ranking actions.
 """
+
+
+def _parse_attribution_from_llm(response_text: str) -> dict:
+    """
+    Extract the ATTRIBUTION block from an LLM response.
+
+    Expected format::
+
+        ATTRIBUTION: {
+          0: {"rule_id": "RANKING", "rule_description": "Compute cost_total"},
+          1: {"rule_id": "RANKING", "rule_description": "..."},
+        }
+
+    Returns a dict mapping int action_index → {"rule_id": str, "rule_description": str}.
+    Returns an empty dict if the block is absent or unparseable.
+    """
+    attr_start = response_text.find("ATTRIBUTION:")
+    if attr_start == -1:
+        return {}
+
+    brace_start = response_text.find("{", attr_start)
+    if brace_start == -1:
+        return {}
+
+    depth = 0
+    brace_end = brace_start
+    for i in range(brace_start, len(response_text)):
+        if response_text[i] == "{":
+            depth += 1
+        elif response_text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                brace_end = i
+                break
+    else:
+        return {}
+
+    block = response_text[brace_start : brace_end + 1]
+    result: dict = {}
+    for m in re.finditer(r"(\d+)\s*:\s*\{([^}]+)\}", block):
+        idx = int(m.group(1))
+        inner = m.group(2)
+        rid_m = re.search(r'"rule_id"\s*:\s*"([^"]*)"', inner)
+        rdesc_m = re.search(r'"rule_description"\s*:\s*"([^"]*)"', inner)
+        if rid_m and rdesc_m:
+            result[idx] = {
+                "rule_id": rid_m.group(1),
+                "rule_description": rdesc_m.group(1),
+            }
+
+    return result
 
 
 def _parse_actions_from_llm(response_text: str) -> list[tuple]:
@@ -390,7 +503,7 @@ def _parse_actions_from_llm(response_text: str) -> list[tuple]:
 def generate_ranking_actions(
     schema: list[tuple],
     anthropic_client,
-) -> list[tuple]:
+) -> tuple[list[tuple], dict]:
     """
     Make a single LLM call to generate actions that compute cost_total,
     reputation_score, cost_rank_score, and rank.
@@ -402,7 +515,10 @@ def generate_ranking_actions(
     The model and deployment are read from the AZURE_OPENAI_DEPLOYMENT
     environment variable (or "gpt-4o" as fallback).
 
-    Returns the parsed list of action tuples.
+    Returns:
+        (actions, attribution_dict)
+        - actions: parsed list of action tuples
+        - attribution_dict: maps action index → {rule_id, rule_description}
     """
     schema_str = "\n".join(f"  {entry}" for entry in schema)
     user_message = f"### Schema\n{schema_str}"
@@ -417,7 +533,9 @@ def generate_ranking_actions(
         temperature=0.1,
     )
     response_text: str = response.choices[0].message.content
-    return _parse_actions_from_llm(response_text)
+    actions = _parse_actions_from_llm(response_text)
+    attribution = _parse_attribution_from_llm(response_text)
+    return actions, attribution
 
 
 # ---------------------------------------------------------------------------
@@ -428,32 +546,53 @@ def save_generated_actions(
     ranking_actions: list[tuple],
     rules_actions: list[tuple],
     path: str,
+    ranking_attribution: dict | None = None,
+    rules_attribution: dict | None = None,
 ) -> None:
     """
-    Serialise ranking and rules action lists to JSON at *path*.
+    Serialise ranking and rules action lists (and optional attribution dicts) to JSON.
 
-    Tuples are stored as JSON arrays.  Load with :func:`load_generated_actions`.
+    Tuples are stored as JSON arrays.  Attribution dicts use string keys in JSON
+    (integer keys are not valid JSON); :func:`load_generated_actions` converts
+    them back to int keys on load.
+
+    Load with :func:`load_generated_actions`.
     """
     payload = {
         "ranking_actions": [list(a) for a in ranking_actions],
         "rules_actions": [list(a) for a in rules_actions],
+        "ranking_attribution": {str(k): v for k, v in (ranking_attribution or {}).items()},
+        "rules_attribution": {str(k): v for k, v in (rules_attribution or {}).items()},
     }
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(payload, fh, indent=2)
 
 
-def load_generated_actions(path: str) -> tuple[list[tuple], list[tuple]]:
+def load_generated_actions(
+    path: str,
+) -> tuple[list[tuple], list[tuple], dict, dict]:
     """
-    Load action lists previously saved by :func:`save_generated_actions`.
+    Load action lists (and attribution dicts) previously saved by
+    :func:`save_generated_actions`.
 
-    JSON arrays are converted back to tuples.
+    JSON arrays are converted back to tuples.  Attribution dict string keys
+    are converted back to ints.
+
+    Returns:
+        (ranking_actions, rules_actions, ranking_attribution, rules_attribution)
     """
     with open(path, encoding="utf-8") as fh:
         payload = json.load(fh)
 
     ranking_actions = [tuple(a) for a in payload["ranking_actions"]]
     rules_actions = [tuple(a) for a in payload["rules_actions"]]
-    return ranking_actions, rules_actions
+    ranking_attribution = {
+        int(k): v for k, v in payload.get("ranking_attribution", {}).items()
+    }
+    rules_attribution = {
+        int(k): v for k, v in payload.get("rules_attribution", {}).items()
+    }
+    return ranking_actions, rules_actions, ranking_attribution, rules_attribution
 
 
 # ---------------------------------------------------------------------------
@@ -464,20 +603,36 @@ def build_full_action_pipeline(
     ranking_actions: list[tuple],
     rules_actions: list[tuple],
     fix_in_keys: set[str],
-) -> tuple[list[tuple], bool]:
+    ranking_attribution: dict | None = None,
+    rules_attribution: dict | None = None,
+) -> tuple[list[tuple], bool, dict]:
     """
     Combine ranking and rules action lists, then topologically sort the result.
 
     Ranking actions are placed first in the combined list so the topo-sort
     sees their outputs as available for rules actions that depend on them.
 
-    Returns (sorted_combined, is_low_confidence) where is_low_confidence is
-    True if dependency cycles were detected and some ordering had to be broken.
+    Attribution dicts (mapping original action index → {rule_id, rule_description})
+    are merged — rules_attribution indices are offset by len(ranking_actions) to
+    reflect their position in the combined list.  The returned attribution dict
+    is rekeyed to match the sorted positions.
+
+    Returns:
+        (sorted_combined, is_low_confidence, rekeyed_attribution)
     """
     from sort_actions import sort_actions  # local import avoids circular deps
 
     combined = list(ranking_actions) + list(rules_actions)
-    return sort_actions(combined, fix_in_keys)
+
+    # Merge attribution dicts, offsetting rules indices
+    combined_attribution: dict = {}
+    for k, v in (ranking_attribution or {}).items():
+        combined_attribution[int(k)] = v
+    offset = len(ranking_actions)
+    for k, v in (rules_attribution or {}).items():
+        combined_attribution[int(k) + offset] = v
+
+    return sort_actions(combined, fix_in_keys, attribution=combined_attribution)
 
 
 # ---------------------------------------------------------------------------
@@ -850,14 +1005,58 @@ def filter_suppliers(
 # 4. Action evaluator
 # ---------------------------------------------------------------------------
 
+
+def _check_exclusion(
+    supplier: SupplierRecord,
+    global_context: dict[str, Any],
+    pricing_index: dict | None,
+) -> str | None:
+    """
+    Apply all supplier filter gates and return a human-readable exclusion reason,
+    or None when the supplier passes all gates.
+
+    Gates (mirrors filter_suppliers logic):
+      1. category_l1 / category_l2 match
+      2. delivery_country in service_regions
+      3. is_restricted is not True
+      4. Pricing tier exists (only when pricing_index is provided)
+    """
+    identity = supplier["identity"]
+    attrs = supplier["attributes"]
+    cat_l1 = str(global_context.get("category_l1", ""))
+    cat_l2 = str(global_context.get("category_l2", ""))
+    delivery_country = str(global_context.get("delivery_country", ""))
+
+    if identity.get("category_l1") != cat_l1:
+        return f"category_l1 mismatch ({identity.get('category_l1')!r} != {cat_l1!r})"
+    if identity.get("category_l2") != cat_l2:
+        return f"category_l2 mismatch ({identity.get('category_l2')!r} != {cat_l2!r})"
+
+    raw_regions: str = identity.get("service_regions", "")
+    region_tokens = {r.strip() for r in raw_regions.split(";") if r.strip()}
+    if delivery_country not in region_tokens:
+        return f"does not serve delivery country {delivery_country!r}"
+
+    if attrs.get("is_restricted") is True:
+        return "supplier is restricted"
+
+    if pricing_index is not None:
+        pricing = resolve_supplier_pricing(identity, pricing_index, global_context)
+        if not pricing:
+            return "no matching pricing tier for this region/quantity"
+
+    return None
+
+
 def evaluate_actions(
     sorted_actions: list[tuple],
     global_context: dict[str, Any],
     supplier_attrs: dict[str, Any],
     fix_in_keys: set[str],  # noqa: ARG001  kept for API symmetry / future use
-) -> dict[str, Any]:
+    attribution: dict | None = None,
+) -> tuple[dict[str, Any], list[ActionLogEntry]]:
     """
-    Evaluate all actions for a single supplier.
+    Evaluate all actions for a single supplier, producing an execution log.
 
     Working state starts as global_context merged with supplier_attrs
     (supplier_attrs take precedence on collision).
@@ -868,11 +1067,18 @@ def evaluate_actions(
       OSLM  — same as AL/ALI but only executed when the WHEN condition is True
       SRM   — same as AL/ALI but only executed when the WHEN condition is True
 
-    Returns the final state dict.
+    For every action an :class:`ActionLogEntry` is emitted capturing the actual
+    runtime values of all parameters read at the moment of evaluation.  When a
+    WHEN condition fails the entry has ``skipped=True`` and
+    ``output_value_before/after`` are both ``None``.
+
+    Returns:
+        (final_state, log_entries)
     """
     state: dict[str, Any] = {**global_context, **supplier_attrs}
+    log_entries: list[ActionLogEntry] = []
 
-    for action in sorted_actions:
+    for action_index, action in enumerate(sorted_actions):
         typ: str = action[0]
         in1: str = action[1] if len(action) > 1 else "_"
         in2_raw: str = str(action[2]) if len(action) > 2 else "_"
@@ -880,40 +1086,85 @@ def evaluate_actions(
         out: str = action[4] if len(action) > 4 else "_"
         when_expr: str | None = str(action[5]) if len(action) > 5 else None
 
-        if out == "_":
-            continue
+        # Attribution lookup for this action
+        attr_info = (attribution or {}).get(action_index, {})
+        rule_id: str = attr_info.get("rule_id", "UNKNOWN")
+        rule_description: str = attr_info.get("rule_description", "")
 
-        # WHEN gate — applies to OSLM and SRM
-        if typ in ("OSLM", "SRM") and when_expr is not None:
-            try:
-                if not _eval_when(when_expr, state):
-                    continue
-            except Exception:
-                # Malformed condition: skip action safely rather than crash
-                continue
-
-        # Resolve left-hand side from state (or None if unused)
-        lhs: Any = _resolve_value(in1, state) if in1 != "_" else None
-
-        # Resolve right-hand side
+        # Snapshot inputs at evaluation time (before any state mutation)
+        input_values: dict[str, Any] = {}
+        if in1 != "_":
+            input_values[in1] = state.get(in1)
         if typ == "ALI":
-            # in_param2 is a literal constant — never looked up in state
-            rhs: Any = _parse_literal(in2_raw) if in2_raw != "_" else None
+            if in2_raw != "_":
+                input_values["immediate"] = _parse_literal(in2_raw)
         else:
-            # AL / OSLM / SRM — in_param2 is a dict key
-            rhs = _resolve_value(in2_raw, state) if in2_raw != "_" else None
+            if in2_raw != "_":
+                input_values[in2_raw] = state.get(in2_raw)
 
-        # Compute result
-        if lhs is None and rhs is None:
-            continue
-        elif lhs is None:
-            state[out] = rhs
-        elif rhs is None:
-            state[out] = lhs
+        when_evaluated = False
+        when_passed = True
+        skipped = False
+        output_key: str | None = out if out != "_" else None
+        output_value_before: Any = state.get(out) if out != "_" and out in state else None
+        output_value_after: Any = None
+
+        if out == "_":
+            # No-op action: nothing to write
+            skipped = True
         else:
-            state[out] = _apply_operator(lhs, op, rhs)
+            # WHEN gate — applies to OSLM and SRM
+            if typ in ("OSLM", "SRM") and when_expr is not None:
+                when_evaluated = True
+                try:
+                    when_passed = bool(_eval_when(when_expr, state))
+                except Exception:
+                    when_passed = False
+                if not when_passed:
+                    skipped = True
 
-    return state
+            if not skipped:
+                lhs: Any = _resolve_value(in1, state) if in1 != "_" else None
+                if typ == "ALI":
+                    rhs: Any = _parse_literal(in2_raw) if in2_raw != "_" else None
+                else:
+                    rhs = _resolve_value(in2_raw, state) if in2_raw != "_" else None
+
+                if lhs is None and rhs is None:
+                    skipped = True
+                else:
+                    if lhs is None:
+                        result: Any = rhs
+                    elif rhs is None:
+                        result = lhs
+                    else:
+                        try:
+                            result = _apply_operator(lhs, op, rhs)
+                        except Exception:
+                            skipped = True
+                            result = None
+
+                    if not skipped:
+                        state[out] = result
+                        output_value_after = result
+
+        log_entries.append(ActionLogEntry(
+            action_index=action_index,
+            rule_id=rule_id,
+            rule_description=rule_description,
+            action_type=typ,
+            action_tuple=action,
+            when_condition=when_expr,
+            when_evaluated=when_evaluated,
+            when_passed=when_passed,
+            input_values=input_values,
+            output_key=output_key,
+            output_value_before=output_value_before if not skipped else None,
+            output_value_after=output_value_after,
+            skipped=skipped,
+        ))
+
+    return state, log_entries
 
 
 # ---------------------------------------------------------------------------
@@ -927,52 +1178,96 @@ def run_procurement_evaluation(
     suppliers: list[SupplierRecord],
     fix_in_keys: set[str],
     pricing_index: dict | None = None,
-) -> dict[str, Any]:
+    attribution: dict | None = None,
+) -> tuple[dict[str, Any], RequestExecutionLog]:
     """
-    End-to-end procurement evaluation.
+    End-to-end procurement evaluation with full execution logging.
 
     Steps:
       1. Build global context from request + schema.
-      2. Filter suppliers (category, delivery country, not restricted, and
-         optionally pricing tier existence when *pricing_index* is given).
-      3. For each surviving supplier, run evaluate_actions.
-      4. Collect results.
+      2. For every supplier check exclusion gates and log the result.
+      3. For each surviving supplier, run evaluate_actions (returning a log).
+      4. Sort results and assemble the RequestExecutionLog.
 
     Returns:
-      {
-        "global_outputs":    dict[str, Any]   — fix_out keys (excl. "rank") from
-                             the first evaluated supplier's final state; these
-                             should be identical across all suppliers.
-        "supplier_results":  list of (identity_dict, rank, full_state_dict)
-                             sorted lexicographically by
-                             (cost_rank_score DESC, reputation_score DESC).
-                             rank is retained in the tuple for transparency but
-                             is NOT used as the primary sort key.
-      }
+      (result_dict, execution_log)
+
+      result_dict contains:
+        "global_outputs":   dict[str, Any]  — fix_out keys (excl. "rank") from
+                            the first evaluated supplier's final state.
+        "supplier_results": list of (identity_dict, rank, full_state_dict)
+                            sorted by (cost_rank_score DESC, reputation_score DESC).
+
+      execution_log is a :class:`RequestExecutionLog` capturing everything that
+      happened — including excluded suppliers and per-action attribution.
     """
     global_context = build_global_context(request, schema)
-    filtered = filter_suppliers(suppliers, global_context, pricing_index)
-
     fix_out_keys: set[str] = {entry[0] for entry in schema if entry[1] == "fix_out"}
 
     supplier_results: list[tuple[dict[str, Any], Any, dict[str, Any]]] = []
     first_global_state: dict[str, Any] = {}
+    supplier_logs: list[SupplierLog] = []
 
-    for supplier in filtered:
-        final_state = evaluate_actions(
+    for supplier in suppliers:
+        identity = supplier["identity"]
+        attrs = supplier["attributes"]
+        supplier_id = str(identity.get("supplier_id", ""))
+        supplier_name = str(identity.get("supplier_name", ""))
+        category_l2 = str(identity.get("category_l2", ""))
+
+        exclusion_reason = _check_exclusion(supplier, global_context, pricing_index)
+        if exclusion_reason:
+            supplier_logs.append(SupplierLog(
+                supplier_id=supplier_id,
+                supplier_name=supplier_name,
+                category_l2=category_l2,
+                pricing_resolved={},
+                action_logs=[],
+                final_state={},
+                final_cost_rank_score=None,
+                final_reputation_score=None,
+                excluded=True,
+                exclusion_reason=exclusion_reason,
+            ))
+            continue
+
+        # Build supplier attrs with pricing injected
+        new_attrs: dict[str, Any] = dict(attrs)
+        new_attrs["serves_delivery_country"] = True
+        pricing_resolved: dict = {}
+        if pricing_index is not None:
+            pricing = resolve_supplier_pricing(identity, pricing_index, global_context)
+            if pricing:
+                new_attrs.update(pricing)
+                pricing_resolved = pricing
+
+        final_state, action_logs = evaluate_actions(
             sorted_actions,
             global_context,
-            supplier["attributes"],
+            new_attrs,
             fix_in_keys,
+            attribution,
         )
         rank = final_state.get("rank", 0)
-        supplier_results.append((dict(supplier["identity"]), rank, final_state))
+        supplier_results.append((dict(identity), rank, final_state))
 
         if not first_global_state:
             first_global_state = final_state
 
+        supplier_logs.append(SupplierLog(
+            supplier_id=supplier_id,
+            supplier_name=supplier_name,
+            category_l2=category_l2,
+            pricing_resolved=pricing_resolved,
+            action_logs=action_logs,
+            final_state=final_state,
+            final_cost_rank_score=final_state.get("cost_rank_score"),
+            final_reputation_score=final_state.get("reputation_score"),
+            excluded=False,
+            exclusion_reason=None,
+        ))
+
     # Primary sort: (cost_rank_score DESC, reputation_score DESC)
-    # rank is kept in the output tuple for transparency but not used as sort key.
     supplier_results.sort(
         key=lambda x: (
             x[2].get("cost_rank_score", 0),
@@ -987,7 +1282,143 @@ def run_procurement_evaluation(
         if k != "rank" and k in first_global_state
     }
 
-    return {
-        "global_outputs": global_outputs,
-        "supplier_results": supplier_results,
-    }
+    execution_log = RequestExecutionLog(
+        request_id=str(request.get("request_id", "")),
+        timestamp=datetime.now(timezone.utc).isoformat(),
+        global_context_snapshot=dict(global_context),
+        supplier_logs=supplier_logs,
+        global_action_logs=[],
+    )
+
+    return (
+        {
+            "global_outputs": global_outputs,
+            "supplier_results": supplier_results,
+        },
+        execution_log,
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6. Log rendering and persistence
+# ---------------------------------------------------------------------------
+
+
+def render_log(log: RequestExecutionLog) -> str:
+    """
+    Produce a human-readable plaintext report for a :class:`RequestExecutionLog`.
+
+    Structure::
+
+        REQUEST: {request_id}
+        Timestamp: {timestamp}
+        Context: {global_context_snapshot}
+
+        SUPPLIER: {supplier_name} ({supplier_id}) — {category_l2}
+        Pricing: {unit_price} {currency} x {quantity} units = {cost_total}
+        Final scores: cost_rank={cost_rank_score}, reputation={reputation_score}
+
+          [RULE: {rule_id}] {rule_description}
+            Action: {action_type} {action_tuple}
+            Inputs: {param} = {value}, ...
+            WHEN: {condition} → PASSED|FAILED|N/A
+            Result: {output_key} {before} → {after}    [SKIPPED if when failed]
+
+    Excluded suppliers are shown with their exclusion reason and no action blocks.
+    """
+    lines: list[str] = []
+    lines.append(f"REQUEST: {log.request_id}")
+    lines.append(f"Timestamp: {log.timestamp}")
+    lines.append(f"Context: {log.global_context_snapshot}")
+    lines.append("")
+
+    quantity = log.global_context_snapshot.get("quantity", "?")
+
+    for sl in log.supplier_logs:
+        if sl.excluded:
+            lines.append(
+                f"SUPPLIER: {sl.supplier_name} ({sl.supplier_id}) — {sl.category_l2}"
+                f"  [EXCLUDED: {sl.exclusion_reason}]"
+            )
+            lines.append("")
+            continue
+
+        unit_price = sl.pricing_resolved.get("unit_price", "N/A")
+        currency = sl.pricing_resolved.get("currency", "")
+        cost_total = sl.final_state.get("cost_total", "N/A")
+
+        lines.append(
+            f"SUPPLIER: {sl.supplier_name} ({sl.supplier_id}) — {sl.category_l2}"
+        )
+        lines.append(
+            f"Pricing: {unit_price} {currency} x {quantity} units = {cost_total}"
+        )
+        lines.append(
+            f"Final scores: cost_rank={sl.final_cost_rank_score},"
+            f" reputation={sl.final_reputation_score}"
+        )
+        lines.append("")
+
+        for entry in sl.action_logs:
+            if entry.rule_id == "UNKNOWN" and not entry.rule_description:
+                # Skip no-op entries with no attribution to keep the report readable
+                continue
+            lines.append(f"  [RULE: {entry.rule_id}] {entry.rule_description}")
+            lines.append(f"    Action: {entry.action_type} {entry.action_tuple}")
+
+            inputs_str = ", ".join(
+                f"{k} = {v}" for k, v in entry.input_values.items()
+            )
+            lines.append(f"    Inputs: {inputs_str}")
+
+            if entry.when_condition is None:
+                when_str = "N/A"
+            elif entry.when_passed:
+                when_str = f"{entry.when_condition} → PASSED"
+            else:
+                when_str = f"{entry.when_condition} → FAILED"
+            lines.append(f"    WHEN: {when_str}")
+
+            if entry.skipped:
+                lines.append(
+                    f"    Result: {entry.output_key} [SKIPPED]"
+                )
+            else:
+                lines.append(
+                    f"    Result: {entry.output_key}"
+                    f" {entry.output_value_before} → {entry.output_value_after}"
+                )
+            lines.append("")
+
+    return "\n".join(lines)
+
+
+def _log_to_json_serializable(obj: Any) -> Any:
+    """Recursively convert dataclasses and tuples for JSON serialisation."""
+    if dataclasses.is_dataclass(obj) and not isinstance(obj, type):
+        return {
+            k: _log_to_json_serializable(v)
+            for k, v in dataclasses.asdict(obj).items()
+        }
+    if isinstance(obj, tuple):
+        return [_log_to_json_serializable(x) for x in obj]
+    if isinstance(obj, list):
+        return [_log_to_json_serializable(x) for x in obj]
+    if isinstance(obj, dict):
+        return {k: _log_to_json_serializable(v) for k, v in obj.items()}
+    return obj
+
+
+def save_log(log: RequestExecutionLog, path: str) -> None:
+    """
+    Persist a :class:`RequestExecutionLog` to disk in two formats:
+
+    - ``{path}.json`` — raw JSON (dataclass serialised; tuples become lists)
+    - ``{path}.txt``  — human-readable plaintext from :func:`render_log`
+    """
+    serialisable = _log_to_json_serializable(log)
+    with open(f"{path}.json", "w", encoding="utf-8") as fh:
+        json.dump(serialisable, fh, indent=2, default=str)
+
+    with open(f"{path}.txt", "w", encoding="utf-8") as fh:
+        fh.write(render_log(log))

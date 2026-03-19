@@ -26,7 +26,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from rule_ingestion_prompt import ingest_rule
+from rule_ingestion_prompt import ingest_rule, parse_rule_attribution
 from sort_actions import sort_actions
 
 # ---------------------------------------------------------------------------
@@ -88,8 +88,9 @@ def _save_store(
     data_hash: str,
     is_low_confidence: bool,
     store_dir: Path = STORE_DIR,
+    attribution: dict | None = None,
 ) -> None:
-    """Serialise *sorted_actions* and metadata to the store file."""
+    """Serialise *sorted_actions*, attribution, and metadata to the store file."""
     store_dir.mkdir(parents=True, exist_ok=True)
     payload = {
         "ruleset_id": ruleset_id,
@@ -97,6 +98,7 @@ def _save_store(
         "is_low_confidence": is_low_confidence,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "sorted_actions": [list(a) for a in sorted_actions],
+        "attribution": {str(k): v for k, v in (attribution or {}).items()},
     }
     with open(_store_path(ruleset_id, store_dir), "w", encoding="utf-8") as fh:
         json.dump(payload, fh, indent=2)
@@ -168,9 +170,12 @@ def _build_rules_actions(
     schema_tuples: list[tuple],
     fix_in_keys: set[str],
     policies_path: Path = POLICIES_PATH,
-) -> list[tuple]:
+) -> tuple[list[tuple], dict]:
     """
     Run LLM ingestion for every rule in the *ruleset_id* section of policies.json.
+
+    Returns (all_actions, attribution_dict) where attribution_dict maps
+    original action index → {rule_id, rule_description}.
 
     Raises ValueError if the section is absent or empty.
     """
@@ -185,16 +190,23 @@ def _build_rules_actions(
         )
 
     all_actions: list[tuple] = []
+    all_attribution: dict = {}
+
     for rule in rules:
         llm_output = ingest_rule(
             tuples=schema_tuples,
             json_data=rule,
             actions_so_far=all_actions,
         )
+        offset = len(all_actions)
         new_actions = _parse_actions(llm_output)
+        rule_attribution = parse_rule_attribution(llm_output)
+        # Offset attribution indices to reflect position in the global list
+        for k, v in rule_attribution.items():
+            all_attribution[k + offset] = v
         all_actions.extend(new_actions)
 
-    return all_actions
+    return all_actions, all_attribution
 
 
 # ---------------------------------------------------------------------------
@@ -227,13 +239,21 @@ def get_or_build_actions_store(
     raw = _load_raw_store(ruleset_id, store_dir)
     if raw is not None and raw.get("data_hash") == current_hash:
         raw["sorted_actions"] = [tuple(a) for a in raw["sorted_actions"]]
+        # Convert string keys back to int for attribution dict
+        raw["attribution"] = {
+            int(k): v for k, v in raw.get("attribution", {}).items()
+        }
         raw["cache_hit"] = True
         return raw
 
     # Rebuild
     schema_tuples, fix_in_keys = _load_schema_tuples(schema_path)
-    raw_actions = _build_rules_actions(ruleset_id, schema_tuples, fix_in_keys, policies_path)
-    sorted_acts, is_low_confidence = sort_actions(raw_actions, fix_in_keys)
+    raw_actions, raw_attribution = _build_rules_actions(
+        ruleset_id, schema_tuples, fix_in_keys, policies_path
+    )
+    sorted_acts, is_low_confidence, attribution = sort_actions(
+        raw_actions, fix_in_keys, attribution=raw_attribution
+    )
 
     _save_store(
         ruleset_id=ruleset_id,
@@ -241,6 +261,7 @@ def get_or_build_actions_store(
         data_hash=current_hash,
         is_low_confidence=is_low_confidence,
         store_dir=store_dir,
+        attribution=attribution,
     )
 
     return {
@@ -249,5 +270,6 @@ def get_or_build_actions_store(
         "is_low_confidence": is_low_confidence,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "sorted_actions": sorted_acts,
+        "attribution": attribution,
         "cache_hit": False,
     }

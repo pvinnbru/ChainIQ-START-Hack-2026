@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from openai import AzureOpenAI
 from dotenv import load_dotenv
 
@@ -60,16 +61,76 @@ If you need dict keys that don't exist, define the minimum set required. Assign 
 
 ---
 
-**Output** — always return all three sections:
+**Output** — always return all four sections:
 ```
 MAPPING: { json_key → dict_key | DISCARDED: <reason>, ... }
 
 ACTIONS: { (TYPE, in_param1, in_param2/immediate, operator, out_param [, WHEN condition]), ... }
 
 DICT: { (key, semantic description, "free", level [, "supplier_matrix"]), ... }
+
+ATTRIBUTION: { 0: {"rule_id": "<id_field_from_rule_json>", "rule_description": "<brief description of what this action computes>"}, 1: {...}, ... }
 ```
 
-If no new entries are needed, return `DICT: {}`."""
+Where each ATTRIBUTION index corresponds to the 0-based position in the ACTIONS list.
+Use the primary identifier field from the rule JSON (e.g., `threshold_id`, `rule_id`, `category_rule_id`, or similar) as the `rule_id`.
+The `rule_description` should briefly describe what the action computes or enforces.
+
+If no new dict entries are needed, return `DICT: {}`."""
+
+def parse_rule_attribution(llm_output: str) -> dict:
+    """
+    Extract the ATTRIBUTION block from an LLM response for rule ingestion.
+
+    Expected format in the response::
+
+        ATTRIBUTION: {
+          0: {"rule_id": "AT-001", "rule_description": "Set min_supplier_quotes for low amounts"},
+          1: {"rule_id": "AT-001", "rule_description": "Gate fast-track eligibility"},
+        }
+
+    Returns a dict mapping int action_index → {"rule_id": str, "rule_description": str}.
+    Returns an empty dict if the block is absent or unparseable.
+    """
+    attr_start = llm_output.find("ATTRIBUTION:")
+    if attr_start == -1:
+        return {}
+
+    brace_start = llm_output.find("{", attr_start)
+    if brace_start == -1:
+        return {}
+
+    # Find the matching closing brace using depth tracking
+    depth = 0
+    brace_end = brace_start
+    for i in range(brace_start, len(llm_output)):
+        if llm_output[i] == "{":
+            depth += 1
+        elif llm_output[i] == "}":
+            depth -= 1
+            if depth == 0:
+                brace_end = i
+                break
+    else:
+        return {}
+
+    block = llm_output[brace_start : brace_end + 1]
+
+    result: dict = {}
+    # Each entry: integer_key: {"rule_id": "...", "rule_description": "..."}
+    for m in re.finditer(r"(\d+)\s*:\s*\{([^}]+)\}", block):
+        idx = int(m.group(1))
+        inner = m.group(2)
+        rid_m = re.search(r'"rule_id"\s*:\s*"([^"]*)"', inner)
+        rdesc_m = re.search(r'"rule_description"\s*:\s*"([^"]*)"', inner)
+        if rid_m and rdesc_m:
+            result[idx] = {
+                "rule_id": rid_m.group(1),
+                "rule_description": rdesc_m.group(1),
+            }
+
+    return result
+
 
 def ingest_rule(
     tuples: list[tuple],

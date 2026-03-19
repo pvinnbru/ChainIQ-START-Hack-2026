@@ -2,7 +2,7 @@
   "ruleset_id": "category_rules",
   "data_hash": "4921ef9152a628150dc48adabc12ed9a212b41db347eb0caa8bd0d0ea8a26bbe",
   "is_low_confidence": false,
-  "created_at": "2026-03-19T06:47:07.010577+00:00",
+  "created_at": "2026-03-19T07:28:05.873961+00:00",
   "sorted_actions": [
     [
       "ALI",
@@ -26,7 +26,7 @@
       "60",
       ">",
       "requires_cv_review",
-      "WHEN category_l1 = Professional Services AND category_l2 = Software Development Services"
+      "WHEN category_l1 = \"Professional Services\" AND category_l2 = \"Software Development Services\""
     ],
     [
       "ALI",
@@ -37,28 +37,12 @@
       "WHEN category_l2 = \"Reception and Lounge Furniture\""
     ],
     [
-      "ALI",
-      "budget",
-      "250000",
-      ">=",
-      "requires_security_review",
-      "WHEN currency = EUR OR currency = CHF AND category_l1 = IT AND category_l2 = Managed Cloud Platform Services"
-    ],
-    [
       "OSLM",
-      "data_residency_supported",
       "data_residency_constraint",
+      "data_residency_supported",
       "AND",
       "rank",
-      "WHEN category_l1 = IT AND category_l2 = Cloud Compute"
-    ],
-    [
-      "ALI",
-      "budget",
-      "75000",
-      "<=",
-      "fast_track_eligible",
-      "WHEN currency = EUR OR currency = CHF AND category_l1 = IT AND category_l2 = Replacement / Break-Fix Pool Devices"
+      "WHEN category_l1 = \"IT\" AND category_l2 = \"Cloud Compute\""
     ],
     [
       "ALI",
@@ -66,7 +50,7 @@
       "50",
       ">",
       "requires_engineering_review",
-      "WHEN category_l1 = IT AND category_l2 = Mobile Workstations"
+      "WHEN category_l1 = \"IT\" AND category_l2 = \"Mobile Workstations\""
     ],
     [
       "ALI",
@@ -74,7 +58,37 @@
       "100000",
       ">=",
       "min_supplier_quotes",
-      "WHEN currency = EUR OR currency = CHF AND category_l1 = IT AND category_l2 = Laptops"
+      "WHEN currency = EUR OR currency = CHF"
     ]
-  ]
+  ],
+  "attribution": {
+    "0": {
+      "rule_id": "CR-010",
+      "rule_description": "Enforces brand-safety review for influencer campaigns in the Marketing category"
+    },
+    "1": {
+      "rule_id": "CR-008",
+      "rule_description": "Cybersecurity advisory suppliers must demonstrate relevant certifications or equivalent references"
+    },
+    "2": {
+      "rule_id": "CR-007",
+      "rule_description": "Enforces that named consultant CVs or equivalent capability profiles are required for Software Development Services above 60 consulting days"
+    },
+    "3": {
+      "rule_id": "CR-006",
+      "rule_description": "Reception and lounge projects require business design sign-off before award"
+    },
+    "4": {
+      "rule_id": "CR-004",
+      "rule_description": "Ensures suppliers are evaluated only if they support data residency requirements for IT/Cloud Compute requests"
+    },
+    "5": {
+      "rule_id": "CR-002",
+      "rule_description": "Enforces compatibility review for mobile workstation requests above 50 units in IT category"
+    },
+    "6": {
+      "rule_id": "CR-001",
+      "rule_description": "At least three compliant supplier options must be compared above EUR/CHF 100000"
+    }
+  }
 }

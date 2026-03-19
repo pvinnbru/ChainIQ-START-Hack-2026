@@ -1,0 +1,305 @@
+REQUEST: REQ-000269
+Timestamp: 2026-03-19T07:32:20.951693+00:00
+Context: {'category_l1': 'IT', 'category_l2': 'Laptops', 'budget': 12495000, 'currency': 'USD', 'quantity': 10500, 'amount_unit': 'units', 'delivery_country': 'AU', 'days_until_required': 0, 'preferred_supplier_mentioned': 'Insight Technology Group', 'incumbent_supplier': None, 'data_residency_constraint': False, 'esg_requirement': False}
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: does not serve delivery country 'AU']
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Mobile Workstations  [EXCLUDED: category_l2 mismatch ('Mobile Workstations' != 'Laptops')]
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Monitors  [EXCLUDED: category_l2 mismatch ('Monitors' != 'Laptops')]
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Docking Stations  [EXCLUDED: category_l2 mismatch ('Docking Stations' != 'Laptops')]
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Replacement / Break-Fix Pool Devices  [EXCLUDED: category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Laptops')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Laptops  [EXCLUDED: does not serve delivery country 'AU']
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Mobile Workstations  [EXCLUDED: category_l2 mismatch ('Mobile Workstations' != 'Laptops')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Desktop Workstations  [EXCLUDED: category_l2 mismatch ('Desktop Workstations' != 'Laptops')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Monitors  [EXCLUDED: category_l2 mismatch ('Monitors' != 'Laptops')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Docking Stations  [EXCLUDED: category_l2 mismatch ('Docking Stations' != 'Laptops')]
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Laptops  [EXCLUDED: does not serve delivery country 'AU']
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Desktop Workstations  [EXCLUDED: category_l2 mismatch ('Desktop Workstations' != 'Laptops')]
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Tablets  [EXCLUDED: category_l2 mismatch ('Tablets' != 'Laptops')]
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Accessories Bundles  [EXCLUDED: category_l2 mismatch ('Accessories Bundles' != 'Laptops')]
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Laptops  [EXCLUDED: does not serve delivery country 'AU']
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Smartphones  [EXCLUDED: category_l2 mismatch ('Smartphones' != 'Laptops')]
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Tablets  [EXCLUDED: category_l2 mismatch ('Tablets' != 'Laptops')]
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Accessories Bundles  [EXCLUDED: category_l2 mismatch ('Accessories Bundles' != 'Laptops')]
+
+SUPPLIER: Samsung Knox Devices (SUP-0005) — Smartphones  [EXCLUDED: category_l2 mismatch ('Smartphones' != 'Laptops')]
+
+SUPPLIER: Samsung Knox Devices (SUP-0005) — Tablets  [EXCLUDED: category_l2 mismatch ('Tablets' != 'Laptops')]
+
+SUPPLIER: Samsung Knox Devices (SUP-0005) — Rugged Devices  [EXCLUDED: category_l2 mismatch ('Rugged Devices' != 'Laptops')]
+
+SUPPLIER: Panasonic Toughbook Europe (SUP-0006) — Rugged Devices  [EXCLUDED: category_l2 mismatch ('Rugged Devices' != 'Laptops')]
+
+SUPPLIER: Panasonic Toughbook Europe (SUP-0006) — Replacement / Break-Fix Pool Devices  [EXCLUDED: category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Laptops')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Laptops  [EXCLUDED: does not serve delivery country 'AU']
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Monitors  [EXCLUDED: category_l2 mismatch ('Monitors' != 'Laptops')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Docking Stations  [EXCLUDED: category_l2 mismatch ('Docking Stations' != 'Laptops')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Accessories Bundles  [EXCLUDED: category_l2 mismatch ('Accessories Bundles' != 'Laptops')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Replacement / Break-Fix Pool Devices  [EXCLUDED: category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Laptops')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Laptops  [EXCLUDED: does not serve delivery country 'AU']
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Mobile Workstations  [EXCLUDED: category_l2 mismatch ('Mobile Workstations' != 'Laptops')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Desktop Workstations  [EXCLUDED: category_l2 mismatch ('Desktop Workstations' != 'Laptops')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Monitors  [EXCLUDED: category_l2 mismatch ('Monitors' != 'Laptops')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Docking Stations  [EXCLUDED: category_l2 mismatch ('Docking Stations' != 'Laptops')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Accessories Bundles  [EXCLUDED: category_l2 mismatch ('Accessories Bundles' != 'Laptops')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Compute  [EXCLUDED: category_l2 mismatch ('Cloud Compute' != 'Laptops')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Storage  [EXCLUDED: category_l2 mismatch ('Cloud Storage' != 'Laptops')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Networking  [EXCLUDED: category_l2 mismatch ('Cloud Networking' != 'Laptops')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Managed Cloud Platform Services  [EXCLUDED: category_l2 mismatch ('Managed Cloud Platform Services' != 'Laptops')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Security Services  [EXCLUDED: category_l2 mismatch ('Cloud Security Services' != 'Laptops')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Compute  [EXCLUDED: category_l2 mismatch ('Cloud Compute' != 'Laptops')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Storage  [EXCLUDED: category_l2 mismatch ('Cloud Storage' != 'Laptops')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Networking  [EXCLUDED: category_l2 mismatch ('Cloud Networking' != 'Laptops')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Managed Cloud Platform Services  [EXCLUDED: category_l2 mismatch ('Managed Cloud Platform Services' != 'Laptops')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Security Services  [EXCLUDED: category_l2 mismatch ('Cloud Security Services' != 'Laptops')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Compute  [EXCLUDED: category_l2 mismatch ('Cloud Compute' != 'Laptops')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Storage  [EXCLUDED: category_l2 mismatch ('Cloud Storage' != 'Laptops')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Networking  [EXCLUDED: category_l2 mismatch ('Cloud Networking' != 'Laptops')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Managed Cloud Platform Services  [EXCLUDED: category_l2 mismatch ('Managed Cloud Platform Services' != 'Laptops')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Security Services  [EXCLUDED: category_l2 mismatch ('Cloud Security Services' != 'Laptops')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Cloud Compute  [EXCLUDED: category_l2 mismatch ('Cloud Compute' != 'Laptops')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Cloud Storage  [EXCLUDED: category_l2 mismatch ('Cloud Storage' != 'Laptops')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Cloud Networking  [EXCLUDED: category_l2 mismatch ('Cloud Networking' != 'Laptops')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Managed Cloud Platform Services  [EXCLUDED: category_l2 mismatch ('Managed Cloud Platform Services' != 'Laptops')]
+
+SUPPLIER: Swiss Sovereign Cloud (SUP-0014) — Cloud Compute  [EXCLUDED: category_l2 mismatch ('Cloud Compute' != 'Laptops')]
+
+SUPPLIER: Swiss Sovereign Cloud (SUP-0014) — Cloud Storage  [EXCLUDED: category_l2 mismatch ('Cloud Storage' != 'Laptops')]
+
+SUPPLIER: Swiss Sovereign Cloud (SUP-0014) — Cloud Security Services  [EXCLUDED: category_l2 mismatch ('Cloud Security Services' != 'Laptops')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Herman Miller Contract (SUP-0022) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Herman Miller Contract (SUP-0022) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Herman Miller Contract (SUP-0022) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Bene Office Solutions (SUP-0024) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Bene Office Solutions (SUP-0024) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Bene Office Solutions (SUP-0024) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Thoughtworks Europe (SUP-0032) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Thoughtworks Europe (SUP-0032) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Thoughtworks Europe (SUP-0032) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Deloitte Technology Advisory (SUP-0033) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Deloitte Technology Advisory (SUP-0033) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Deloitte Technology Advisory (SUP-0033) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: EPAM Delivery Services (SUP-0034) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: EPAM Delivery Services (SUP-0034) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Visium Data Engineering (SUP-0035) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Visium Data Engineering (SUP-0035) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Search Engine Marketing (SEM)  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Social Media Advertising  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Content Production Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Marketing Analytics Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Influencer Campaign Management  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Search Engine Marketing (SEM)  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Social Media Advertising  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Content Production Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Marketing Analytics Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: DEPT Agency (SUP-0042) — Search Engine Marketing (SEM)  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: DEPT Agency (SUP-0042) — Social Media Advertising  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: DEPT Agency (SUP-0042) — Marketing Analytics Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Monks Europe (SUP-0043) — Content Production Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Monks Europe (SUP-0043) — Social Media Advertising  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Monks Europe (SUP-0043) — Influencer Campaign Management  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Artefact Analytics (SUP-0044) — Marketing Analytics Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Artefact Analytics (SUP-0044) — Search Engine Marketing (SEM)  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Boutique Creator Network (SUP-0045) — Influencer Campaign Management  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Boutique Creator Network (SUP-0045) — Content Production Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Laptops  [EXCLUDED: no matching pricing tier for this region/quantity]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Monitors  [EXCLUDED: category_l2 mismatch ('Monitors' != 'Laptops')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Docking Stations  [EXCLUDED: category_l2 mismatch ('Docking Stations' != 'Laptops')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Accessories Bundles  [EXCLUDED: category_l2 mismatch ('Accessories Bundles' != 'Laptops')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Desktop Workstations  [EXCLUDED: category_l2 mismatch ('Desktop Workstations' != 'Laptops')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Cloud Compute  [EXCLUDED: category_l2 mismatch ('Cloud Compute' != 'Laptops')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Cloud Storage  [EXCLUDED: category_l2 mismatch ('Cloud Storage' != 'Laptops')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Cloud Security Services  [EXCLUDED: category_l2 mismatch ('Cloud Security Services' != 'Laptops')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Managed Cloud Platform Services  [EXCLUDED: category_l2 mismatch ('Managed Cloud Platform Services' != 'Laptops')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Laptops  [EXCLUDED: does not serve delivery country 'AU']
+
+SUPPLIER: CDW Americas (SUP-0016) — Desktop Workstations  [EXCLUDED: category_l2 mismatch ('Desktop Workstations' != 'Laptops')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Mobile Workstations  [EXCLUDED: category_l2 mismatch ('Mobile Workstations' != 'Laptops')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Tablets  [EXCLUDED: category_l2 mismatch ('Tablets' != 'Laptops')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Accessories Bundles  [EXCLUDED: category_l2 mismatch ('Accessories Bundles' != 'Laptops')]
+
+SUPPLIER: Alibaba Cloud International (SUP-0017) — Cloud Compute  [EXCLUDED: category_l2 mismatch ('Cloud Compute' != 'Laptops')]
+
+SUPPLIER: Alibaba Cloud International (SUP-0017) — Cloud Storage  [EXCLUDED: category_l2 mismatch ('Cloud Storage' != 'Laptops')]
+
+SUPPLIER: Alibaba Cloud International (SUP-0017) — Cloud Networking  [EXCLUDED: category_l2 mismatch ('Cloud Networking' != 'Laptops')]
+
+SUPPLIER: Steelcase Americas (SUP-0025) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Steelcase Americas (SUP-0025) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Steelcase Americas (SUP-0025) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Haworth International (SUP-0026) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Haworth International (SUP-0026) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Haworth International (SUP-0026) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Haworth International (SUP-0026) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'IT')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'IT')]
+
+SUPPLIER: Dentsu International (SUP-0046) — Search Engine Marketing (SEM)  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Dentsu International (SUP-0046) — Social Media Advertising  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Dentsu International (SUP-0046) — Marketing Analytics Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Havas Group Americas (SUP-0047) — Social Media Advertising  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Havas Group Americas (SUP-0047) — Content Production Services  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]
+
+SUPPLIER: Havas Group Americas (SUP-0047) — Influencer Campaign Management  [EXCLUDED: category_l1 mismatch ('Marketing' != 'IT')]

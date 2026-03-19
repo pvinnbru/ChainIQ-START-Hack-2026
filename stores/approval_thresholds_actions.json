@@ -2,7 +2,7 @@
   "ruleset_id": "approval_thresholds",
   "data_hash": "4921ef9152a628150dc48adabc12ed9a212b41db347eb0caa8bd0d0ea8a26bbe",
   "is_low_confidence": false,
-  "created_at": "2026-03-19T06:46:20.614874+00:00",
+  "created_at": "2026-03-19T07:27:33.142189+00:00",
   "sorted_actions": [
     [
       "ALI",
@@ -10,7 +10,7 @@
       "True",
       "=",
       "escalate_to_cpo",
-      "WHEN budget >= 5400000 AND currency = USD"
+      "WHEN budget > 5400000 AND currency = USD"
     ],
     [
       "ALI",
@@ -18,15 +18,7 @@
       "3",
       "=",
       "min_supplier_quotes",
-      "WHEN budget >= 540000 AND currency = USD"
-    ],
-    [
-      "ALI",
-      "budget",
-      "5400000",
-      ">=",
-      "min_supplier_quotes",
-      "WHEN currency = USD"
+      "WHEN budget > 5400000 AND currency = USD"
     ],
     [
       "ALI",
@@ -34,7 +26,7 @@
       "True",
       "=",
       "escalate_to_head_of_strategic_sourcing",
-      "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD"
+      "WHEN budget > 540000 AND budget <= 5400000 AND currency = USD"
     ],
     [
       "ALI",
@@ -42,23 +34,7 @@
       "3",
       "=",
       "min_supplier_quotes",
-      "WHEN budget >= 540000 AND budget <= 5400000 AND currency = USD"
-    ],
-    [
-      "ALI",
-      "budget",
-      "5400000",
-      "<=",
-      "min_supplier_quotes",
-      "WHEN currency = USD"
-    ],
-    [
-      "ALI",
-      "budget",
-      "540000",
-      ">=",
-      "min_supplier_quotes",
-      "WHEN currency = USD"
+      "WHEN budget > 540000 AND budget <= 5400000 AND currency = USD"
     ],
     [
       "ALI",
@@ -66,23 +42,15 @@
       "True",
       "=",
       "escalate_to_head_of_category",
-      "WHEN budget >= 108000 AND budget <= 540000 AND currency = USD"
+      "WHEN budget > 108000 AND budget <= 540000 AND currency = USD"
     ],
     [
       "ALI",
-      "budget",
-      "540000",
-      "<=",
+      "_",
+      "3",
+      "=",
       "min_supplier_quotes",
-      "WHEN currency = USD"
-    ],
-    [
-      "ALI",
-      "budget",
-      "108000",
-      ">=",
-      "min_supplier_quotes",
-      "WHEN currency = USD"
+      "WHEN budget > 108000 AND budget <= 540000 AND currency = USD"
     ],
     [
       "ALI",
@@ -90,23 +58,15 @@
       "True",
       "=",
       "escalate_to_procurement_manager",
-      "WHEN budget >= 27000 AND budget <= 108000 AND currency = USD"
+      "WHEN budget > 27000 AND budget <= 108000 AND currency = USD"
     ],
     [
       "ALI",
-      "budget",
-      "108000",
-      "<=",
+      "_",
+      "2",
+      "=",
       "min_supplier_quotes",
-      "WHEN currency = USD"
-    ],
-    [
-      "ALI",
-      "budget",
-      "27000",
-      ">=",
-      "min_supplier_quotes",
-      "WHEN currency = USD"
+      "WHEN budget > 27000 AND budget <= 108000 AND currency = USD"
     ],
     [
       "ALI",
@@ -122,15 +82,15 @@
       "True",
       "=",
       "escalate_to_cpo",
-      "WHEN budget >= 5000000 AND currency = CHF"
+      "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF"
     ],
     [
       "ALI",
-      "budget",
-      "5000000",
-      ">=",
+      "_",
+      "3",
+      "=",
       "min_supplier_quotes",
-      "WHEN currency = CHF"
+      "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF"
     ],
     [
       "ALI",
@@ -142,11 +102,11 @@
     ],
     [
       "ALI",
-      "budget",
-      "500000",
-      ">=",
+      "_",
+      "3",
+      "=",
       "min_supplier_quotes",
-      "WHEN budget <= 4999999.99 AND currency = CHF"
+      "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF"
     ],
     [
       "ALI",
@@ -158,19 +118,11 @@
     ],
     [
       "ALI",
-      "budget",
-      "499999.99",
-      "<=",
+      "_",
+      "3",
+      "=",
       "min_supplier_quotes",
-      "WHEN currency = CHF"
-    ],
-    [
-      "ALI",
-      "budget",
-      "100000",
-      ">=",
-      "min_supplier_quotes",
-      "WHEN currency = CHF"
+      "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF"
     ],
     [
       "ALI",
@@ -182,27 +134,19 @@
     ],
     [
       "ALI",
-      "budget",
-      "99999.99",
-      "<=",
+      "_",
+      "2",
+      "=",
       "min_supplier_quotes",
-      "WHEN currency = CHF"
+      "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF"
     ],
     [
       "ALI",
-      "budget",
-      "25000",
-      ">=",
+      "_",
+      "1",
+      "=",
       "min_supplier_quotes",
-      "WHEN currency = CHF"
-    ],
-    [
-      "ALI",
-      "budget",
-      "24999.99",
-      "<=",
-      "min_supplier_quotes",
-      "WHEN budget >= 0 AND currency = CHF"
+      "WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF"
     ],
     [
       "ALI",
@@ -210,15 +154,15 @@
       "True",
       "=",
       "escalate_to_cpo",
-      "WHEN budget >= 5000000 AND currency = EUR"
+      "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR"
     ],
     [
       "ALI",
-      "budget",
-      "5000000",
-      ">=",
+      "_",
+      "3",
+      "=",
       "min_supplier_quotes",
-      "WHEN currency = EUR"
+      "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR"
     ],
     [
       "ALI",
@@ -230,19 +174,11 @@
     ],
     [
       "ALI",
-      "budget",
-      "4999999.99",
-      "<=",
+      "_",
+      "3",
+      "=",
       "min_supplier_quotes",
-      "WHEN currency = EUR"
-    ],
-    [
-      "ALI",
-      "budget",
-      "500000",
-      ">=",
-      "min_supplier_quotes",
-      "WHEN currency = EUR"
+      "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR"
     ],
     [
       "ALI",
@@ -254,19 +190,11 @@
     ],
     [
       "ALI",
-      "budget",
-      "499999.99",
-      "<=",
+      "_",
+      "3",
+      "=",
       "min_supplier_quotes",
-      "WHEN currency = EUR"
-    ],
-    [
-      "ALI",
-      "budget",
-      "100000",
-      ">=",
-      "min_supplier_quotes",
-      "WHEN currency = EUR"
+      "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR"
     ],
     [
       "ALI",
@@ -278,27 +206,113 @@
     ],
     [
       "ALI",
-      "budget",
-      "99999.99",
-      "<=",
+      "_",
+      "2",
+      "=",
       "min_supplier_quotes",
-      "WHEN currency = EUR"
+      "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR"
     ],
     [
       "ALI",
-      "budget",
-      "25000",
-      ">=",
+      "_",
+      "1",
+      "=",
       "min_supplier_quotes",
-      "WHEN currency = EUR"
-    ],
-    [
-      "ALI",
-      "budget",
-      "24999.99",
-      "<=",
-      "min_supplier_quotes",
-      "WHEN budget >= 0 AND currency = EUR"
+      "WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR"
     ]
-  ]
+  ],
+  "attribution": {
+    "0": {
+      "rule_id": "AT-015",
+      "rule_description": "Escalate to CPO for budgets above 5,400,000 USD"
+    },
+    "1": {
+      "rule_id": "AT-015",
+      "rule_description": "Set minimum supplier quotes to 3 for budgets above 5,400,000 USD"
+    },
+    "2": {
+      "rule_id": "AT-014",
+      "rule_description": "Escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000"
+    },
+    "3": {
+      "rule_id": "AT-014",
+      "rule_description": "Set minimum supplier quotes and escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000"
+    },
+    "5": {
+      "rule_id": "AT-013",
+      "rule_description": "Set minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000"
+    },
+    "6": {
+      "rule_id": "AT-012",
+      "rule_description": "Escalate to Procurement Manager for USD budgets between 27,000 and 108,000"
+    },
+    "7": {
+      "rule_id": "AT-012",
+      "rule_description": "Set minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000"
+    },
+    "8": {
+      "rule_id": "AT-011",
+      "rule_description": "Sets minimum supplier quotes to 1 for budgets up to 27,000 USD"
+    },
+    "10": {
+      "rule_id": "AT-010",
+      "rule_description": "Set minimum supplier quotes and escalate to CPO for very high-value contracts in CHF currency"
+    },
+    "11": {
+      "rule_id": "AT-009",
+      "rule_description": "Escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency."
+    },
+    "12": {
+      "rule_id": "AT-009",
+      "rule_description": "Set minimum supplier quotes and escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency."
+    },
+    "14": {
+      "rule_id": "AT-008",
+      "rule_description": "Set minimum supplier quotes and escalation to Head of Category for mid-value thresholds in CHF currency"
+    },
+    "16": {
+      "rule_id": "AT-007",
+      "rule_description": "Set minimum supplier quotes and escalate to Procurement Manager for mid-value thresholds in CHF currency"
+    },
+    "17": {
+      "rule_id": "AT-006",
+      "rule_description": "Sets minimum supplier quotes to 1 for budgets up to 24,999.99 CHF."
+    },
+    "18": {
+      "rule_id": "AT-005",
+      "rule_description": "Escalate to CPO for approval for budgets >= 5,000,000 EUR."
+    },
+    "19": {
+      "rule_id": "AT-005",
+      "rule_description": "Set minimum supplier quotes to 3 for budgets >= 5,000,000 EUR and escalate to CPO for approval."
+    },
+    "20": {
+      "rule_id": "AT-004",
+      "rule_description": "Escalate to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR"
+    },
+    "21": {
+      "rule_id": "AT-004",
+      "rule_description": "Set minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR"
+    },
+    "22": {
+      "rule_id": "AT-003",
+      "rule_description": "Escalate to Head of Category for budgets between 100,000 and 499,999.99 EUR"
+    },
+    "23": {
+      "rule_id": "AT-003",
+      "rule_description": "Set minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR"
+    },
+    "24": {
+      "rule_id": "AT-002",
+      "rule_description": "Escalate to Procurement Manager for mid-value thresholds in EUR"
+    },
+    "25": {
+      "rule_id": "AT-002",
+      "rule_description": "Set minimum supplier quotes to 2 for mid-value thresholds in EUR"
+    },
+    "26": {
+      "rule_id": "AT-001",
+      "rule_description": "Sets the minimum number of supplier quotes required for budgets between 0 and 24,999.99 EUR."
+    }
+  }
 }

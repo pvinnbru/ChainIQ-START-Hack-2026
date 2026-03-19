@@ -1,0 +1,3194 @@
+{
+  "request_id": "REQ-000183",
+  "timestamp": "2026-03-19T07:32:20.412611+00:00",
+  "global_context_snapshot": {
+    "category_l1": "IT",
+    "category_l2": "Cloud Security Services",
+    "budget": 5120.0,
+    "currency": "CHF",
+    "quantity": 400,
+    "amount_unit": "seat_license",
+    "delivery_country": "CH",
+    "days_until_required": 0,
+    "preferred_supplier_mentioned": "Azure Enterprise",
+    "incumbent_supplier": "Swiss Sovereign Cloud",
+    "data_residency_constraint": false,
+    "esg_requirement": false
+  },
+  "supplier_logs": [
+    {
+      "supplier_id": "SUP-0001",
+      "supplier_name": "Dell Enterprise Europe",
+      "category_l2": "Laptops",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0001",
+      "supplier_name": "Dell Enterprise Europe",
+      "category_l2": "Mobile Workstations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0001",
+      "supplier_name": "Dell Enterprise Europe",
+      "category_l2": "Monitors",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0001",
+      "supplier_name": "Dell Enterprise Europe",
+      "category_l2": "Docking Stations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0001",
+      "supplier_name": "Dell Enterprise Europe",
+      "category_l2": "Replacement / Break-Fix Pool Devices",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0002",
+      "supplier_name": "HP Enterprise Devices",
+      "category_l2": "Laptops",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0002",
+      "supplier_name": "HP Enterprise Devices",
+      "category_l2": "Mobile Workstations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0002",
+      "supplier_name": "HP Enterprise Devices",
+      "category_l2": "Desktop Workstations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Desktop Workstations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0002",
+      "supplier_name": "HP Enterprise Devices",
+      "category_l2": "Monitors",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0002",
+      "supplier_name": "HP Enterprise Devices",
+      "category_l2": "Docking Stations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0003",
+      "supplier_name": "Lenovo Commercial EU",
+      "category_l2": "Laptops",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0003",
+      "supplier_name": "Lenovo Commercial EU",
+      "category_l2": "Desktop Workstations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Desktop Workstations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0003",
+      "supplier_name": "Lenovo Commercial EU",
+      "category_l2": "Tablets",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0003",
+      "supplier_name": "Lenovo Commercial EU",
+      "category_l2": "Accessories Bundles",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0004",
+      "supplier_name": "Apple Business Channel",
+      "category_l2": "Laptops",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0004",
+      "supplier_name": "Apple Business Channel",
+      "category_l2": "Smartphones",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Smartphones' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0004",
+      "supplier_name": "Apple Business Channel",
+      "category_l2": "Tablets",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0004",
+      "supplier_name": "Apple Business Channel",
+      "category_l2": "Accessories Bundles",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0005",
+      "supplier_name": "Samsung Knox Devices",
+      "category_l2": "Smartphones",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Smartphones' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0005",
+      "supplier_name": "Samsung Knox Devices",
+      "category_l2": "Tablets",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0005",
+      "supplier_name": "Samsung Knox Devices",
+      "category_l2": "Rugged Devices",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Rugged Devices' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0006",
+      "supplier_name": "Panasonic Toughbook Europe",
+      "category_l2": "Rugged Devices",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Rugged Devices' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0006",
+      "supplier_name": "Panasonic Toughbook Europe",
+      "category_l2": "Replacement / Break-Fix Pool Devices",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0007",
+      "supplier_name": "Bechtle Workplace Solutions",
+      "category_l2": "Laptops",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0007",
+      "supplier_name": "Bechtle Workplace Solutions",
+      "category_l2": "Monitors",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0007",
+      "supplier_name": "Bechtle Workplace Solutions",
+      "category_l2": "Docking Stations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0007",
+      "supplier_name": "Bechtle Workplace Solutions",
+      "category_l2": "Accessories Bundles",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0007",
+      "supplier_name": "Bechtle Workplace Solutions",
+      "category_l2": "Replacement / Break-Fix Pool Devices",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Replacement / Break-Fix Pool Devices' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0008",
+      "supplier_name": "Computacenter Devices",
+      "category_l2": "Laptops",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0008",
+      "supplier_name": "Computacenter Devices",
+      "category_l2": "Mobile Workstations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0008",
+      "supplier_name": "Computacenter Devices",
+      "category_l2": "Desktop Workstations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Desktop Workstations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0008",
+      "supplier_name": "Computacenter Devices",
+      "category_l2": "Monitors",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0008",
+      "supplier_name": "Computacenter Devices",
+      "category_l2": "Docking Stations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0008",
+      "supplier_name": "Computacenter Devices",
+      "category_l2": "Accessories Bundles",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0010",
+      "supplier_name": "Azure Enterprise",
+      "category_l2": "Cloud Compute",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0010",
+      "supplier_name": "Azure Enterprise",
+      "category_l2": "Cloud Storage",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0010",
+      "supplier_name": "Azure Enterprise",
+      "category_l2": "Cloud Networking",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0010",
+      "supplier_name": "Azure Enterprise",
+      "category_l2": "Managed Cloud Platform Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0010",
+      "supplier_name": "Azure Enterprise",
+      "category_l2": "Cloud Security Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "no matching pricing tier for this region/quantity"
+    },
+    {
+      "supplier_id": "SUP-0011",
+      "supplier_name": "AWS Enterprise EMEA",
+      "category_l2": "Cloud Compute",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0011",
+      "supplier_name": "AWS Enterprise EMEA",
+      "category_l2": "Cloud Storage",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0011",
+      "supplier_name": "AWS Enterprise EMEA",
+      "category_l2": "Cloud Networking",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0011",
+      "supplier_name": "AWS Enterprise EMEA",
+      "category_l2": "Managed Cloud Platform Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0011",
+      "supplier_name": "AWS Enterprise EMEA",
+      "category_l2": "Cloud Security Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "no matching pricing tier for this region/quantity"
+    },
+    {
+      "supplier_id": "SUP-0012",
+      "supplier_name": "Google Cloud Europe",
+      "category_l2": "Cloud Compute",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0012",
+      "supplier_name": "Google Cloud Europe",
+      "category_l2": "Cloud Storage",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0012",
+      "supplier_name": "Google Cloud Europe",
+      "category_l2": "Cloud Networking",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0012",
+      "supplier_name": "Google Cloud Europe",
+      "category_l2": "Managed Cloud Platform Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0012",
+      "supplier_name": "Google Cloud Europe",
+      "category_l2": "Cloud Security Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "no matching pricing tier for this region/quantity"
+    },
+    {
+      "supplier_id": "SUP-0013",
+      "supplier_name": "OVHcloud Enterprise",
+      "category_l2": "Cloud Compute",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0013",
+      "supplier_name": "OVHcloud Enterprise",
+      "category_l2": "Cloud Storage",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0013",
+      "supplier_name": "OVHcloud Enterprise",
+      "category_l2": "Cloud Networking",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0013",
+      "supplier_name": "OVHcloud Enterprise",
+      "category_l2": "Managed Cloud Platform Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0014",
+      "supplier_name": "Swiss Sovereign Cloud",
+      "category_l2": "Cloud Compute",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0014",
+      "supplier_name": "Swiss Sovereign Cloud",
+      "category_l2": "Cloud Storage",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0014",
+      "supplier_name": "Swiss Sovereign Cloud",
+      "category_l2": "Cloud Security Services",
+      "pricing_resolved": {
+        "unit_price": 16.2,
+        "standard_lead_time_days": 29,
+        "expedited_lead_time_days": 29,
+        "expedited_unit_price": 16.2,
+        "pricing_model": "subscription",
+        "currency": "CHF"
+      },
+      "action_logs": [
+        {
+          "action_index": 0,
+          "rule_id": "ER-001",
+          "rule_description": "Escalates to requester clarification due to missing required information.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_requester"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_requester",
+          "output_value_before": null,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 1,
+          "rule_id": "ER-002",
+          "rule_description": "Escalate to Procurement Manager when preferred supplier is restricted.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_procurement_manager"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_procurement_manager",
+          "output_value_before": null,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 2,
+          "rule_id": "ER-003",
+          "rule_description": "Escalates to Head of Strategic Sourcing when value exceeds threshold.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_head_of_strategic_sourcing"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_head_of_strategic_sourcing",
+          "output_value_before": null,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 3,
+          "rule_id": "ER-004",
+          "rule_description": "Escalates to Head of Category when no compliant supplier is found.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_head_of_category"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_head_of_category",
+          "output_value_before": null,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 4,
+          "rule_id": "ER-005",
+          "rule_description": "Escalates to Security and Compliance Review due to data residency constraint conflict.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_security_compliance"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_security_compliance",
+          "output_value_before": null,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 5,
+          "rule_id": "ER-006",
+          "rule_description": "Escalates to Sourcing Excellence Lead due to single-supplier capacity risk.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_sourcing_excellence"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_sourcing_excellence",
+          "output_value_before": null,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 6,
+          "rule_id": "ER-007",
+          "rule_description": "Escalates to Marketing Governance Lead when a brand safety review is needed.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_marketing_governance"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_marketing_governance",
+          "output_value_before": null,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 7,
+          "rule_id": "ER-008",
+          "rule_description": "Escalate to Regional Compliance Lead if supplier is not registered or sanctioned-screened in the delivery country and the currency is USD",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "currency",
+            "\"USD\"",
+            "=",
+            "escalate_to_regional_compliance",
+            "WHEN currency = \"USD\""
+          ],
+          "when_condition": "WHEN currency = \"USD\"",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "currency": "CHF",
+            "immediate": "USD"
+          },
+          "output_key": "escalate_to_regional_compliance",
+          "output_value_before": null,
+          "output_value_after": false,
+          "skipped": false
+        },
+        {
+          "action_index": 8,
+          "rule_id": "CR-001",
+          "rule_description": "At least three compliant supplier options must be compared above EUR/CHF 100000",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "budget",
+            "100000",
+            ">=",
+            "min_supplier_quotes",
+            "WHEN currency = EUR OR currency = CHF"
+          ],
+          "when_condition": "WHEN currency = EUR OR currency = CHF",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "budget": 5120.0,
+            "immediate": 100000
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": null,
+          "output_value_after": false,
+          "skipped": false
+        },
+        {
+          "action_index": 9,
+          "rule_id": "CR-002",
+          "rule_description": "Enforces compatibility review for mobile workstation requests above 50 units in IT category",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "quantity",
+            "50",
+            ">",
+            "requires_engineering_review",
+            "WHEN category_l1 = \"IT\" AND category_l2 = \"Mobile Workstations\""
+          ],
+          "when_condition": "WHEN category_l1 = \"IT\" AND category_l2 = \"Mobile Workstations\"",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "quantity": 400,
+            "immediate": 50
+          },
+          "output_key": "requires_engineering_review",
+          "output_value_before": null,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 10,
+          "rule_id": "CR-004",
+          "rule_description": "Ensures suppliers are evaluated only if they support data residency requirements for IT/Cloud Compute requests",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "data_residency_constraint",
+            "data_residency_supported",
+            "AND",
+            "rank",
+            "WHEN category_l1 = \"IT\" AND category_l2 = \"Cloud Compute\""
+          ],
+          "when_condition": "WHEN category_l1 = \"IT\" AND category_l2 = \"Cloud Compute\"",
+          "when_evaluated": true,
+          "when_passed": false,
+          "input_values": {
+            "data_residency_constraint": false,
+            "data_residency_supported": true
+          },
+          "output_key": "rank",
+          "output_value_before": null,
+          "output_value_after": null,
+          "skipped": true
+        },
+        {
+          "action_index": 11,
+          "rule_id": "CR-006",
+          "rule_description": "Reception and lounge projects require business design sign-off before award",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "category_l1",
+            "\"Facilities\"",
+            "=",
+            "requires_design_signoff",
+            "WHEN category_l2 = \"Reception and Lounge Furniture\""
+          ],
+          "when_condition": "WHEN category_l2 = \"Reception and Lounge Furniture\"",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "category_l1": "IT",
+            "immediate": "Facilities"
+          },
+          "output_key": "requires_design_signoff",
+          "output_value_before": null,
+          "output_value_after": false,
+          "skipped": false
+        },
+        {
+          "action_index": 12,
+          "rule_id": "CR-007",
+          "rule_description": "Enforces that named consultant CVs or equivalent capability profiles are required for Software Development Services above 60 consulting days",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "quantity",
+            "60",
+            ">",
+            "requires_cv_review",
+            "WHEN category_l1 = \"Professional Services\" AND category_l2 = \"Software Development Services\""
+          ],
+          "when_condition": "WHEN category_l1 = \"Professional Services\" AND category_l2 = \"Software Development Services\"",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "quantity": 400,
+            "immediate": 60
+          },
+          "output_key": "requires_cv_review",
+          "output_value_before": null,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 13,
+          "rule_id": "CR-008",
+          "rule_description": "Cybersecurity advisory suppliers must demonstrate relevant certifications or equivalent references",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "category_l1",
+            "\"Professional Services\"",
+            "=",
+            "requires_certification_check",
+            "WHEN category_l2 = \"Cybersecurity Advisory\""
+          ],
+          "when_condition": "WHEN category_l2 = \"Cybersecurity Advisory\"",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "category_l1": "IT",
+            "immediate": "Professional Services"
+          },
+          "output_key": "requires_certification_check",
+          "output_value_before": null,
+          "output_value_after": false,
+          "skipped": false
+        },
+        {
+          "action_index": 14,
+          "rule_id": "CR-010",
+          "rule_description": "Enforces brand-safety review for influencer campaigns in the Marketing category",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "category_l1",
+            "\"Marketing\"",
+            "=",
+            "requires_brand_safety_review",
+            "WHEN category_l2 = \"Influencer Campaign Management\""
+          ],
+          "when_condition": "WHEN category_l2 = \"Influencer Campaign Management\"",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "category_l1": "IT",
+            "immediate": "Marketing"
+          },
+          "output_key": "requires_brand_safety_review",
+          "output_value_before": null,
+          "output_value_after": false,
+          "skipped": false
+        },
+        {
+          "action_index": 15,
+          "rule_id": "AT-001",
+          "rule_description": "Sets the minimum number of supplier quotes required for budgets between 0 and 24,999.99 EUR.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "1",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR"
+          ],
+          "when_condition": "WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 1
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": false,
+          "output_value_after": 1,
+          "skipped": false
+        },
+        {
+          "action_index": 16,
+          "rule_id": "AT-002",
+          "rule_description": "Set minimum supplier quotes to 2 for mid-value thresholds in EUR",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "2",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR"
+          ],
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 2
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 1,
+          "output_value_after": 2,
+          "skipped": false
+        },
+        {
+          "action_index": 17,
+          "rule_id": "AT-002",
+          "rule_description": "Escalate to Procurement Manager for mid-value thresholds in EUR",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_procurement_manager",
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR"
+          ],
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_procurement_manager",
+          "output_value_before": true,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 18,
+          "rule_id": "AT-003",
+          "rule_description": "Set minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "3",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR"
+          ],
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 3
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 2,
+          "output_value_after": 3,
+          "skipped": false
+        },
+        {
+          "action_index": 19,
+          "rule_id": "AT-003",
+          "rule_description": "Escalate to Head of Category for budgets between 100,000 and 499,999.99 EUR",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_head_of_category",
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR"
+          ],
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_head_of_category",
+          "output_value_before": true,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 20,
+          "rule_id": "AT-004",
+          "rule_description": "Set minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "3",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR"
+          ],
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 3
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 3,
+          "output_value_after": 3,
+          "skipped": false
+        },
+        {
+          "action_index": 21,
+          "rule_id": "AT-004",
+          "rule_description": "Escalate to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_head_of_strategic_sourcing",
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR"
+          ],
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_head_of_strategic_sourcing",
+          "output_value_before": true,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 22,
+          "rule_id": "AT-005",
+          "rule_description": "Set minimum supplier quotes to 3 for budgets >= 5,000,000 EUR and escalate to CPO for approval.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "3",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR"
+          ],
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 3
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 3,
+          "output_value_after": 3,
+          "skipped": false
+        },
+        {
+          "action_index": 23,
+          "rule_id": "AT-005",
+          "rule_description": "Escalate to CPO for approval for budgets >= 5,000,000 EUR.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_cpo",
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR"
+          ],
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_cpo",
+          "output_value_before": null,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 24,
+          "rule_id": "AT-006",
+          "rule_description": "Sets minimum supplier quotes to 1 for budgets up to 24,999.99 CHF.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "1",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF"
+          ],
+          "when_condition": "WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 1
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 3,
+          "output_value_after": 1,
+          "skipped": false
+        },
+        {
+          "action_index": 25,
+          "rule_id": "AT-007",
+          "rule_description": "Set minimum supplier quotes and escalate to Procurement Manager for mid-value thresholds in CHF currency",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "2",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF"
+          ],
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 2
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 1,
+          "output_value_after": 2,
+          "skipped": false
+        },
+        {
+          "action_index": 26,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_procurement_manager",
+            "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF"
+          ],
+          "when_condition": "WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_procurement_manager",
+          "output_value_before": true,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 27,
+          "rule_id": "AT-008",
+          "rule_description": "Set minimum supplier quotes and escalation to Head of Category for mid-value thresholds in CHF currency",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "3",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF"
+          ],
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 3
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 2,
+          "output_value_after": 3,
+          "skipped": false
+        },
+        {
+          "action_index": 28,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_head_of_category",
+            "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF"
+          ],
+          "when_condition": "WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_head_of_category",
+          "output_value_before": true,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 29,
+          "rule_id": "AT-009",
+          "rule_description": "Set minimum supplier quotes and escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "3",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF"
+          ],
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 3
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 3,
+          "output_value_after": 3,
+          "skipped": false
+        },
+        {
+          "action_index": 30,
+          "rule_id": "AT-009",
+          "rule_description": "Escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_head_of_strategic_sourcing",
+            "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF"
+          ],
+          "when_condition": "WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_head_of_strategic_sourcing",
+          "output_value_before": true,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 31,
+          "rule_id": "AT-010",
+          "rule_description": "Set minimum supplier quotes and escalate to CPO for very high-value contracts in CHF currency",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "3",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF"
+          ],
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 3
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 3,
+          "output_value_after": 3,
+          "skipped": false
+        },
+        {
+          "action_index": 32,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_cpo",
+            "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF"
+          ],
+          "when_condition": "WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_cpo",
+          "output_value_before": true,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 33,
+          "rule_id": "AT-011",
+          "rule_description": "Sets minimum supplier quotes to 1 for budgets up to 27,000 USD",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "1",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget >= 0 AND budget <= 27000 AND currency = USD"
+          ],
+          "when_condition": "WHEN budget >= 0 AND budget <= 27000 AND currency = USD",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 1
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 3,
+          "output_value_after": 1,
+          "skipped": false
+        },
+        {
+          "action_index": 34,
+          "rule_id": "AT-012",
+          "rule_description": "Set minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "2",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget > 27000 AND budget <= 108000 AND currency = USD"
+          ],
+          "when_condition": "WHEN budget > 27000 AND budget <= 108000 AND currency = USD",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 2
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 1,
+          "output_value_after": 2,
+          "skipped": false
+        },
+        {
+          "action_index": 35,
+          "rule_id": "AT-012",
+          "rule_description": "Escalate to Procurement Manager for USD budgets between 27,000 and 108,000",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_procurement_manager",
+            "WHEN budget > 27000 AND budget <= 108000 AND currency = USD"
+          ],
+          "when_condition": "WHEN budget > 27000 AND budget <= 108000 AND currency = USD",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_procurement_manager",
+          "output_value_before": true,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 36,
+          "rule_id": "AT-013",
+          "rule_description": "Set minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "3",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget > 108000 AND budget <= 540000 AND currency = USD"
+          ],
+          "when_condition": "WHEN budget > 108000 AND budget <= 540000 AND currency = USD",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 3
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 2,
+          "output_value_after": 3,
+          "skipped": false
+        },
+        {
+          "action_index": 37,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_head_of_category",
+            "WHEN budget > 108000 AND budget <= 540000 AND currency = USD"
+          ],
+          "when_condition": "WHEN budget > 108000 AND budget <= 540000 AND currency = USD",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_head_of_category",
+          "output_value_before": true,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 38,
+          "rule_id": "AT-014",
+          "rule_description": "Set minimum supplier quotes and escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "3",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget > 540000 AND budget <= 5400000 AND currency = USD"
+          ],
+          "when_condition": "WHEN budget > 540000 AND budget <= 5400000 AND currency = USD",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 3
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 3,
+          "output_value_after": 3,
+          "skipped": false
+        },
+        {
+          "action_index": 39,
+          "rule_id": "AT-014",
+          "rule_description": "Escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_head_of_strategic_sourcing",
+            "WHEN budget > 540000 AND budget <= 5400000 AND currency = USD"
+          ],
+          "when_condition": "WHEN budget > 540000 AND budget <= 5400000 AND currency = USD",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_head_of_strategic_sourcing",
+          "output_value_before": true,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 40,
+          "rule_id": "AT-015",
+          "rule_description": "Set minimum supplier quotes to 3 for budgets above 5,400,000 USD",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "3",
+            "=",
+            "min_supplier_quotes",
+            "WHEN budget > 5400000 AND currency = USD"
+          ],
+          "when_condition": "WHEN budget > 5400000 AND currency = USD",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": 3
+          },
+          "output_key": "min_supplier_quotes",
+          "output_value_before": 3,
+          "output_value_after": 3,
+          "skipped": false
+        },
+        {
+          "action_index": 41,
+          "rule_id": "AT-015",
+          "rule_description": "Escalate to CPO for budgets above 5,400,000 USD",
+          "action_type": "ALI",
+          "action_tuple": [
+            "ALI",
+            "_",
+            "True",
+            "=",
+            "escalate_to_cpo",
+            "WHEN budget > 5400000 AND currency = USD"
+          ],
+          "when_condition": "WHEN budget > 5400000 AND currency = USD",
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "immediate": true
+          },
+          "output_key": "escalate_to_cpo",
+          "output_value_before": true,
+          "output_value_after": true,
+          "skipped": false
+        },
+        {
+          "action_index": 42,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "esg_score",
+            "_",
+            "*",
+            "_rep_esg_weighted",
+            "WHEN '0.2'"
+          ],
+          "when_condition": "WHEN '0.2'",
+          "when_evaluated": true,
+          "when_passed": true,
+          "input_values": {
+            "esg_score": 84
+          },
+          "output_key": "_rep_esg_weighted",
+          "output_value_before": null,
+          "output_value_after": 84,
+          "skipped": false
+        },
+        {
+          "action_index": 43,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "risk_score",
+            "_",
+            "-",
+            "_rep_risk_inverted",
+            "WHEN '100'"
+          ],
+          "when_condition": "WHEN '100'",
+          "when_evaluated": true,
+          "when_passed": true,
+          "input_values": {
+            "risk_score": 14
+          },
+          "output_key": "_rep_risk_inverted",
+          "output_value_before": null,
+          "output_value_after": 14,
+          "skipped": false
+        },
+        {
+          "action_index": 44,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "_rep_risk_inverted",
+            "_",
+            "*",
+            "_rep_risk_weighted",
+            "WHEN '0.3'"
+          ],
+          "when_condition": "WHEN '0.3'",
+          "when_evaluated": true,
+          "when_passed": true,
+          "input_values": {
+            "_rep_risk_inverted": 14
+          },
+          "output_key": "_rep_risk_weighted",
+          "output_value_before": null,
+          "output_value_after": 14,
+          "skipped": false
+        },
+        {
+          "action_index": 45,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "quality_score",
+            "_",
+            "*",
+            "_rep_quality_weighted",
+            "WHEN '0.5'"
+          ],
+          "when_condition": "WHEN '0.5'",
+          "when_evaluated": true,
+          "when_passed": true,
+          "input_values": {
+            "quality_score": 87
+          },
+          "output_key": "_rep_quality_weighted",
+          "output_value_before": null,
+          "output_value_after": 87,
+          "skipped": false
+        },
+        {
+          "action_index": 46,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "_rep_quality_weighted",
+            "_rep_risk_weighted",
+            "+",
+            "_rep_partial_sum"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "_rep_quality_weighted": 87,
+            "_rep_risk_weighted": 14
+          },
+          "output_key": "_rep_partial_sum",
+          "output_value_before": null,
+          "output_value_after": 101,
+          "skipped": false
+        },
+        {
+          "action_index": 47,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "_rep_partial_sum",
+            "_rep_esg_weighted",
+            "+",
+            "reputation_score"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "_rep_partial_sum": 101,
+            "_rep_esg_weighted": 84
+          },
+          "output_key": "reputation_score",
+          "output_value_before": null,
+          "output_value_after": 185,
+          "skipped": false
+        },
+        {
+          "action_index": 48,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "quantity",
+            "unit_price",
+            "*",
+            "cost_total"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "quantity": 400,
+            "unit_price": 16.2
+          },
+          "output_key": "cost_total",
+          "output_value_before": null,
+          "output_value_after": 6480.0,
+          "skipped": false
+        },
+        {
+          "action_index": 49,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "cost_total",
+            "_",
+            "+",
+            "_crs_denom",
+            "WHEN '1'"
+          ],
+          "when_condition": "WHEN '1'",
+          "when_evaluated": true,
+          "when_passed": true,
+          "input_values": {
+            "cost_total": 6480.0
+          },
+          "output_key": "_crs_denom",
+          "output_value_before": null,
+          "output_value_after": 6480.0,
+          "skipped": false
+        },
+        {
+          "action_index": 50,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "_",
+            "_crs_denom",
+            "/",
+            "_crs_raw",
+            "WHEN '10000000'"
+          ],
+          "when_condition": "WHEN '10000000'",
+          "when_evaluated": true,
+          "when_passed": true,
+          "input_values": {
+            "_crs_denom": 6480.0
+          },
+          "output_key": "_crs_raw",
+          "output_value_before": null,
+          "output_value_after": 6480.0,
+          "skipped": false
+        },
+        {
+          "action_index": 51,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "OSLM",
+          "action_tuple": [
+            "OSLM",
+            "_crs_raw",
+            "_",
+            "<=",
+            "cost_rank_score",
+            "WHEN '100'"
+          ],
+          "when_condition": "WHEN '100'",
+          "when_evaluated": true,
+          "when_passed": true,
+          "input_values": {
+            "_crs_raw": 6480.0
+          },
+          "output_key": "cost_rank_score",
+          "output_value_before": null,
+          "output_value_after": 6480.0,
+          "skipped": false
+        },
+        {
+          "action_index": 52,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "SRM",
+          "action_tuple": [
+            "SRM",
+            "cost_rank_score",
+            "_",
+            "*",
+            "_rank_weighted",
+            "WHEN '100'"
+          ],
+          "when_condition": "WHEN '100'",
+          "when_evaluated": true,
+          "when_passed": true,
+          "input_values": {
+            "cost_rank_score": 6480.0
+          },
+          "output_key": "_rank_weighted",
+          "output_value_before": null,
+          "output_value_after": 6480.0,
+          "skipped": false
+        },
+        {
+          "action_index": 53,
+          "rule_id": "UNKNOWN",
+          "rule_description": "",
+          "action_type": "SRM",
+          "action_tuple": [
+            "SRM",
+            "_rank_weighted",
+            "reputation_score",
+            "+",
+            "rank"
+          ],
+          "when_condition": null,
+          "when_evaluated": false,
+          "when_passed": true,
+          "input_values": {
+            "_rank_weighted": 6480.0,
+            "reputation_score": 185
+          },
+          "output_key": "rank",
+          "output_value_before": null,
+          "output_value_after": 6665.0,
+          "skipped": false
+        }
+      ],
+      "final_state": {
+        "category_l1": "IT",
+        "category_l2": "Cloud Security Services",
+        "budget": 5120.0,
+        "currency": "CHF",
+        "quantity": 400,
+        "amount_unit": "seat_license",
+        "delivery_country": "CH",
+        "days_until_required": 0,
+        "preferred_supplier_mentioned": "Azure Enterprise",
+        "incumbent_supplier": "Swiss Sovereign Cloud",
+        "data_residency_constraint": false,
+        "esg_requirement": false,
+        "pricing_model": "subscription",
+        "quality_score": 87,
+        "risk_score": 14,
+        "esg_score": 84,
+        "preferred_supplier": false,
+        "is_restricted": false,
+        "restriction_reason": "",
+        "contract_status": "active",
+        "data_residency_supported": true,
+        "capacity_per_month": 999999,
+        "notes": "",
+        "serves_delivery_country": true,
+        "unit_price": 16.2,
+        "standard_lead_time_days": 29,
+        "expedited_lead_time_days": 29,
+        "expedited_unit_price": 16.2,
+        "escalate_to_requester": true,
+        "escalate_to_procurement_manager": true,
+        "escalate_to_head_of_strategic_sourcing": true,
+        "escalate_to_head_of_category": true,
+        "escalate_to_security_compliance": true,
+        "escalate_to_sourcing_excellence": true,
+        "escalate_to_marketing_governance": true,
+        "escalate_to_regional_compliance": false,
+        "min_supplier_quotes": 3,
+        "requires_engineering_review": true,
+        "requires_design_signoff": false,
+        "requires_cv_review": true,
+        "requires_certification_check": false,
+        "requires_brand_safety_review": false,
+        "escalate_to_cpo": true,
+        "_rep_esg_weighted": 84,
+        "_rep_risk_inverted": 14,
+        "_rep_risk_weighted": 14,
+        "_rep_quality_weighted": 87,
+        "_rep_partial_sum": 101,
+        "reputation_score": 185,
+        "cost_total": 6480.0,
+        "_crs_denom": 6480.0,
+        "_crs_raw": 6480.0,
+        "cost_rank_score": 6480.0,
+        "_rank_weighted": 6480.0,
+        "rank": 6665.0
+      },
+      "final_cost_rank_score": 6480.0,
+      "final_reputation_score": 185,
+      "excluded": false,
+      "exclusion_reason": null
+    },
+    {
+      "supplier_id": "SUP-0020",
+      "supplier_name": "Kinnarps Workplace",
+      "category_l2": "Workstations and Desks",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0020",
+      "supplier_name": "Kinnarps Workplace",
+      "category_l2": "Office Chairs",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0020",
+      "supplier_name": "Kinnarps Workplace",
+      "category_l2": "Meeting Room Furniture",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0020",
+      "supplier_name": "Kinnarps Workplace",
+      "category_l2": "Storage Cabinets",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0020",
+      "supplier_name": "Kinnarps Workplace",
+      "category_l2": "Reception and Lounge Furniture",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0021",
+      "supplier_name": "Steelcase Europe",
+      "category_l2": "Workstations and Desks",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0021",
+      "supplier_name": "Steelcase Europe",
+      "category_l2": "Office Chairs",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0021",
+      "supplier_name": "Steelcase Europe",
+      "category_l2": "Meeting Room Furniture",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0021",
+      "supplier_name": "Steelcase Europe",
+      "category_l2": "Reception and Lounge Furniture",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0022",
+      "supplier_name": "Herman Miller Contract",
+      "category_l2": "Office Chairs",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0022",
+      "supplier_name": "Herman Miller Contract",
+      "category_l2": "Workstations and Desks",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0022",
+      "supplier_name": "Herman Miller Contract",
+      "category_l2": "Reception and Lounge Furniture",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0023",
+      "supplier_name": "IKEA Business",
+      "category_l2": "Workstations and Desks",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0023",
+      "supplier_name": "IKEA Business",
+      "category_l2": "Office Chairs",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0023",
+      "supplier_name": "IKEA Business",
+      "category_l2": "Storage Cabinets",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0023",
+      "supplier_name": "IKEA Business",
+      "category_l2": "Meeting Room Furniture",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0024",
+      "supplier_name": "Bene Office Solutions",
+      "category_l2": "Workstations and Desks",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0024",
+      "supplier_name": "Bene Office Solutions",
+      "category_l2": "Meeting Room Furniture",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0024",
+      "supplier_name": "Bene Office Solutions",
+      "category_l2": "Storage Cabinets",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0030",
+      "supplier_name": "Accenture Advisory Europe",
+      "category_l2": "Cloud Architecture Consulting",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0030",
+      "supplier_name": "Accenture Advisory Europe",
+      "category_l2": "Cybersecurity Advisory",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0030",
+      "supplier_name": "Accenture Advisory Europe",
+      "category_l2": "Data Engineering Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0030",
+      "supplier_name": "Accenture Advisory Europe",
+      "category_l2": "IT Project Management Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0031",
+      "supplier_name": "Capgemini Consulting",
+      "category_l2": "Cloud Architecture Consulting",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0031",
+      "supplier_name": "Capgemini Consulting",
+      "category_l2": "Cybersecurity Advisory",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0031",
+      "supplier_name": "Capgemini Consulting",
+      "category_l2": "Data Engineering Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0031",
+      "supplier_name": "Capgemini Consulting",
+      "category_l2": "Software Development Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0031",
+      "supplier_name": "Capgemini Consulting",
+      "category_l2": "IT Project Management Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0032",
+      "supplier_name": "Thoughtworks Europe",
+      "category_l2": "Software Development Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0032",
+      "supplier_name": "Thoughtworks Europe",
+      "category_l2": "Cloud Architecture Consulting",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0032",
+      "supplier_name": "Thoughtworks Europe",
+      "category_l2": "Data Engineering Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0033",
+      "supplier_name": "Deloitte Technology Advisory",
+      "category_l2": "Cloud Architecture Consulting",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0033",
+      "supplier_name": "Deloitte Technology Advisory",
+      "category_l2": "Cybersecurity Advisory",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0033",
+      "supplier_name": "Deloitte Technology Advisory",
+      "category_l2": "IT Project Management Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0034",
+      "supplier_name": "EPAM Delivery Services",
+      "category_l2": "Software Development Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0034",
+      "supplier_name": "EPAM Delivery Services",
+      "category_l2": "Data Engineering Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0035",
+      "supplier_name": "Visium Data Engineering",
+      "category_l2": "Data Engineering Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0035",
+      "supplier_name": "Visium Data Engineering",
+      "category_l2": "Cloud Architecture Consulting",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0040",
+      "supplier_name": "WPP Performance Media",
+      "category_l2": "Search Engine Marketing (SEM)",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0040",
+      "supplier_name": "WPP Performance Media",
+      "category_l2": "Social Media Advertising",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0040",
+      "supplier_name": "WPP Performance Media",
+      "category_l2": "Content Production Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0040",
+      "supplier_name": "WPP Performance Media",
+      "category_l2": "Marketing Analytics Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0040",
+      "supplier_name": "WPP Performance Media",
+      "category_l2": "Influencer Campaign Management",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0041",
+      "supplier_name": "Publicis Digital Europe",
+      "category_l2": "Search Engine Marketing (SEM)",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0041",
+      "supplier_name": "Publicis Digital Europe",
+      "category_l2": "Social Media Advertising",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0041",
+      "supplier_name": "Publicis Digital Europe",
+      "category_l2": "Content Production Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0041",
+      "supplier_name": "Publicis Digital Europe",
+      "category_l2": "Marketing Analytics Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0042",
+      "supplier_name": "DEPT Agency",
+      "category_l2": "Search Engine Marketing (SEM)",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0042",
+      "supplier_name": "DEPT Agency",
+      "category_l2": "Social Media Advertising",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0042",
+      "supplier_name": "DEPT Agency",
+      "category_l2": "Marketing Analytics Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0043",
+      "supplier_name": "Monks Europe",
+      "category_l2": "Content Production Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0043",
+      "supplier_name": "Monks Europe",
+      "category_l2": "Social Media Advertising",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0043",
+      "supplier_name": "Monks Europe",
+      "category_l2": "Influencer Campaign Management",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0044",
+      "supplier_name": "Artefact Analytics",
+      "category_l2": "Marketing Analytics Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0044",
+      "supplier_name": "Artefact Analytics",
+      "category_l2": "Search Engine Marketing (SEM)",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0045",
+      "supplier_name": "Boutique Creator Network",
+      "category_l2": "Influencer Campaign Management",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0045",
+      "supplier_name": "Boutique Creator Network",
+      "category_l2": "Content Production Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0009",
+      "supplier_name": "Insight Technology Group",
+      "category_l2": "Laptops",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0009",
+      "supplier_name": "Insight Technology Group",
+      "category_l2": "Monitors",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Monitors' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0009",
+      "supplier_name": "Insight Technology Group",
+      "category_l2": "Docking Stations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Docking Stations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0009",
+      "supplier_name": "Insight Technology Group",
+      "category_l2": "Accessories Bundles",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0009",
+      "supplier_name": "Insight Technology Group",
+      "category_l2": "Desktop Workstations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Desktop Workstations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0015",
+      "supplier_name": "Oracle Cloud Infrastructure",
+      "category_l2": "Cloud Compute",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0015",
+      "supplier_name": "Oracle Cloud Infrastructure",
+      "category_l2": "Cloud Storage",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0015",
+      "supplier_name": "Oracle Cloud Infrastructure",
+      "category_l2": "Cloud Security Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "does not serve delivery country 'CH'"
+    },
+    {
+      "supplier_id": "SUP-0015",
+      "supplier_name": "Oracle Cloud Infrastructure",
+      "category_l2": "Managed Cloud Platform Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Managed Cloud Platform Services' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0016",
+      "supplier_name": "CDW Americas",
+      "category_l2": "Laptops",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Laptops' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0016",
+      "supplier_name": "CDW Americas",
+      "category_l2": "Desktop Workstations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Desktop Workstations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0016",
+      "supplier_name": "CDW Americas",
+      "category_l2": "Mobile Workstations",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Mobile Workstations' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0016",
+      "supplier_name": "CDW Americas",
+      "category_l2": "Tablets",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Tablets' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0016",
+      "supplier_name": "CDW Americas",
+      "category_l2": "Accessories Bundles",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Accessories Bundles' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0017",
+      "supplier_name": "Alibaba Cloud International",
+      "category_l2": "Cloud Compute",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Compute' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0017",
+      "supplier_name": "Alibaba Cloud International",
+      "category_l2": "Cloud Storage",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Storage' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0017",
+      "supplier_name": "Alibaba Cloud International",
+      "category_l2": "Cloud Networking",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l2 mismatch ('Cloud Networking' != 'Cloud Security Services')"
+    },
+    {
+      "supplier_id": "SUP-0025",
+      "supplier_name": "Steelcase Americas",
+      "category_l2": "Workstations and Desks",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0025",
+      "supplier_name": "Steelcase Americas",
+      "category_l2": "Office Chairs",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0025",
+      "supplier_name": "Steelcase Americas",
+      "category_l2": "Meeting Room Furniture",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0026",
+      "supplier_name": "Haworth International",
+      "category_l2": "Workstations and Desks",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0026",
+      "supplier_name": "Haworth International",
+      "category_l2": "Office Chairs",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0026",
+      "supplier_name": "Haworth International",
+      "category_l2": "Storage Cabinets",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0026",
+      "supplier_name": "Haworth International",
+      "category_l2": "Reception and Lounge Furniture",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Facilities' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0038",
+      "supplier_name": "Wipro Digital Solutions",
+      "category_l2": "Software Development Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0038",
+      "supplier_name": "Wipro Digital Solutions",
+      "category_l2": "Data Engineering Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0038",
+      "supplier_name": "Wipro Digital Solutions",
+      "category_l2": "Cloud Architecture Consulting",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0038",
+      "supplier_name": "Wipro Digital Solutions",
+      "category_l2": "Cybersecurity Advisory",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0039",
+      "supplier_name": "Infosys Consulting",
+      "category_l2": "Software Development Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0039",
+      "supplier_name": "Infosys Consulting",
+      "category_l2": "Data Engineering Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0039",
+      "supplier_name": "Infosys Consulting",
+      "category_l2": "IT Project Management Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0039",
+      "supplier_name": "Infosys Consulting",
+      "category_l2": "Cloud Architecture Consulting",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Professional Services' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0046",
+      "supplier_name": "Dentsu International",
+      "category_l2": "Search Engine Marketing (SEM)",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0046",
+      "supplier_name": "Dentsu International",
+      "category_l2": "Social Media Advertising",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0046",
+      "supplier_name": "Dentsu International",
+      "category_l2": "Marketing Analytics Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0047",
+      "supplier_name": "Havas Group Americas",
+      "category_l2": "Social Media Advertising",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0047",
+      "supplier_name": "Havas Group Americas",
+      "category_l2": "Content Production Services",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    },
+    {
+      "supplier_id": "SUP-0047",
+      "supplier_name": "Havas Group Americas",
+      "category_l2": "Influencer Campaign Management",
+      "pricing_resolved": {},
+      "action_logs": [],
+      "final_state": {},
+      "final_cost_rank_score": null,
+      "final_reputation_score": null,
+      "excluded": true,
+      "exclusion_reason": "category_l1 mismatch ('Marketing' != 'IT')"
+    }
+  ],
+  "global_action_logs": []
+}

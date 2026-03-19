@@ -1,0 +1,995 @@
+REQUEST: REQ-000134
+Timestamp: 2026-03-19T07:32:20.094646+00:00
+Context: {'category_l1': 'Marketing', 'category_l2': 'Content Production Services', 'budget': 155500.88, 'currency': 'EUR', 'quantity': 2, 'amount_unit': 'project', 'delivery_country': 'BE', 'days_until_required': 0, 'preferred_supplier_mentioned': 'WPP Performance Media', 'incumbent_supplier': 'WPP Performance Media', 'data_residency_constraint': False, 'esg_requirement': False}
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Mobile Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Monitors  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Docking Stations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Dell Enterprise Europe (SUP-0001) — Replacement / Break-Fix Pool Devices  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Mobile Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Desktop Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Monitors  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: HP Enterprise Devices (SUP-0002) — Docking Stations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Desktop Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Tablets  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Lenovo Commercial EU (SUP-0003) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Smartphones  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Tablets  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Apple Business Channel (SUP-0004) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Samsung Knox Devices (SUP-0005) — Smartphones  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Samsung Knox Devices (SUP-0005) — Tablets  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Samsung Knox Devices (SUP-0005) — Rugged Devices  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Panasonic Toughbook Europe (SUP-0006) — Rugged Devices  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Panasonic Toughbook Europe (SUP-0006) — Replacement / Break-Fix Pool Devices  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Monitors  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Docking Stations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Bechtle Workplace Solutions (SUP-0007) — Replacement / Break-Fix Pool Devices  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Mobile Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Desktop Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Monitors  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Docking Stations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Computacenter Devices (SUP-0008) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Networking  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Managed Cloud Platform Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Azure Enterprise (SUP-0010) — Cloud Security Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Networking  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Managed Cloud Platform Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: AWS Enterprise EMEA (SUP-0011) — Cloud Security Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Networking  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Managed Cloud Platform Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Google Cloud Europe (SUP-0012) — Cloud Security Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Cloud Networking  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: OVHcloud Enterprise (SUP-0013) — Managed Cloud Platform Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Swiss Sovereign Cloud (SUP-0014) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Swiss Sovereign Cloud (SUP-0014) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Swiss Sovereign Cloud (SUP-0014) — Cloud Security Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Kinnarps Workplace (SUP-0020) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Europe (SUP-0021) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Herman Miller Contract (SUP-0022) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Herman Miller Contract (SUP-0022) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Herman Miller Contract (SUP-0022) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: IKEA Business (SUP-0023) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Bene Office Solutions (SUP-0024) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Bene Office Solutions (SUP-0024) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Bene Office Solutions (SUP-0024) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Accenture Advisory Europe (SUP-0030) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Capgemini Consulting (SUP-0031) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Thoughtworks Europe (SUP-0032) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Thoughtworks Europe (SUP-0032) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Thoughtworks Europe (SUP-0032) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Deloitte Technology Advisory (SUP-0033) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Deloitte Technology Advisory (SUP-0033) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Deloitte Technology Advisory (SUP-0033) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: EPAM Delivery Services (SUP-0034) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: EPAM Delivery Services (SUP-0034) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Visium Data Engineering (SUP-0035) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Visium Data Engineering (SUP-0035) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Search Engine Marketing (SEM)  [EXCLUDED: category_l2 mismatch ('Search Engine Marketing (SEM)' != 'Content Production Services')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Content Production Services
+Pricing: 112200.0 EUR x 2 units = 224400.0
+Final scores: cost_rank=224400.0, reputation=169
+
+  [RULE: ER-001] Escalates to requester clarification due to missing required information.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_requester')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_requester None → True
+
+  [RULE: ER-002] Escalate to Procurement Manager when preferred supplier is restricted.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_procurement_manager None → True
+
+  [RULE: ER-003] Escalates to Head of Strategic Sourcing when value exceeds threshold.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_head_of_strategic_sourcing None → True
+
+  [RULE: ER-004] Escalates to Head of Category when no compliant supplier is found.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_head_of_category None → True
+
+  [RULE: ER-005] Escalates to Security and Compliance Review due to data residency constraint conflict.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_security_compliance')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_security_compliance None → True
+
+  [RULE: ER-006] Escalates to Sourcing Excellence Lead due to single-supplier capacity risk.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_sourcing_excellence')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_sourcing_excellence None → True
+
+  [RULE: ER-007] Escalates to Marketing Governance Lead when a brand safety review is needed.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_marketing_governance')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_marketing_governance None → True
+
+  [RULE: ER-008] Escalate to Regional Compliance Lead if supplier is not registered or sanctioned-screened in the delivery country and the currency is USD
+    Action: ALI ('ALI', 'currency', '"USD"', '=', 'escalate_to_regional_compliance', 'WHEN currency = "USD"')
+    Inputs: currency = EUR, immediate = USD
+    WHEN: WHEN currency = "USD" → PASSED
+    Result: escalate_to_regional_compliance None → False
+
+  [RULE: CR-001] At least three compliant supplier options must be compared above EUR/CHF 100000
+    Action: ALI ('ALI', 'budget', '100000', '>=', 'min_supplier_quotes', 'WHEN currency = EUR OR currency = CHF')
+    Inputs: budget = 155500.88, immediate = 100000
+    WHEN: WHEN currency = EUR OR currency = CHF → PASSED
+    Result: min_supplier_quotes None → True
+
+  [RULE: CR-002] Enforces compatibility review for mobile workstation requests above 50 units in IT category
+    Action: ALI ('ALI', 'quantity', '50', '>', 'requires_engineering_review', 'WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations"')
+    Inputs: quantity = 2, immediate = 50
+    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations" → PASSED
+    Result: requires_engineering_review None → False
+
+  [RULE: CR-004] Ensures suppliers are evaluated only if they support data residency requirements for IT/Cloud Compute requests
+    Action: OSLM ('OSLM', 'data_residency_constraint', 'data_residency_supported', 'AND', 'rank', 'WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute"')
+    Inputs: data_residency_constraint = False, data_residency_supported = True
+    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute" → FAILED
+    Result: rank [SKIPPED]
+
+  [RULE: CR-006] Reception and lounge projects require business design sign-off before award
+    Action: ALI ('ALI', 'category_l1', '"Facilities"', '=', 'requires_design_signoff', 'WHEN category_l2 = "Reception and Lounge Furniture"')
+    Inputs: category_l1 = Marketing, immediate = Facilities
+    WHEN: WHEN category_l2 = "Reception and Lounge Furniture" → PASSED
+    Result: requires_design_signoff None → False
+
+  [RULE: CR-007] Enforces that named consultant CVs or equivalent capability profiles are required for Software Development Services above 60 consulting days
+    Action: ALI ('ALI', 'quantity', '60', '>', 'requires_cv_review', 'WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services"')
+    Inputs: quantity = 2, immediate = 60
+    WHEN: WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services" → PASSED
+    Result: requires_cv_review None → False
+
+  [RULE: CR-008] Cybersecurity advisory suppliers must demonstrate relevant certifications or equivalent references
+    Action: ALI ('ALI', 'category_l1', '"Professional Services"', '=', 'requires_certification_check', 'WHEN category_l2 = "Cybersecurity Advisory"')
+    Inputs: category_l1 = Marketing, immediate = Professional Services
+    WHEN: WHEN category_l2 = "Cybersecurity Advisory" → PASSED
+    Result: requires_certification_check None → False
+
+  [RULE: CR-010] Enforces brand-safety review for influencer campaigns in the Marketing category
+    Action: ALI ('ALI', 'category_l1', '"Marketing"', '=', 'requires_brand_safety_review', 'WHEN category_l2 = "Influencer Campaign Management"')
+    Inputs: category_l1 = Marketing, immediate = Marketing
+    WHEN: WHEN category_l2 = "Influencer Campaign Management" → PASSED
+    Result: requires_brand_safety_review None → True
+
+  [RULE: AT-001] Sets the minimum number of supplier quotes required for budgets between 0 and 24,999.99 EUR.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes True → 1
+
+  [RULE: AT-002] Set minimum supplier quotes to 2 for mid-value thresholds in EUR
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+    Inputs: immediate = 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 1 → 2
+
+  [RULE: AT-002] Escalate to Procurement Manager for mid-value thresholds in EUR
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
+    Result: escalate_to_procurement_manager True → True
+
+  [RULE: AT-003] Set minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 2 → 3
+
+  [RULE: AT-003] Escalate to Head of Category for budgets between 100,000 and 499,999.99 EUR
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
+    Result: escalate_to_head_of_category True → True
+
+  [RULE: AT-004] Set minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-004] Escalate to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
+    Result: escalate_to_head_of_strategic_sourcing True → True
+
+  [RULE: AT-005] Set minimum supplier quotes to 3 for budgets >= 5,000,000 EUR and escalate to CPO for approval.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-005] Escalate to CPO for approval for budgets >= 5,000,000 EUR.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
+    Result: escalate_to_cpo None → True
+
+  [RULE: AT-006] Sets minimum supplier quotes to 1 for budgets up to 24,999.99 CHF.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 3 → 1
+
+  [RULE: AT-007] Set minimum supplier quotes and escalate to Procurement Manager for mid-value thresholds in CHF currency
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF')
+    Inputs: immediate = 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 1 → 2
+
+  [RULE: AT-008] Set minimum supplier quotes and escalation to Head of Category for mid-value thresholds in CHF currency
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 2 → 3
+
+  [RULE: AT-009] Set minimum supplier quotes and escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-009] Escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
+    Result: escalate_to_head_of_strategic_sourcing True → True
+
+  [RULE: AT-010] Set minimum supplier quotes and escalate to CPO for very high-value contracts in CHF currency
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-011] Sets minimum supplier quotes to 1 for budgets up to 27,000 USD
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 27000 AND currency = USD')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 3 → 1
+
+  [RULE: AT-012] Set minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
+    Inputs: immediate = 2
+    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 1 → 2
+
+  [RULE: AT-012] Escalate to Procurement Manager for USD budgets between 27,000 and 108,000
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
+    Inputs: immediate = True
+    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
+    Result: escalate_to_procurement_manager True → True
+
+  [RULE: AT-013] Set minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 108000 AND budget <= 540000 AND currency = USD')
+    Inputs: immediate = 3
+    WHEN: WHEN budget > 108000 AND budget <= 540000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 2 → 3
+
+  [RULE: AT-014] Set minimum supplier quotes and escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
+    Inputs: immediate = 3
+    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-014] Escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
+    Inputs: immediate = True
+    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
+    Result: escalate_to_head_of_strategic_sourcing True → True
+
+  [RULE: AT-015] Set minimum supplier quotes to 3 for budgets above 5,400,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 5400000 AND currency = USD')
+    Inputs: immediate = 3
+    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-015] Escalate to CPO for budgets above 5,400,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget > 5400000 AND currency = USD')
+    Inputs: immediate = True
+    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
+    Result: escalate_to_cpo True → True
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Marketing Analytics Services  [EXCLUDED: category_l2 mismatch ('Marketing Analytics Services' != 'Content Production Services')]
+
+SUPPLIER: WPP Performance Media (SUP-0040) — Influencer Campaign Management  [EXCLUDED: category_l2 mismatch ('Influencer Campaign Management' != 'Content Production Services')]
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Search Engine Marketing (SEM)  [EXCLUDED: category_l2 mismatch ('Search Engine Marketing (SEM)' != 'Content Production Services')]
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Content Production Services
+Pricing: 113300.0 EUR x 2 units = 226600.0
+Final scores: cost_rank=226600.0, reputation=168
+
+  [RULE: ER-001] Escalates to requester clarification due to missing required information.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_requester')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_requester None → True
+
+  [RULE: ER-002] Escalate to Procurement Manager when preferred supplier is restricted.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_procurement_manager None → True
+
+  [RULE: ER-003] Escalates to Head of Strategic Sourcing when value exceeds threshold.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_head_of_strategic_sourcing None → True
+
+  [RULE: ER-004] Escalates to Head of Category when no compliant supplier is found.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_head_of_category None → True
+
+  [RULE: ER-005] Escalates to Security and Compliance Review due to data residency constraint conflict.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_security_compliance')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_security_compliance None → True
+
+  [RULE: ER-006] Escalates to Sourcing Excellence Lead due to single-supplier capacity risk.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_sourcing_excellence')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_sourcing_excellence None → True
+
+  [RULE: ER-007] Escalates to Marketing Governance Lead when a brand safety review is needed.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_marketing_governance')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_marketing_governance None → True
+
+  [RULE: ER-008] Escalate to Regional Compliance Lead if supplier is not registered or sanctioned-screened in the delivery country and the currency is USD
+    Action: ALI ('ALI', 'currency', '"USD"', '=', 'escalate_to_regional_compliance', 'WHEN currency = "USD"')
+    Inputs: currency = EUR, immediate = USD
+    WHEN: WHEN currency = "USD" → PASSED
+    Result: escalate_to_regional_compliance None → False
+
+  [RULE: CR-001] At least three compliant supplier options must be compared above EUR/CHF 100000
+    Action: ALI ('ALI', 'budget', '100000', '>=', 'min_supplier_quotes', 'WHEN currency = EUR OR currency = CHF')
+    Inputs: budget = 155500.88, immediate = 100000
+    WHEN: WHEN currency = EUR OR currency = CHF → PASSED
+    Result: min_supplier_quotes None → True
+
+  [RULE: CR-002] Enforces compatibility review for mobile workstation requests above 50 units in IT category
+    Action: ALI ('ALI', 'quantity', '50', '>', 'requires_engineering_review', 'WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations"')
+    Inputs: quantity = 2, immediate = 50
+    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations" → PASSED
+    Result: requires_engineering_review None → False
+
+  [RULE: CR-004] Ensures suppliers are evaluated only if they support data residency requirements for IT/Cloud Compute requests
+    Action: OSLM ('OSLM', 'data_residency_constraint', 'data_residency_supported', 'AND', 'rank', 'WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute"')
+    Inputs: data_residency_constraint = False, data_residency_supported = True
+    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute" → FAILED
+    Result: rank [SKIPPED]
+
+  [RULE: CR-006] Reception and lounge projects require business design sign-off before award
+    Action: ALI ('ALI', 'category_l1', '"Facilities"', '=', 'requires_design_signoff', 'WHEN category_l2 = "Reception and Lounge Furniture"')
+    Inputs: category_l1 = Marketing, immediate = Facilities
+    WHEN: WHEN category_l2 = "Reception and Lounge Furniture" → PASSED
+    Result: requires_design_signoff None → False
+
+  [RULE: CR-007] Enforces that named consultant CVs or equivalent capability profiles are required for Software Development Services above 60 consulting days
+    Action: ALI ('ALI', 'quantity', '60', '>', 'requires_cv_review', 'WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services"')
+    Inputs: quantity = 2, immediate = 60
+    WHEN: WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services" → PASSED
+    Result: requires_cv_review None → False
+
+  [RULE: CR-008] Cybersecurity advisory suppliers must demonstrate relevant certifications or equivalent references
+    Action: ALI ('ALI', 'category_l1', '"Professional Services"', '=', 'requires_certification_check', 'WHEN category_l2 = "Cybersecurity Advisory"')
+    Inputs: category_l1 = Marketing, immediate = Professional Services
+    WHEN: WHEN category_l2 = "Cybersecurity Advisory" → PASSED
+    Result: requires_certification_check None → False
+
+  [RULE: CR-010] Enforces brand-safety review for influencer campaigns in the Marketing category
+    Action: ALI ('ALI', 'category_l1', '"Marketing"', '=', 'requires_brand_safety_review', 'WHEN category_l2 = "Influencer Campaign Management"')
+    Inputs: category_l1 = Marketing, immediate = Marketing
+    WHEN: WHEN category_l2 = "Influencer Campaign Management" → PASSED
+    Result: requires_brand_safety_review None → True
+
+  [RULE: AT-001] Sets the minimum number of supplier quotes required for budgets between 0 and 24,999.99 EUR.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes True → 1
+
+  [RULE: AT-002] Set minimum supplier quotes to 2 for mid-value thresholds in EUR
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+    Inputs: immediate = 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 1 → 2
+
+  [RULE: AT-002] Escalate to Procurement Manager for mid-value thresholds in EUR
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
+    Result: escalate_to_procurement_manager True → True
+
+  [RULE: AT-003] Set minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 2 → 3
+
+  [RULE: AT-003] Escalate to Head of Category for budgets between 100,000 and 499,999.99 EUR
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
+    Result: escalate_to_head_of_category True → True
+
+  [RULE: AT-004] Set minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-004] Escalate to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
+    Result: escalate_to_head_of_strategic_sourcing True → True
+
+  [RULE: AT-005] Set minimum supplier quotes to 3 for budgets >= 5,000,000 EUR and escalate to CPO for approval.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-005] Escalate to CPO for approval for budgets >= 5,000,000 EUR.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
+    Result: escalate_to_cpo None → True
+
+  [RULE: AT-006] Sets minimum supplier quotes to 1 for budgets up to 24,999.99 CHF.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 3 → 1
+
+  [RULE: AT-007] Set minimum supplier quotes and escalate to Procurement Manager for mid-value thresholds in CHF currency
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF')
+    Inputs: immediate = 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 1 → 2
+
+  [RULE: AT-008] Set minimum supplier quotes and escalation to Head of Category for mid-value thresholds in CHF currency
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 2 → 3
+
+  [RULE: AT-009] Set minimum supplier quotes and escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-009] Escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
+    Result: escalate_to_head_of_strategic_sourcing True → True
+
+  [RULE: AT-010] Set minimum supplier quotes and escalate to CPO for very high-value contracts in CHF currency
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-011] Sets minimum supplier quotes to 1 for budgets up to 27,000 USD
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 27000 AND currency = USD')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 3 → 1
+
+  [RULE: AT-012] Set minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
+    Inputs: immediate = 2
+    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 1 → 2
+
+  [RULE: AT-012] Escalate to Procurement Manager for USD budgets between 27,000 and 108,000
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
+    Inputs: immediate = True
+    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
+    Result: escalate_to_procurement_manager True → True
+
+  [RULE: AT-013] Set minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 108000 AND budget <= 540000 AND currency = USD')
+    Inputs: immediate = 3
+    WHEN: WHEN budget > 108000 AND budget <= 540000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 2 → 3
+
+  [RULE: AT-014] Set minimum supplier quotes and escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
+    Inputs: immediate = 3
+    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-014] Escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
+    Inputs: immediate = True
+    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
+    Result: escalate_to_head_of_strategic_sourcing True → True
+
+  [RULE: AT-015] Set minimum supplier quotes to 3 for budgets above 5,400,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 5400000 AND currency = USD')
+    Inputs: immediate = 3
+    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-015] Escalate to CPO for budgets above 5,400,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget > 5400000 AND currency = USD')
+    Inputs: immediate = True
+    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
+    Result: escalate_to_cpo True → True
+
+SUPPLIER: Publicis Digital Europe (SUP-0041) — Marketing Analytics Services  [EXCLUDED: category_l2 mismatch ('Marketing Analytics Services' != 'Content Production Services')]
+
+SUPPLIER: DEPT Agency (SUP-0042) — Search Engine Marketing (SEM)  [EXCLUDED: category_l2 mismatch ('Search Engine Marketing (SEM)' != 'Content Production Services')]
+
+SUPPLIER: DEPT Agency (SUP-0042) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: DEPT Agency (SUP-0042) — Marketing Analytics Services  [EXCLUDED: category_l2 mismatch ('Marketing Analytics Services' != 'Content Production Services')]
+
+SUPPLIER: Monks Europe (SUP-0043) — Content Production Services
+Pricing: 107800.0 EUR x 2 units = 215600.0
+Final scores: cost_rank=215600.0, reputation=170
+
+  [RULE: ER-001] Escalates to requester clarification due to missing required information.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_requester')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_requester None → True
+
+  [RULE: ER-002] Escalate to Procurement Manager when preferred supplier is restricted.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_procurement_manager None → True
+
+  [RULE: ER-003] Escalates to Head of Strategic Sourcing when value exceeds threshold.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_head_of_strategic_sourcing None → True
+
+  [RULE: ER-004] Escalates to Head of Category when no compliant supplier is found.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_head_of_category None → True
+
+  [RULE: ER-005] Escalates to Security and Compliance Review due to data residency constraint conflict.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_security_compliance')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_security_compliance None → True
+
+  [RULE: ER-006] Escalates to Sourcing Excellence Lead due to single-supplier capacity risk.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_sourcing_excellence')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_sourcing_excellence None → True
+
+  [RULE: ER-007] Escalates to Marketing Governance Lead when a brand safety review is needed.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_marketing_governance')
+    Inputs: immediate = True
+    WHEN: N/A
+    Result: escalate_to_marketing_governance None → True
+
+  [RULE: ER-008] Escalate to Regional Compliance Lead if supplier is not registered or sanctioned-screened in the delivery country and the currency is USD
+    Action: ALI ('ALI', 'currency', '"USD"', '=', 'escalate_to_regional_compliance', 'WHEN currency = "USD"')
+    Inputs: currency = EUR, immediate = USD
+    WHEN: WHEN currency = "USD" → PASSED
+    Result: escalate_to_regional_compliance None → False
+
+  [RULE: CR-001] At least three compliant supplier options must be compared above EUR/CHF 100000
+    Action: ALI ('ALI', 'budget', '100000', '>=', 'min_supplier_quotes', 'WHEN currency = EUR OR currency = CHF')
+    Inputs: budget = 155500.88, immediate = 100000
+    WHEN: WHEN currency = EUR OR currency = CHF → PASSED
+    Result: min_supplier_quotes None → True
+
+  [RULE: CR-002] Enforces compatibility review for mobile workstation requests above 50 units in IT category
+    Action: ALI ('ALI', 'quantity', '50', '>', 'requires_engineering_review', 'WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations"')
+    Inputs: quantity = 2, immediate = 50
+    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Mobile Workstations" → PASSED
+    Result: requires_engineering_review None → False
+
+  [RULE: CR-004] Ensures suppliers are evaluated only if they support data residency requirements for IT/Cloud Compute requests
+    Action: OSLM ('OSLM', 'data_residency_constraint', 'data_residency_supported', 'AND', 'rank', 'WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute"')
+    Inputs: data_residency_constraint = False, data_residency_supported = True
+    WHEN: WHEN category_l1 = "IT" AND category_l2 = "Cloud Compute" → FAILED
+    Result: rank [SKIPPED]
+
+  [RULE: CR-006] Reception and lounge projects require business design sign-off before award
+    Action: ALI ('ALI', 'category_l1', '"Facilities"', '=', 'requires_design_signoff', 'WHEN category_l2 = "Reception and Lounge Furniture"')
+    Inputs: category_l1 = Marketing, immediate = Facilities
+    WHEN: WHEN category_l2 = "Reception and Lounge Furniture" → PASSED
+    Result: requires_design_signoff None → False
+
+  [RULE: CR-007] Enforces that named consultant CVs or equivalent capability profiles are required for Software Development Services above 60 consulting days
+    Action: ALI ('ALI', 'quantity', '60', '>', 'requires_cv_review', 'WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services"')
+    Inputs: quantity = 2, immediate = 60
+    WHEN: WHEN category_l1 = "Professional Services" AND category_l2 = "Software Development Services" → PASSED
+    Result: requires_cv_review None → False
+
+  [RULE: CR-008] Cybersecurity advisory suppliers must demonstrate relevant certifications or equivalent references
+    Action: ALI ('ALI', 'category_l1', '"Professional Services"', '=', 'requires_certification_check', 'WHEN category_l2 = "Cybersecurity Advisory"')
+    Inputs: category_l1 = Marketing, immediate = Professional Services
+    WHEN: WHEN category_l2 = "Cybersecurity Advisory" → PASSED
+    Result: requires_certification_check None → False
+
+  [RULE: CR-010] Enforces brand-safety review for influencer campaigns in the Marketing category
+    Action: ALI ('ALI', 'category_l1', '"Marketing"', '=', 'requires_brand_safety_review', 'WHEN category_l2 = "Influencer Campaign Management"')
+    Inputs: category_l1 = Marketing, immediate = Marketing
+    WHEN: WHEN category_l2 = "Influencer Campaign Management" → PASSED
+    Result: requires_brand_safety_review None → True
+
+  [RULE: AT-001] Sets the minimum number of supplier quotes required for budgets between 0 and 24,999.99 EUR.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes True → 1
+
+  [RULE: AT-002] Set minimum supplier quotes to 2 for mid-value thresholds in EUR
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+    Inputs: immediate = 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 1 → 2
+
+  [RULE: AT-002] Escalate to Procurement Manager for mid-value thresholds in EUR
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = EUR → PASSED
+    Result: escalate_to_procurement_manager True → True
+
+  [RULE: AT-003] Set minimum supplier quotes to 3 for budgets between 100,000 and 499,999.99 EUR
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 2 → 3
+
+  [RULE: AT-003] Escalate to Head of Category for budgets between 100,000 and 499,999.99 EUR
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_category', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = EUR → PASSED
+    Result: escalate_to_head_of_category True → True
+
+  [RULE: AT-004] Set minimum supplier quotes to 3 for budgets between 500,000 and 4,999,999.99 EUR
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-004] Escalate to Head of Strategic Sourcing for budgets between 500,000 and 4,999,999.99 EUR
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = EUR → PASSED
+    Result: escalate_to_head_of_strategic_sourcing True → True
+
+  [RULE: AT-005] Set minimum supplier quotes to 3 for budgets >= 5,000,000 EUR and escalate to CPO for approval.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-005] Escalate to CPO for approval for budgets >= 5,000,000 EUR.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = EUR → PASSED
+    Result: escalate_to_cpo None → True
+
+  [RULE: AT-006] Sets minimum supplier quotes to 1 for budgets up to 24,999.99 CHF.
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 24999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 3 → 1
+
+  [RULE: AT-007] Set minimum supplier quotes and escalate to Procurement Manager for mid-value thresholds in CHF currency
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF')
+    Inputs: immediate = 2
+    WHEN: WHEN budget >= 25000 AND budget <= 99999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 1 → 2
+
+  [RULE: AT-008] Set minimum supplier quotes and escalation to Head of Category for mid-value thresholds in CHF currency
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 100000 AND budget <= 499999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 2 → 3
+
+  [RULE: AT-009] Set minimum supplier quotes and escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-009] Escalate to Head of Strategic Sourcing for mid-to-high value contracts in CHF currency.
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF')
+    Inputs: immediate = True
+    WHEN: WHEN budget >= 500000 AND budget <= 4999999.99 AND currency = CHF → PASSED
+    Result: escalate_to_head_of_strategic_sourcing True → True
+
+  [RULE: AT-010] Set minimum supplier quotes and escalate to CPO for very high-value contracts in CHF currency
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF')
+    Inputs: immediate = 3
+    WHEN: WHEN budget >= 5000000 AND budget <= 999999999.99 AND currency = CHF → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-011] Sets minimum supplier quotes to 1 for budgets up to 27,000 USD
+    Action: ALI ('ALI', '_', '1', '=', 'min_supplier_quotes', 'WHEN budget >= 0 AND budget <= 27000 AND currency = USD')
+    Inputs: immediate = 1
+    WHEN: WHEN budget >= 0 AND budget <= 27000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 3 → 1
+
+  [RULE: AT-012] Set minimum supplier quotes to 2 for USD budgets between 27,000 and 108,000
+    Action: ALI ('ALI', '_', '2', '=', 'min_supplier_quotes', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
+    Inputs: immediate = 2
+    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 1 → 2
+
+  [RULE: AT-012] Escalate to Procurement Manager for USD budgets between 27,000 and 108,000
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_procurement_manager', 'WHEN budget > 27000 AND budget <= 108000 AND currency = USD')
+    Inputs: immediate = True
+    WHEN: WHEN budget > 27000 AND budget <= 108000 AND currency = USD → PASSED
+    Result: escalate_to_procurement_manager True → True
+
+  [RULE: AT-013] Set minimum supplier quotes and Head of Category escalation for USD budgets between 108,000 and 540,000
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 108000 AND budget <= 540000 AND currency = USD')
+    Inputs: immediate = 3
+    WHEN: WHEN budget > 108000 AND budget <= 540000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 2 → 3
+
+  [RULE: AT-014] Set minimum supplier quotes and escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
+    Inputs: immediate = 3
+    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-014] Escalation to Head of Strategic Sourcing for USD budgets between 540,000 and 5,400,000
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_head_of_strategic_sourcing', 'WHEN budget > 540000 AND budget <= 5400000 AND currency = USD')
+    Inputs: immediate = True
+    WHEN: WHEN budget > 540000 AND budget <= 5400000 AND currency = USD → PASSED
+    Result: escalate_to_head_of_strategic_sourcing True → True
+
+  [RULE: AT-015] Set minimum supplier quotes to 3 for budgets above 5,400,000 USD
+    Action: ALI ('ALI', '_', '3', '=', 'min_supplier_quotes', 'WHEN budget > 5400000 AND currency = USD')
+    Inputs: immediate = 3
+    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
+    Result: min_supplier_quotes 3 → 3
+
+  [RULE: AT-015] Escalate to CPO for budgets above 5,400,000 USD
+    Action: ALI ('ALI', '_', 'True', '=', 'escalate_to_cpo', 'WHEN budget > 5400000 AND currency = USD')
+    Inputs: immediate = True
+    WHEN: WHEN budget > 5400000 AND currency = USD → PASSED
+    Result: escalate_to_cpo True → True
+
+SUPPLIER: Monks Europe (SUP-0043) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: Monks Europe (SUP-0043) — Influencer Campaign Management  [EXCLUDED: category_l2 mismatch ('Influencer Campaign Management' != 'Content Production Services')]
+
+SUPPLIER: Artefact Analytics (SUP-0044) — Marketing Analytics Services  [EXCLUDED: category_l2 mismatch ('Marketing Analytics Services' != 'Content Production Services')]
+
+SUPPLIER: Artefact Analytics (SUP-0044) — Search Engine Marketing (SEM)  [EXCLUDED: category_l2 mismatch ('Search Engine Marketing (SEM)' != 'Content Production Services')]
+
+SUPPLIER: Boutique Creator Network (SUP-0045) — Influencer Campaign Management  [EXCLUDED: category_l2 mismatch ('Influencer Campaign Management' != 'Content Production Services')]
+
+SUPPLIER: Boutique Creator Network (SUP-0045) — Content Production Services  [EXCLUDED: does not serve delivery country 'BE']
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Monitors  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Docking Stations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Insight Technology Group (SUP-0009) — Desktop Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Cloud Security Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Oracle Cloud Infrastructure (SUP-0015) — Managed Cloud Platform Services  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Laptops  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Desktop Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Mobile Workstations  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Tablets  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: CDW Americas (SUP-0016) — Accessories Bundles  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Alibaba Cloud International (SUP-0017) — Cloud Compute  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Alibaba Cloud International (SUP-0017) — Cloud Storage  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Alibaba Cloud International (SUP-0017) — Cloud Networking  [EXCLUDED: category_l1 mismatch ('IT' != 'Marketing')]
+
+SUPPLIER: Steelcase Americas (SUP-0025) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Americas (SUP-0025) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Steelcase Americas (SUP-0025) — Meeting Room Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Haworth International (SUP-0026) — Workstations and Desks  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Haworth International (SUP-0026) — Office Chairs  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Haworth International (SUP-0026) — Storage Cabinets  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Haworth International (SUP-0026) — Reception and Lounge Furniture  [EXCLUDED: category_l1 mismatch ('Facilities' != 'Marketing')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Wipro Digital Solutions (SUP-0038) — Cybersecurity Advisory  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — Software Development Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — Data Engineering Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — IT Project Management Services  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Infosys Consulting (SUP-0039) — Cloud Architecture Consulting  [EXCLUDED: category_l1 mismatch ('Professional Services' != 'Marketing')]
+
+SUPPLIER: Dentsu International (SUP-0046) — Search Engine Marketing (SEM)  [EXCLUDED: category_l2 mismatch ('Search Engine Marketing (SEM)' != 'Content Production Services')]
+
+SUPPLIER: Dentsu International (SUP-0046) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: Dentsu International (SUP-0046) — Marketing Analytics Services  [EXCLUDED: category_l2 mismatch ('Marketing Analytics Services' != 'Content Production Services')]
+
+SUPPLIER: Havas Group Americas (SUP-0047) — Social Media Advertising  [EXCLUDED: category_l2 mismatch ('Social Media Advertising' != 'Content Production Services')]
+
+SUPPLIER: Havas Group Americas (SUP-0047) — Content Production Services  [EXCLUDED: does not serve delivery country 'BE']
+
+SUPPLIER: Havas Group Americas (SUP-0047) — Influencer Campaign Management  [EXCLUDED: category_l2 mismatch ('Influencer Campaign Management' != 'Content Production Services')]

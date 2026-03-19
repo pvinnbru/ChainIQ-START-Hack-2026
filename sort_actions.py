@@ -80,8 +80,10 @@ def _get_write(action: tuple) -> str | None:
 
 
 def sort_actions(
-    actions: list[tuple], fix_in_keys: set[str]
-) -> tuple[list[tuple], bool]:
+    actions: list[tuple],
+    fix_in_keys: set[str],
+    attribution: dict | None = None,
+) -> tuple[list[tuple], bool, dict]:
     """
     Topologically sort *actions* by data dependencies using DFS.
 
@@ -92,12 +94,16 @@ def sort_actions(
     Back edges (which form cycles) are identified and skipped; if any are
     found, *is_low_confidence* is set to True.
 
+    The optional *attribution* dict maps original action index →
+    {rule_id, rule_description}.  After sorting, it is rekeyed so that the
+    returned dict maps new (sorted) position → {rule_id, rule_description}.
+
     Returns:
-        (sorted_actions, is_low_confidence)
+        (sorted_actions, is_low_confidence, rekeyed_attribution)
     """
     n = len(actions)
     if n == 0:
-        return [], False
+        return [], False, {}
 
     # Map each written key to its producer action index
     writes: dict[str, int] = {}
@@ -138,4 +144,13 @@ def sort_actions(
             dfs(i)
 
     sorted_actions = [actions[i] for i in reversed(post_order)]
-    return sorted_actions, is_low_confidence
+
+    # Rekey attribution dict: original index → new sorted position
+    new_attribution: dict = {}
+    if attribution:
+        rev_post = list(reversed(post_order))
+        for new_idx, old_idx in enumerate(rev_post):
+            if old_idx in attribution:
+                new_attribution[new_idx] = attribution[old_idx]
+
+    return sorted_actions, is_low_confidence, new_attribution

@@ -203,32 +203,32 @@ class TestWhenClauseGating:
     def test_oslm_executes_when_condition_is_true(self) -> None:
         actions = [("OSLM", "rank", "10", "+", "rank", "preferred_supplier = True")]
         attrs = {"rank": 50, "preferred_supplier": True}
-        state = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
+        state, _ = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
         assert state["rank"] == 60
 
     def test_oslm_skipped_when_condition_is_false(self) -> None:
         actions = [("OSLM", "rank", "10", "+", "rank", "preferred_supplier = True")]
         attrs = {"rank": 50, "preferred_supplier": False}
-        state = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
+        state, _ = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
         assert state["rank"] == 50
 
     def test_srm_executes_when_condition_is_true(self) -> None:
         actions = [("SRM", "rank", "5", "-", "rank", "risk_score >= 30")]
         attrs = {"rank": 50, "risk_score": 35}
-        state = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
+        state, _ = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
         assert state["rank"] == 45
 
     def test_srm_skipped_when_condition_is_false(self) -> None:
         actions = [("SRM", "rank", "5", "-", "rank", "risk_score >= 30")]
         attrs = {"rank": 50, "risk_score": 20}
-        state = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
+        state, _ = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
         assert state["rank"] == 50
 
     def test_al_always_executes_regardless_of_when(self) -> None:
         # AL ignores any WHEN clause — it runs unconditionally
         actions = [("AL", "quality_score", "esg_score", "+", "rank", "preferred_supplier = True")]
         attrs = {"quality_score": 80, "esg_score": 70, "preferred_supplier": False}
-        state = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
+        state, _ = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
         # AL must run even though preferred_supplier is False
         assert state["rank"] == 150
 
@@ -238,8 +238,8 @@ class TestWhenClauseGating:
         attrs_both_true = {"rank": 50, "preferred_supplier": True, "risk_score": 20}
         attrs_one_false = {"rank": 50, "preferred_supplier": True, "risk_score": 30}
 
-        s1 = evaluate_actions(actions, BASE_REQUEST, attrs_both_true, FIX_IN_KEYS)
-        s2 = evaluate_actions(actions, BASE_REQUEST, attrs_one_false, FIX_IN_KEYS)
+        s1, _ = evaluate_actions(actions, BASE_REQUEST, attrs_both_true, FIX_IN_KEYS)
+        s2, _ = evaluate_actions(actions, BASE_REQUEST, attrs_one_false, FIX_IN_KEYS)
 
         assert s1["rank"] == 70
         assert s2["rank"] == 50
@@ -249,8 +249,8 @@ class TestWhenClauseGating:
         attrs_neither = {"rank": 50, "preferred_supplier": False, "esg_score": 75}
         attrs_second = {"rank": 50, "preferred_supplier": False, "esg_score": 95}
 
-        s1 = evaluate_actions(actions, BASE_REQUEST, attrs_neither, FIX_IN_KEYS)
-        s2 = evaluate_actions(actions, BASE_REQUEST, attrs_second, FIX_IN_KEYS)
+        s1, _ = evaluate_actions(actions, BASE_REQUEST, attrs_neither, FIX_IN_KEYS)
+        s2, _ = evaluate_actions(actions, BASE_REQUEST, attrs_second, FIX_IN_KEYS)
 
         assert s1["rank"] == 50
         assert s2["rank"] == 65
@@ -262,8 +262,8 @@ class TestWhenClauseGating:
         # NOT is_restricted is False → action skipped
         attrs_restricted = {"rank": 50, "is_restricted": True}
 
-        s1 = evaluate_actions(actions, BASE_REQUEST, attrs_not_restricted, FIX_IN_KEYS)
-        s2 = evaluate_actions(actions, BASE_REQUEST, attrs_restricted, FIX_IN_KEYS)
+        s1, _ = evaluate_actions(actions, BASE_REQUEST, attrs_not_restricted, FIX_IN_KEYS)
+        s2, _ = evaluate_actions(actions, BASE_REQUEST, attrs_restricted, FIX_IN_KEYS)
 
         assert s1["rank"] == 45
         assert s2["rank"] == 50
@@ -273,7 +273,7 @@ class TestWhenClauseGating:
         # action skipped safely; rank must remain unchanged.
         actions = [("SRM", "rank", "99", "+", "rank", "budget >=")]
         attrs = {"rank": 50}
-        state = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
+        state, _ = evaluate_actions(actions, BASE_REQUEST, attrs, FIX_IN_KEYS)
         assert state["rank"] == 50
 
 
@@ -289,7 +289,7 @@ class TestRankOrdering:
             _make_supplier(supplier_id="SUP-B", cost_rank_score=80.0),
             _make_supplier(supplier_id="SUP-C", cost_rank_score=55.0),
         ]
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], suppliers, FIX_IN_KEYS
         )
         scores = [r[2].get("cost_rank_score", 0) for r in result["supplier_results"]]
@@ -300,7 +300,7 @@ class TestRankOrdering:
             _make_supplier(supplier_id="SUP-LOW", cost_rank_score=10.0),
             _make_supplier(supplier_id="SUP-HIGH", cost_rank_score=90.0),
         ]
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], suppliers, FIX_IN_KEYS
         )
         assert result["supplier_results"][0][0]["supplier_id"] == "SUP-HIGH"
@@ -319,7 +319,7 @@ class TestRankOrdering:
             supplier_id="SUP-B", cost_rank_score=70.0, preferred_supplier=False
         )
 
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, actions, [sup_a, sup_b], FIX_IN_KEYS
         )
         ids = [r[0]["supplier_id"] for r in result["supplier_results"]]
@@ -328,7 +328,7 @@ class TestRankOrdering:
     def test_empty_filtered_list_returns_empty_results(self) -> None:
         # All suppliers are in wrong category
         s = _make_supplier(category_l2="Monitors")
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], [s], FIX_IN_KEYS
         )
         assert result["supplier_results"] == []
@@ -378,22 +378,22 @@ class TestALandALI:
 
     def test_ali_addition(self) -> None:
         actions = [("ALI", "quality_score", "5", "+", "rank")]
-        state = evaluate_actions(actions, {}, {"quality_score": 80}, set())
+        state, _ = evaluate_actions(actions, {}, {"quality_score": 80}, set())
         assert state["rank"] == 85
 
     def test_ali_subtraction(self) -> None:
         actions = [("ALI", "quality_score", "10", "-", "rank")]
-        state = evaluate_actions(actions, {}, {"quality_score": 80}, set())
+        state, _ = evaluate_actions(actions, {}, {"quality_score": 80}, set())
         assert state["rank"] == 70
 
     def test_ali_multiplication(self) -> None:
         actions = [("ALI", "quality_score", "2", "*", "rank")]
-        state = evaluate_actions(actions, {}, {"quality_score": 80}, set())
+        state, _ = evaluate_actions(actions, {}, {"quality_score": 80}, set())
         assert state["rank"] == 160
 
     def test_ali_equality_check(self) -> None:
         actions = [("ALI", "currency", "EUR", "=", "is_eur")]
-        state = evaluate_actions(actions, {}, {"currency": "EUR"}, set())
+        state, _ = evaluate_actions(actions, {}, {"currency": "EUR"}, set())
         assert state["is_eur"] is True
 
     def test_ali_immediate_is_never_resolved_from_state(self) -> None:
@@ -407,59 +407,59 @@ class TestALandALI:
         """
         # AL: in_param2 is a dict key → resolves state["50"] = 999
         al_actions = [("AL", "quality_score", "50", "+", "result")]
-        al_state = evaluate_actions(
+        al_state, _ = evaluate_actions(
             al_actions, {}, {"quality_score": 80, "50": 999}, set()
         )
         assert al_state["result"] == 1079  # looked up state key "50"
 
         # ALI: in_param2 is a literal → must be integer 50, ignoring state["50"]
         ali_actions = [("ALI", "quality_score", "50", "+", "result")]
-        ali_state = evaluate_actions(
+        ali_state, _ = evaluate_actions(
             ali_actions, {}, {"quality_score": 80, "50": 999}, set()
         )
         assert ali_state["result"] == 130  # literal 50, not state["50"]
 
     def test_ali_boolean_immediate_true(self) -> None:
         actions = [("ALI", "_", "True", "=", "fast_track_eligible")]
-        state = evaluate_actions(actions, {}, {}, set())
+        state, _ = evaluate_actions(actions, {}, {}, set())
         assert state["fast_track_eligible"] is True
 
     def test_ali_boolean_immediate_false(self) -> None:
         actions = [("ALI", "_", "False", "=", "requires_security_review")]
-        state = evaluate_actions(actions, {}, {}, set())
+        state, _ = evaluate_actions(actions, {}, {}, set())
         assert state["requires_security_review"] is False
 
     def test_ali_float_immediate(self) -> None:
         actions = [("ALI", "quality_score", "0.5", "*", "adjusted")]
-        state = evaluate_actions(actions, {}, {"quality_score": 80}, set())
+        state, _ = evaluate_actions(actions, {}, {"quality_score": 80}, set())
         assert state["adjusted"] == pytest.approx(40.0)
 
     # ---- AL ----------------------------------------------------------------
 
     def test_al_addition(self) -> None:
         actions = [("AL", "quality_score", "esg_score", "+", "rank")]
-        state = evaluate_actions(actions, {}, {"quality_score": 80, "esg_score": 70}, set())
+        state, _ = evaluate_actions(actions, {}, {"quality_score": 80, "esg_score": 70}, set())
         assert state["rank"] == 150
 
     def test_al_subtraction(self) -> None:
         actions = [("AL", "quality_score", "risk_score", "-", "rank")]
-        state = evaluate_actions(actions, {}, {"quality_score": 80, "risk_score": 20}, set())
+        state, _ = evaluate_actions(actions, {}, {"quality_score": 80, "risk_score": 20}, set())
         assert state["rank"] == 60
 
     def test_al_boolean_and(self) -> None:
         actions = [("AL", "flag_a", "flag_b", "AND", "result")]
-        state = evaluate_actions(actions, {}, {"flag_a": True, "flag_b": False}, set())
+        state, _ = evaluate_actions(actions, {}, {"flag_a": True, "flag_b": False}, set())
         assert state["result"] is False
 
     def test_al_boolean_or(self) -> None:
         actions = [("AL", "flag_a", "flag_b", "OR", "result")]
-        state = evaluate_actions(actions, {}, {"flag_a": False, "flag_b": True}, set())
+        state, _ = evaluate_actions(actions, {}, {"flag_a": False, "flag_b": True}, set())
         assert state["result"] is True
 
     def test_al_reads_from_global_context(self) -> None:
         # in_param2 lives in global_context, not supplier_attrs
         actions = [("AL", "quality_score", "budget", "+", "score")]
-        state = evaluate_actions(
+        state, _ = evaluate_actions(
             actions,
             {"budget": 1000},   # global context
             {"quality_score": 80},  # supplier attrs
@@ -473,7 +473,7 @@ class TestALandALI:
             ("ALI", "quality_score", "10", "+", "adjusted_quality"),
             ("AL", "adjusted_quality", "esg_score", "+", "rank"),
         ]
-        state = evaluate_actions(
+        state, _ = evaluate_actions(
             actions, {}, {"quality_score": 80, "esg_score": 70}, set()
         )
         assert state["adjusted_quality"] == 90
@@ -482,14 +482,14 @@ class TestALandALI:
     def test_al_overwrite_existing_key(self) -> None:
         # rank is already in attrs; AL should overwrite it
         actions = [("AL", "quality_score", "esg_score", "+", "rank")]
-        state = evaluate_actions(
+        state, _ = evaluate_actions(
             actions, {}, {"quality_score": 80, "esg_score": 70, "rank": 0}, set()
         )
         assert state["rank"] == 150
 
     def test_al_gte_comparison(self) -> None:
         actions = [("AL", "budget", "threshold", ">=", "qualifies")]
-        state = evaluate_actions(
+        state, _ = evaluate_actions(
             actions, {}, {"budget": 50_000, "threshold": 25_000}, set()
         )
         assert state["qualifies"] is True
@@ -784,7 +784,7 @@ class TestRunProcurementEvaluation:
     def test_global_outputs_contain_fix_out_keys(self) -> None:
         actions = [("ALI", "_", "3", "=", "min_supplier_quotes")]
         s = _make_supplier()
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, actions, [s], FIX_IN_KEYS
         )
         assert "min_supplier_quotes" in result["global_outputs"]
@@ -792,14 +792,14 @@ class TestRunProcurementEvaluation:
 
     def test_rank_not_in_global_outputs(self) -> None:
         s = _make_supplier()
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], [s], FIX_IN_KEYS
         )
         assert "rank" not in result["global_outputs"]
 
     def test_supplier_results_contain_identity_rank_state(self) -> None:
         s = _make_supplier()
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], [s], FIX_IN_KEYS
         )
         identity, rank, state = result["supplier_results"][0]
@@ -810,7 +810,7 @@ class TestRunProcurementEvaluation:
     def test_restricted_suppliers_absent_from_results(self) -> None:
         ok = _make_supplier(supplier_id="SUP-OK", is_restricted=False)
         bad = _make_supplier(supplier_id="SUP-BAD", is_restricted=True)
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], [ok, bad], FIX_IN_KEYS
         )
         ids = [r[0]["supplier_id"] for r in result["supplier_results"]]
@@ -820,7 +820,7 @@ class TestRunProcurementEvaluation:
     def test_suppliers_outside_delivery_country_absent(self) -> None:
         inside = _make_supplier(supplier_id="SUP-IN", service_regions="DE;FR")
         outside = _make_supplier(supplier_id="SUP-OUT", service_regions="US;CA")
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], [inside, outside], FIX_IN_KEYS
         )
         ids = [r[0]["supplier_id"] for r in result["supplier_results"]]
@@ -1024,7 +1024,7 @@ class TestCountryToRegionMapping:
 class TestCostTotalBaseComputation:
     def test_cost_total_is_quantity_times_unit_price(self) -> None:
         actions = [("AL", "quantity", "unit_price", "*", "cost_total")]
-        state = evaluate_actions(
+        state, _ = evaluate_actions(
             actions,
             {"quantity": 10},
             {"unit_price": 980.0},
@@ -1038,7 +1038,7 @@ class TestCostTotalBaseComputation:
             ("AL", "quantity", "unit_price", "*", "cost_total"),
             ("ALI", "cost_total", "500", "+", "cost_total"),  # switching cost
         ]
-        state = evaluate_actions(
+        state, _ = evaluate_actions(
             actions,
             {"quantity": 10},
             {"unit_price": 980.0},
@@ -1055,7 +1055,7 @@ class TestCostTotalBaseComputation:
         assert len(filtered) == 1
 
         actions = [("AL", "quantity", "unit_price", "*", "cost_total")]
-        final_state = evaluate_actions(
+        final_state, _ = evaluate_actions(
             actions,
             ctx,
             filtered[0]["attributes"],
@@ -1078,7 +1078,7 @@ class TestLexicographicSort:
         sup_b = _make_supplier(
             supplier_id="SUP-B", cost_rank_score=50.0, reputation_score=60.0
         )
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], [sup_a, sup_b], FIX_IN_KEYS
         )
         ids = [r[0]["supplier_id"] for r in result["supplier_results"]]
@@ -1092,7 +1092,7 @@ class TestLexicographicSort:
         sup_b = _make_supplier(
             supplier_id="SUP-B", cost_rank_score=40.0, reputation_score=99.0
         )
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], [sup_a, sup_b], FIX_IN_KEYS
         )
         ids = [r[0]["supplier_id"] for r in result["supplier_results"]]
@@ -1100,7 +1100,7 @@ class TestLexicographicSort:
 
     def test_rank_field_retained_in_output_for_transparency(self) -> None:
         s = _make_supplier(rank=75)
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], [s], FIX_IN_KEYS
         )
         _, rank, _ = result["supplier_results"][0]
@@ -1112,7 +1112,7 @@ class TestLexicographicSort:
             _make_supplier(supplier_id="A", cost_rank_score=80.0, reputation_score=50.0),
             _make_supplier(supplier_id="B", cost_rank_score=80.0, reputation_score=70.0),
         ]
-        result = run_procurement_evaluation(
+        result, _ = run_procurement_evaluation(
             BASE_REQUEST, SCHEMA, [], suppliers, FIX_IN_KEYS
         )
         ids = [r[0]["supplier_id"] for r in result["supplier_results"]]
@@ -1138,7 +1138,7 @@ class TestGeneratedActionsRoundTrip:
         ]
         path = str(tmp_path / "actions.json")
         save_generated_actions(ranking, rules, path)
-        loaded_ranking, loaded_rules = load_generated_actions(path)
+        loaded_ranking, loaded_rules, _, _ = load_generated_actions(path)
 
         assert loaded_ranking == ranking
         assert loaded_rules == rules
@@ -1152,7 +1152,7 @@ class TestGeneratedActionsRoundTrip:
         rules: list[tuple] = []
         path = str(tmp_path / "actions2.json")
         save_generated_actions(ranking, rules, path)
-        loaded_ranking, loaded_rules = load_generated_actions(path)
+        loaded_ranking, loaded_rules, _, _ = load_generated_actions(path)
 
         assert loaded_ranking[0] == ("OSLM", "cost_total", "100", "/", "cost_rank_score", "cost_total > 0")
         assert loaded_rules == []
@@ -1160,6 +1160,6 @@ class TestGeneratedActionsRoundTrip:
     def test_empty_lists_round_trip(self, tmp_path: pathlib.Path) -> None:
         path = str(tmp_path / "empty.json")
         save_generated_actions([], [], path)
-        r, s = load_generated_actions(path)
+        r, s, _, _ = load_generated_actions(path)
         assert r == []
         assert s == []

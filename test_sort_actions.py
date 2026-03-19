@@ -32,7 +32,7 @@ def test_linear_chain_already_ordered():
     C = ("AL", "y", "_", "=", "z")
     actions = [A, B, C]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is False
     assert comes_before(result, A, B)
@@ -46,7 +46,7 @@ def test_linear_chain_reverse_input():
     C = ("AL", "y", "_", "=", "z")
     actions = [C, B, A]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is False
     assert comes_before(result, A, B)
@@ -60,7 +60,7 @@ def test_linear_chain_all_present():
     C = ("AL", "q", "_", "=", "r")
     actions = [B, C, A]
 
-    result, _ = sort_actions(actions, fix_in_keys=set())
+    result, _, _ = sort_actions(actions, fix_in_keys=set())
 
     assert len(result) == 3
     assert set(map(id, result)) == set(map(id, actions))
@@ -77,7 +77,7 @@ def test_independent_actions_all_present():
     C = ("AL", "_", "_", "=", "z")
     actions = [A, B, C]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is False
     assert len(result) == 3
@@ -90,7 +90,7 @@ def test_independent_actions_no_spurious_edges():
     B = ("AL", "_", "_", "=", "b_out")
     actions = [A, B]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is False
     assert len(result) == 2
@@ -106,7 +106,7 @@ def test_simple_two_node_cycle():
     B = ("AL", "x", "_", "=", "y")
     actions = [A, B]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is True
     assert len(result) == 2
@@ -120,7 +120,7 @@ def test_three_node_cycle():
     C = ("AL", "b_out", "_", "=", "c_out")
     actions = [A, B, C]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is True
     assert len(result) == 3
@@ -133,7 +133,7 @@ def test_cycle_with_extra_independent_action():
     C = ("AL", "_", "_", "=", "z")
     actions = [A, B, C]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is True
     assert len(result) == 3
@@ -150,7 +150,7 @@ def test_when_clause_creates_dependency():
     B = ("ALI", "amount", 100, ">=", "flag", "WHEN threshold = high")
     actions = [B, A]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is False
     assert comes_before(result, A, B)
@@ -165,7 +165,7 @@ def test_when_clause_keywords_not_treated_as_keys():
     D = ("AL", "_", "_", "=", "z")
     actions = [A, B, C, D]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is False
     # A reads x, y, z — all written by B, C, D respectively
@@ -180,7 +180,7 @@ def test_when_clause_numeric_literal_not_a_key():
     A = ("ALI", "amount", 1, ">=", "flag", "WHEN amount >= 25000 AND amount <= 99999")
     actions = [A]
 
-    result, low = sort_actions(actions, fix_in_keys={"amount"})
+    result, low, _ = sort_actions(actions, fix_in_keys={"amount"})
 
     assert low is False
     assert result == [A]
@@ -191,7 +191,7 @@ def test_when_clause_quoted_string_not_a_key():
     A = ("ALI", "_", 0, "=", "approved", 'WHEN status = "pending"')
     actions = [A]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is False
     assert result == [A]
@@ -209,7 +209,7 @@ def test_ali_immediate_not_treated_as_key():
     B = ("ALI", "base", 42, "+", "result")
     actions = [B, A]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     # B reads 'base' (written by A) via in_param1 — A must come first
     assert low is False
@@ -222,7 +222,7 @@ def test_ali_immediate_string_not_a_key():
     B = ("ALI", "x", "some_string_constant", "=", "y")
     actions = [B, A]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is False
     assert comes_before(result, A, B)
@@ -236,7 +236,7 @@ def test_ali_vs_al_in_param2_difference():
     consumer_AL = ("AL", "base", "factor", "+", "total")
     actions_al = [consumer_AL, writer_base, writer_factor]
 
-    result_al, low_al = sort_actions(actions_al, fix_in_keys=set())
+    result_al, low_al, _ = sort_actions(actions_al, fix_in_keys=set())
     assert low_al is False
     assert comes_before(result_al, writer_base, consumer_AL)
     assert comes_before(result_al, writer_factor, consumer_AL)
@@ -245,7 +245,7 @@ def test_ali_vs_al_in_param2_difference():
     consumer_ALI = ("ALI", "base", "factor", "+", "total")
     actions_ali = [consumer_ALI, writer_base, writer_factor]
 
-    result_ali, low_ali = sort_actions(actions_ali, fix_in_keys=set())
+    result_ali, low_ali, _ = sort_actions(actions_ali, fix_in_keys=set())
     assert low_ali is False
     # base must come before consumer_ALI
     assert comes_before(result_ali, writer_base, consumer_ALI)
@@ -263,7 +263,7 @@ def test_fix_in_key_not_a_dependency():
     fix_in = {"invoice_amount"}
     actions = [A, B]
 
-    result, low = sort_actions(actions, fix_in_keys=fix_in)
+    result, low, _ = sort_actions(actions, fix_in_keys=fix_in)
 
     assert low is False
     assert len(result) == 2
@@ -277,7 +277,7 @@ def test_fix_in_key_in_when_clause_not_a_dependency():
     fix_in = {"invoice_amount"}
     actions = [A, B]
 
-    result, low = sort_actions(actions, fix_in_keys=fix_in)
+    result, low, _ = sort_actions(actions, fix_in_keys=fix_in)
 
     assert low is False
     assert len(result) == 2
@@ -290,7 +290,7 @@ def test_fix_in_key_mixed_with_non_fix_in():
     fix_in = {"invoice_amount"}
     actions = [consumer, writer]
 
-    result, low = sort_actions(actions, fix_in_keys=fix_in)
+    result, low, _ = sort_actions(actions, fix_in_keys=fix_in)
 
     assert low is False
     # 'computed' is not fix_in → edge from writer to consumer
@@ -302,14 +302,14 @@ def test_fix_in_key_mixed_with_non_fix_in():
 # ---------------------------------------------------------------------------
 
 def test_empty_actions():
-    result, low = sort_actions([], fix_in_keys=set())
+    result, low, _ = sort_actions([], fix_in_keys=set())
     assert result == []
     assert low is False
 
 
 def test_single_action():
     A = ("AL", "_", "_", "=", "x")
-    result, low = sort_actions([A], fix_in_keys=set())
+    result, low, _ = sort_actions([A], fix_in_keys=set())
     assert result == [A]
     assert low is False
 
@@ -325,7 +325,7 @@ def test_all_types_accepted():
     writer_e = ("AL", "_", "_", "=", "e")
     actions = [srm, oslm, ali, al, writer_a, writer_b, writer_e]
 
-    result, low = sort_actions(actions, fix_in_keys=set())
+    result, low, _ = sort_actions(actions, fix_in_keys=set())
 
     assert low is False
     assert comes_before(result, writer_a, al)

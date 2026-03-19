@@ -133,7 +133,7 @@ def test_ingest_approval_thresholds() -> list[tuple]:
     print(f"Total raw actions collected: {len(all_actions)}")
     print(f"{'=' * 60}\n")
 
-    sorted_acts, is_low_confidence = sort_actions(all_actions, fix_in_keys)
+    sorted_acts, is_low_confidence, _attribution = sort_actions(all_actions, fix_in_keys)
 
     print(f"Sorted actions ({len(sorted_acts)} total, low_confidence={is_low_confidence}):\n")
     for i, action in enumerate(sorted_acts, 1):
