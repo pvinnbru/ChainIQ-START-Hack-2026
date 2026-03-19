@@ -1,0 +1,10 @@
+names,type,description
+request id,meta
+created_at,meta
+request_channel,meta
+request_language,meta
+category_l1,fix in
+category_l2,fix in
+budget,fix in
+amount,fix in
+amount_unit,meta
