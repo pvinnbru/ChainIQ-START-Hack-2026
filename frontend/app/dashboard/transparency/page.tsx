@@ -62,22 +62,22 @@ interface ChatMessage {
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const RULE_COLORS: Record<string, string> = {
-  ER:      'bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-950/60 dark:text-orange-300 dark:border-orange-800',
-  AT:      'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800',
-  CR:      'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800',
+  ER: 'bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-950/60 dark:text-orange-300 dark:border-orange-800',
+  AT: 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800',
+  CR: 'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800',
   RANKING: 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800',
 };
 
 const ESCALATION_KEY_MAP: Record<string, string> = {
-  escalate_to_requester:                  'Requester Clarification',
-  escalate_to_procurement_manager:        'Procurement Manager',
-  escalate_to_head_of_category:           'Head of Category',
-  escalate_to_security_compliance:        'Compliance Review',
+  escalate_to_requester: 'Requester Clarification',
+  escalate_to_procurement_manager: 'Procurement Manager',
+  escalate_to_head_of_category: 'Head of Category',
+  escalate_to_security_compliance: 'Compliance Review',
   escalate_to_head_of_strategic_sourcing: 'Strategic Sourcing Lead',
-  escalate_to_cpo:                        'CPO',
-  escalate_to_sourcing_excellence:        'Sourcing Excellence Lead',
-  escalate_to_marketing_governance:       'Marketing Governance Lead',
-  escalate_to_regional_compliance:        'Regional Compliance Lead',
+  escalate_to_cpo: 'CPO',
+  escalate_to_sourcing_excellence: 'Sourcing Excellence Lead',
+  escalate_to_marketing_governance: 'Marketing Governance Lead',
+  escalate_to_regional_compliance: 'Regional Compliance Lead',
 };
 
 const CONTEXT_LABELS: Record<string, string> = {
@@ -145,10 +145,10 @@ function SupplierFunnel({ logs }: { logs: SupplierLog[] }) {
     const evaluated = logs.filter(s => s.action_logs?.length > 0).length;
     const shortlisted = logs.filter(s => s.normalized_rank != null).length;
     return [
-      { label: 'Suppliers Considered', count: total,       bg: 'bg-slate-200 dark:bg-slate-700' },
-      { label: 'Category Match',       count: catMatch,    bg: 'bg-blue-200 dark:bg-blue-900' },
-      { label: 'Evaluated',            count: evaluated,   bg: 'bg-amber-200 dark:bg-amber-900' },
-      { label: 'Shortlisted',          count: shortlisted, bg: 'bg-emerald-200 dark:bg-emerald-900' },
+      { label: 'Suppliers Considered', count: total, bg: 'bg-slate-200 dark:bg-slate-700' },
+      { label: 'Category Match', count: catMatch, bg: 'bg-blue-200 dark:bg-blue-900' },
+      { label: 'Evaluated', count: evaluated, bg: 'bg-amber-200 dark:bg-amber-900' },
+      { label: 'Shortlisted', count: shortlisted, bg: 'bg-emerald-200 dark:bg-emerald-900' },
     ];
   }, [logs]);
 
@@ -220,32 +220,62 @@ function scoreBar(score: number | null, invert = false) {
   // scores are 0–100 integers
   const pct = Math.min(100, Math.max(0, score));
   const good = invert ? pct < 30 : pct > 65;
-  const mid  = invert ? pct < 60 : pct > 35;
-  const color = good ? 'bg-emerald-400' : mid ? 'bg-amber-400' : 'bg-red-400';
+  const mid = invert ? pct < 60 : pct > 35;
+  const colorClass = good ? 'text-emerald-400' : mid ? 'text-amber-400' : 'text-red-400';
+  const colorHex = good ? '#4ade80' : mid ? '#facc15' : '#f87171';
+
+  // Donut chart: radius 18, circumference ~113.1 (for 44px container)
+  const radius = 18;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (pct / 100) * circumference;
+
   return (
-    <div className="flex items-center gap-1.5">
-      <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-        <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
-      </div>
-      <span className="text-xs font-mono w-6 text-right text-muted-foreground">{pct}</span>
+    <div className="flex items-center justify-center relative" style={{ width: '44px', height: '44px' }}>
+      <svg width="44" height="44" viewBox="0 0 44 44" className="transform -rotate-90">
+        {/* Background circle */}
+        <circle
+          cx="22"
+          cy="22"
+          r={radius}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="text-muted/40"
+        />
+        {/* Progress circle */}
+        <circle
+          cx="22"
+          cy="22"
+          r={radius}
+          fill="none"
+          stroke={colorHex}
+          strokeWidth="2"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          className="transition-all"
+        />
+      </svg>
+      {/* Center text */}
+      <span className="absolute text-[11px] font-mono font-semibold text-muted-foreground">{Math.round(pct)}</span>
     </div>
   );
 }
 
 function supplierMetrics(s: SupplierLog) {
   const pr = s.pricing_resolved as Record<string, unknown>;
-  const fs = s.final_state      as Record<string, unknown>;
+  const fs = s.final_state as Record<string, unknown>;
   return {
-    unitPrice:   pr.unit_price   ?? pr.unit_price_eur,
-    currency:    String(pr.currency ?? 'EUR'),
-    totalCost:   pr.cost_total   ?? fs?.cost_total,
-    leadStd:     pr.standard_lead_time_days ?? pr.lead_time_days,
-    leadExp:     pr.expedited_lead_time_days as number | undefined,
-    quality:     fs?.quality_score as number | undefined,
-    risk:        fs?.risk_score    as number | undefined,
-    esg:         fs?.esg_score     as number | undefined,
-    isPreferred: fs?.preferred     as boolean | undefined,
-    isIncumbent: fs?.incumbent     as boolean | undefined,
+    unitPrice: pr.unit_price ?? pr.unit_price_eur,
+    currency: String(pr.currency ?? 'EUR'),
+    totalCost: pr.cost_total ?? fs?.cost_total,
+    leadStd: pr.standard_lead_time_days ?? pr.lead_time_days,
+    leadExp: pr.expedited_lead_time_days as number | undefined,
+    quality: fs?.quality_score as number | undefined,
+    risk: fs?.risk_score as number | undefined,
+    esg: fs?.esg_score as number | undefined,
+    isPreferred: fs?.preferred as boolean | undefined,
+    isIncumbent: fs?.incumbent as boolean | undefined,
   };
 }
 
@@ -254,11 +284,10 @@ function SupplierCard({ supplier: s, rank }: { supplier: SupplierLog; rank: numb
   const isWinner = rank === 1;
 
   return (
-    <div className={`rounded-xl border p-4 flex flex-col gap-3 ${
-      isWinner
+    <div className={`rounded-xl border p-4 flex flex-col gap-3 ${isWinner
         ? 'border-emerald-500 dark:border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 shadow-md'
         : 'bg-card'
-    }`}>
+      }`}>
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -326,9 +355,9 @@ function SupplierCard({ supplier: s, rank }: { supplier: SupplierLog; rank: numb
 // ── Action Pipeline Table ─────────────────────────────────────────────────────
 
 const RULE_GROUP_LABELS: Record<string, string> = {
-  ER:      'Escalation Rules',
-  AT:      'Approval Threshold Rules',
-  CR:      'Compliance Rules',
+  ER: 'Escalation Rules',
+  AT: 'Approval Threshold Rules',
+  CR: 'Compliance Rules',
   RANKING: 'Ranking Rules',
 };
 
@@ -338,10 +367,10 @@ function ActionRow({ a }: { a: ActionLog }) {
   const rowClass = a.skipped
     ? 'opacity-40 bg-muted/10'
     : isEscalation && a.output_value_after
-    ? 'bg-orange-50 dark:bg-orange-950/20'
-    : changed
-    ? 'bg-amber-50 dark:bg-amber-950/20'
-    : '';
+      ? 'bg-orange-50 dark:bg-orange-950/20'
+      : changed
+        ? 'bg-amber-50 dark:bg-amber-950/20'
+        : '';
 
   return (
     <tr className={`border-b last:border-0 ${rowClass}`}>
@@ -391,9 +420,9 @@ function ActionRow({ a }: { a: ActionLog }) {
 
 function RuleGroup({ prefix, actions }: { prefix: string; actions: ActionLog[] }) {
   const [open, setOpen] = useState(true);
-  const changed  = actions.filter(a => !a.skipped && JSON.stringify(a.output_value_before) !== JSON.stringify(a.output_value_after)).length;
-  const skipped  = actions.filter(a => a.skipped).length;
-  const label    = RULE_GROUP_LABELS[prefix] ?? `${prefix} Rules`;
+  const changed = actions.filter(a => !a.skipped && JSON.stringify(a.output_value_before) !== JSON.stringify(a.output_value_after)).length;
+  const skipped = actions.filter(a => a.skipped).length;
+  const label = RULE_GROUP_LABELS[prefix] ?? `${prefix} Rules`;
 
   return (
     <div className="border-b last:border-0">
@@ -407,8 +436,8 @@ function RuleGroup({ prefix, actions }: { prefix: string; actions: ActionLog[] }
         <span className="text-sm font-medium">{label}</span>
         <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground shrink-0">
           <span>{actions.length} rules</span>
-          {changed > 0  && <span className="text-amber-600 dark:text-amber-400">{changed} changed</span>}
-          {skipped > 0  && <span className="opacity-50">{skipped} skipped</span>}
+          {changed > 0 && <span className="text-amber-600 dark:text-amber-400">{changed} changed</span>}
+          {skipped > 0 && <span className="opacity-50">{skipped} skipped</span>}
         </div>
       </button>
 
@@ -644,7 +673,7 @@ function AiChatSidebar({
   if (!open) return null;
 
   return (
-    <div className="w-96 flex flex-col border-l bg-card">
+    <div className="w-96 flex flex-col border-l bg-card print:hidden">
       <div className="px-4 py-3 border-b shrink-0 flex items-center justify-between">
         <div className="flex items-center gap-2 text-base font-semibold">
           <Bot className="h-4 w-4 text-red-500" />
@@ -673,73 +702,72 @@ function AiChatSidebar({
         </div>
       </div>
 
-        {/* Messages */}
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-          {messages.length === 0 && (
-            <div className="py-6">
-              <p className="text-sm text-muted-foreground mb-3">Ask me anything — I'll explain what happened in plain English, no technical jargon.</p>
-              <div className="space-y-2">
-                {SUGGESTIONS.map(s => (
-                  <button
-                    key={s}
-                    className="w-full text-left text-sm px-3 py-2 rounded-lg border hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
-                    onClick={() => sendMessage(s)}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
+        {messages.length === 0 && (
+          <div className="py-6">
+            <p className="text-sm text-muted-foreground mb-3">Ask me anything — I'll explain what happened in plain English, no technical jargon.</p>
+            <div className="space-y-2">
+              {SUGGESTIONS.map(s => (
+                <button
+                  key={s}
+                  className="w-full text-left text-sm px-3 py-2 rounded-lg border hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
+                  onClick={() => sendMessage(s)}
+                >
+                  {s}
+                </button>
+              ))}
             </div>
-          )}
-          {messages.map((msg, i) => (
-            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div
-                className={`max-w-[85%] rounded-lg px-3 py-2 text-sm leading-relaxed ${
-                  msg.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-foreground'
+          </div>
+        )}
+        {messages.map((msg, i) => (
+          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div
+              className={`max-w-[85%] rounded-lg px-3 py-2 text-sm leading-relaxed ${msg.role === 'user'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-foreground'
                 }`}
-              >
-                {msg.content ? (
-                  msg.role === 'assistant' ? (
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                        ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-0.5">{children}</ul>,
-                        ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-0.5">{children}</ol>,
-                        li: ({ children }) => <li className="leading-snug">{children}</li>,
-                        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                        em: ({ children }) => <em className="italic">{children}</em>,
-                        h3: ({ children }) => <h3 className="font-semibold text-sm mb-1 mt-2">{children}</h3>,
-                        code: ({ children }) => <code className="bg-background/60 rounded px-1 text-xs font-mono">{children}</code>,
-                        table: ({ children }) => (
-                          <div className="overflow-x-auto my-2 -mx-3">
-                            <table className="w-full text-xs border-collapse">{children}</table>
-                          </div>
-                        ),
-                        thead: ({ children }) => <thead className="bg-background/50">{children}</thead>,
-                        tbody: ({ children }) => <tbody>{children}</tbody>,
-                        tr: ({ children }) => <tr className="border-b border-border/40 last:border-0">{children}</tr>,
-                        th: ({ children }) => <th className="px-3 py-1.5 text-left font-semibold text-muted-foreground whitespace-nowrap">{children}</th>,
-                        td: ({ children }) => <td className="px-3 py-1.5 align-top">{children}</td>,
-                      }}
-                    >
-                      {msg.content}
-                    </ReactMarkdown>
-                  ) : (
-                    <span>{msg.content}</span>
-                  )
-                ) : (streaming && i === messages.length - 1 ? (
-                  <span className="flex items-center gap-1 text-muted-foreground text-xs">
-                    <span className="animate-bounce">●</span>
-                    <span className="animate-bounce [animation-delay:0.1s]">●</span>
-                    <span className="animate-bounce [animation-delay:0.2s]">●</span>
-                  </span>
-                ) : '…')}
-              </div>
+            >
+              {msg.content ? (
+                msg.role === 'assistant' ? (
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                      ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-0.5">{children}</ul>,
+                      ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-0.5">{children}</ol>,
+                      li: ({ children }) => <li className="leading-snug">{children}</li>,
+                      strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                      em: ({ children }) => <em className="italic">{children}</em>,
+                      h3: ({ children }) => <h3 className="font-semibold text-sm mb-1 mt-2">{children}</h3>,
+                      code: ({ children }) => <code className="bg-background/60 rounded px-1 text-xs font-mono">{children}</code>,
+                      table: ({ children }) => (
+                        <div className="overflow-x-auto my-2 -mx-3">
+                          <table className="w-full text-xs border-collapse">{children}</table>
+                        </div>
+                      ),
+                      thead: ({ children }) => <thead className="bg-background/50">{children}</thead>,
+                      tbody: ({ children }) => <tbody>{children}</tbody>,
+                      tr: ({ children }) => <tr className="border-b border-border/40 last:border-0">{children}</tr>,
+                      th: ({ children }) => <th className="px-3 py-1.5 text-left font-semibold text-muted-foreground whitespace-nowrap">{children}</th>,
+                      td: ({ children }) => <td className="px-3 py-1.5 align-top">{children}</td>,
+                    }}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                ) : (
+                  <span>{msg.content}</span>
+                )
+              ) : (streaming && i === messages.length - 1 ? (
+                <span className="flex items-center gap-1 text-muted-foreground text-xs">
+                  <span className="animate-bounce">●</span>
+                  <span className="animate-bounce [animation-delay:0.1s]">●</span>
+                  <span className="animate-bounce [animation-delay:0.2s]">●</span>
+                </span>
+              ) : '…')}
             </div>
-          ))}
+          </div>
+        ))}
         <div ref={bottomRef} />
       </div>
 
@@ -795,7 +823,7 @@ export default function TransparencyPage() {
       .then((data: ExecutionLog) => {
         setLog(data);
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false));
   }, [requestId]);
 
@@ -805,7 +833,7 @@ export default function TransparencyPage() {
     fetch(`${API}/requests/${requestId}/ai-summary`, { credentials: 'include' })
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data?.summary) setSummary(data.summary); })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setSummaryLoading(false));
   }, [requestId]);
 
@@ -841,318 +869,328 @@ export default function TransparencyPage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden relative">
+    <div className="flex h-screen overflow-hidden relative print:block print:h-auto print:overflow-visible">
       {/* Main content */}
-      <div className="flex-1 overflow-y-auto py-6 pr-4">
-        <div className="w-full max-w-6xl mx-auto space-y-6 print:py-2">
+      <div className="flex-1 overflow-y-auto py-6 pr-4 print:flex-none print:overflow-visible print:h-auto print:w-full print:pr-0 print:py-0">
+        <div className="w-full max-w-6xl mx-auto space-y-6 print:py-6 print:px-6">
 
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4 flex-wrap print:hidden">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={() => router.back()}>
-            <ArrowLeft className="h-4 w-4" /> Back
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">AI Decision Log</h1>
-            <p className="text-muted-foreground text-sm">{new Date(log.timestamp).toLocaleString()}</p>
-          </div>
-        </div>
-        <div className="flex gap-2 shrink-0">
-          <Button variant="outline" size="sm" className="gap-2" onClick={() => window.print()}>
-            <Printer className="h-4 w-4" /> Download PDF
-          </Button>
-          {!chatOpen && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2"
-              onClick={() => setChatOpen(true)}
-              title="Open AI Chat"
-            >
-              <Bot className="h-4 w-4 text-red-500" />
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Print header (only visible when printing) */}
-      <div className="hidden print:block mb-4">
-        <h1 className="text-xl font-bold">AI Decision Log — {log.request_id}</h1>
-        <p className="text-sm text-muted-foreground">Evaluated: {new Date(log.timestamp).toLocaleString()}</p>
-      </div>
-
-      {/* AI Summary + Request Details — side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* AI Summary */}
-        <Card className="border-primary/20 bg-primary/5 dark:bg-primary/10">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Bot className="h-4 w-4 text-red-500" />
-              What happened with this request
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {summaryLoading && !summary && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="animate-bounce">●</span>
-                <span className="animate-bounce [animation-delay:0.1s]">●</span>
-                <span className="animate-bounce [animation-delay:0.2s]">●</span>
-                <span className="ml-1">Generating summary…</span>
+          {/* Header */}
+          <div className="flex items-start justify-between gap-4 flex-wrap print:hidden">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={() => router.back()}>
+                <ArrowLeft className="h-4 w-4" /> Back
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight">AI Decision Log</h1>
+                <p className="text-muted-foreground text-sm">{new Date(log.timestamp).toLocaleString()}</p>
               </div>
-            )}
-            {summary && (
-              <div className="text-sm leading-relaxed prose-sm max-w-none">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    p:      ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                    ul:     ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-1">{children}</ul>,
-                    ol:     ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-1">{children}</ol>,
-                    li:     ({ children }) => <li className="leading-snug">{children}</li>,
-                    strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                  }}
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <Button variant="outline" size="sm" className="gap-2" onClick={() => window.print()}>
+                <Printer className="h-4 w-4" /> Download PDF
+              </Button>
+              {!chatOpen && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => setChatOpen(true)}
+                  title="Open AI Chat"
                 >
-                  {summary}
-                </ReactMarkdown>
-              </div>
-            )}
-            {!summaryLoading && !summary && (
-              <p className="text-sm text-muted-foreground">No AI summary available.</p>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Request Details — compact, always visible */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">Request Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 xl:grid-cols-3 gap-2.5">
-              {[
-                { label: 'Category', value: `${String(snapshot.category_l1 ?? '—')}${snapshot.category_l2 ? ` / ${String(snapshot.category_l2)}` : ''}` },
-                { label: 'Budget', value: snapshot.budget != null ? `${Number(snapshot.budget).toLocaleString()} ${String(snapshot.currency ?? '')}` : '—' },
-                { label: 'Quantity', value: snapshot.quantity != null ? `${String(snapshot.quantity)} ${String(snapshot.amount_unit ?? '')}` : '—' },
-                { label: 'Delivery', value: String(snapshot.delivery_country ?? '—') },
-                { label: 'Lead time', value: snapshot.days_until_required != null ? `${String(snapshot.days_until_required)} days` : '—' },
-                { label: 'Preferred', value: String(snapshot.preferred_supplier_mentioned ?? '—') },
-                { label: 'Incumbent', value: String(snapshot.incumbent_supplier ?? '—') },
-                { label: 'Data residency', value: snapshot.data_residency_constraint ? 'Yes' : 'No' },
-                { label: 'ESG required', value: snapshot.esg_requirement ? 'Yes' : 'No' },
-                ...Object.entries(snapshot)
-                  .filter(([key]) => !['category_l1','category_l2','budget','currency','quantity','amount_unit','delivery_country','days_until_required','preferred_supplier_mentioned','incumbent_supplier','data_residency_constraint','esg_requirement'].includes(key))
-                  .map(([key, val]) => ({ label: CONTEXT_LABELS[key] ?? key.replace(/_/g, ' '), value: String(val) }))
-              ].map((item, idx) => (
-                <div key={idx} className="flex flex-col gap-0.5 p-2.5 rounded-lg bg-muted/40 border border-border/50 transition-colors hover:bg-muted/60 hover:border-border/80">
-                  <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">{item.label}</span>
-                  <span className="font-medium text-sm text-foreground break-words">{item.value}</span>
-                </div>
-              ))}
+                  <Bot className="h-4 w-4 text-red-500" />
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+              )}
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
 
-      {/* Supplier Ranking — ranked list */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Supplier Ranking</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          {evaluatedSuppliers.length === 0 ? (
-            <p className="px-6 py-6 text-sm text-muted-foreground">No suppliers passed the category filter for evaluation.</p>
-          ) : (
-            <div>
-              <table className="w-full text-xs text-left">
-                <thead>
-                  <tr className="border-b text-xs text-muted-foreground uppercase tracking-wide bg-muted/30">
-                    <th className="px-3 py-2.5 w-6">#</th>
-                    <th className="px-3 py-2.5 min-w-max">Supplier</th>
-                    <th className="px-3 py-2.5 text-right whitespace-nowrap">Unit Price</th>
-                    <th className="px-3 py-2.5 text-right whitespace-nowrap">Total Cost</th>
-                    <th className="px-3 py-2.5 text-right whitespace-nowrap">Lead Time</th>
-                    <th className="px-3 py-2.5 w-20">Quality</th>
-                    <th className="px-3 py-2.5 w-20">Risk</th>
-                    <th className="px-3 py-2.5 w-20">ESG</th>
-                    <th className="px-3 py-2.5 w-20">Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {evaluatedSuppliers
-                    .slice()
-                    .sort((a, b) => (b.normalized_rank ?? 0) - (a.normalized_rank ?? 0))
-                    .map((s, i) => {
-                      const rank = i + 1;
-                      const m = supplierMetrics(s);
-                      const isWinner = rank === 1;
-                      return (
-                        <tr
-                          key={`${s.supplier_id}-${s.category_l2}`}
-                          className={`border-b last:border-0 transition-colors ${
-                            isWinner
-                              ? 'bg-emerald-50/60 dark:bg-emerald-950/20'
-                              : 'hover:bg-muted/30'
-                          }`}
-                        >
-                          <td className="px-3 py-2.5">
-                            <span className={`font-bold ${isWinner ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}`}>
-                              {rank}
-                            </span>
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-medium">{s.supplier_name}</span>
-                              {isWinner && <Star className="h-3.5 w-3.5 text-emerald-500 fill-emerald-400 shrink-0" />}
-                              {m.isPreferred && <Badge variant="outline" className="text-[10px] text-blue-600 border-blue-200 bg-blue-50 dark:bg-blue-950/40 dark:text-blue-300">Preferred</Badge>}
-                              {m.isIncumbent && <Badge variant="outline" className="text-[10px] text-violet-600 border-violet-200 bg-violet-50 dark:bg-violet-950/40 dark:text-violet-300">Incumbent</Badge>}
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-0.5">{s.category_l2}</p>
-                          </td>
-                          <td className="px-3 py-2.5 text-right font-mono text-xs whitespace-nowrap">
-                            {m.unitPrice != null
-                              ? `${m.currency} ${Number(m.unitPrice).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
-                              : <span className="text-muted-foreground">—</span>}
-                          </td>
-                          <td className="px-3 py-2.5 text-right font-mono text-xs whitespace-nowrap">
-                            {m.totalCost != null
-                              ? `${m.currency} ${Number(m.totalCost).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
-                              : <span className="text-muted-foreground">—</span>}
-                          </td>
-                          <td className="px-3 py-2.5 text-right text-xs whitespace-nowrap">
-                            {m.leadStd != null
-                              ? <>{String(m.leadStd)}d{m.leadExp != null ? <span className="text-muted-foreground"> / {String(m.leadExp)}d</span> : ''}</>
-                              : <span className="text-muted-foreground">—</span>}
-                          </td>
-                          <td className="px-4 py-3">{scoreBar(m.quality as number | null) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
-                          <td className="px-4 py-3">{scoreBar(m.risk as number | null, true) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
-                          <td className="px-4 py-3">{scoreBar(m.esg as number | null) ?? <span className="text-xs text-muted-foreground">—</span>}</td>
-                          <td className="px-4 py-3">{s.normalized_rank != null ? (
-                            <div className="flex items-center gap-1.5">
-                              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                                <div className="h-full rounded-full bg-emerald-400" style={{ width: `${Math.min(100, Math.max(0, s.normalized_rank))}%` }} />
-                              </div>
-                              <span className="text-xs font-mono w-6 text-right text-muted-foreground">{Math.round(s.normalized_rank)}</span>
-                            </div>
-                          ) : <span className="text-xs text-muted-foreground">—</span>}</td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+          {/* Print header (only visible when printing) */}
+          <div className="hidden print:block mb-4">
+            <h1 className="text-xl font-bold">AI Decision Log — {log.request_id}</h1>
+            <p className="text-sm text-muted-foreground">Evaluated: {new Date(log.timestamp).toLocaleString()}</p>
+          </div>
 
-      {/* Additional Details — collapsible section */}
-      <div className="relative">
-        <button
-          className="w-full flex items-center justify-center gap-2 py-3 text-sm text-muted-foreground hover:text-foreground transition-colors group"
-          onClick={() => setAdditionalDetailsOpen(o => !o)}
-        >
-          <div className="flex-1 h-px bg-border" />
-          <span className="flex items-center gap-1.5 shrink-0 px-3">
-            {additionalDetailsOpen ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-            Additional Details
-          </span>
-          <div className="flex-1 h-px bg-border" />
-        </button>
-      </div>
-
-      {additionalDetailsOpen && (
-        <div className="space-y-6">
-          {/* Funnel + Escalation */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">Supplier Evaluation Funnel</CardTitle>
+          {/* AI Summary + Request Details — side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:grid print:grid-cols-2">
+            {/* AI Summary */}
+            <Card className="border-primary/20 bg-primary/5 dark:bg-primary/10">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Bot className="h-4 w-4 text-red-500" />
+                  Decision Summary
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <SupplierFunnel logs={log.supplier_logs} />
-                <ExcludedSuppliers logs={log.supplier_logs} />
+                {summaryLoading && !summary && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span className="animate-bounce">●</span>
+                    <span className="animate-bounce [animation-delay:0.1s]">●</span>
+                    <span className="animate-bounce [animation-delay:0.2s]">●</span>
+                    <span className="ml-1">Generating summary…</span>
+                  </div>
+                )}
+                {summary && (
+                  <div className="text-sm leading-relaxed prose-sm max-w-none">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                        ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-1">{children}</ul>,
+                        ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-1">{children}</ol>,
+                        li: ({ children }) => <li className="leading-snug">{children}</li>,
+                        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                      }}
+                    >
+                      {summary}
+                    </ReactMarkdown>
+                  </div>
+                )}
+                {!summaryLoading && !summary && (
+                  <p className="text-sm text-muted-foreground">No AI summary available.</p>
+                )}
               </CardContent>
             </Card>
 
+            {/* Request Details — compact, always visible */}
             <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">What Needs Your Attention</CardTitle>
-                <p className="text-xs text-muted-foreground">Issues the system flagged that require a human decision.</p>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Request Details</CardTitle>
               </CardHeader>
               <CardContent>
-                <EscalationMap logs={log.supplier_logs} />
+                <div className="grid grid-cols-2 xl:grid-cols-3 gap-2.5">
+                  {[
+                    { label: 'Category', value: `${String(snapshot.category_l1 ?? '—')}${snapshot.category_l2 ? ` / ${String(snapshot.category_l2)}` : ''}` },
+                    { label: 'Budget', value: snapshot.budget != null ? `${Number(snapshot.budget).toLocaleString()} ${String(snapshot.currency ?? '')}` : '—' },
+                    { label: 'Quantity', value: snapshot.quantity != null ? `${String(snapshot.quantity)} ${String(snapshot.amount_unit ?? '')}` : '—' },
+                    { label: 'Delivery', value: String(snapshot.delivery_country ?? '—') },
+                    { label: 'Lead time', value: snapshot.days_until_required != null ? `${String(snapshot.days_until_required)} days` : '—' },
+                    { label: 'Preferred', value: String(snapshot.preferred_supplier_mentioned ?? '—') },
+                    { label: 'Incumbent', value: String(snapshot.incumbent_supplier ?? '—') },
+                    { label: 'Data residency', value: snapshot.data_residency_constraint ? 'Yes' : 'No' },
+                    { label: 'ESG required', value: snapshot.esg_requirement ? 'Yes' : 'No' },
+                    ...Object.entries(snapshot)
+                      .filter(([key]) => !['category_l1', 'category_l2', 'budget', 'currency', 'quantity', 'amount_unit', 'delivery_country', 'days_until_required', 'preferred_supplier_mentioned', 'incumbent_supplier', 'data_residency_constraint', 'esg_requirement'].includes(key))
+                      .map(([key, val]) => ({ label: CONTEXT_LABELS[key] ?? key.replace(/_/g, ' '), value: String(val) }))
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex flex-col gap-0.5 p-2 rounded-lg bg-muted/40 border border-border/50 transition-colors hover:bg-muted/60 hover:border-border/80">
+                      <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider">{item.label}</span>
+                      <span className="font-medium text-xs text-foreground break-words">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Decision Log */}
+          {/* Supplier Ranking — ranked list */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Decision Log — Actions per Supplier</CardTitle>
-              <p className="text-xs text-muted-foreground">
-                Each row is one rule action executed by the pipeline.
-                <span className="inline-block ml-2 px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-[10px]">amber</span> = value changed ·
-                <span className="inline-block ml-2 px-1.5 py-0.5 rounded bg-orange-50 dark:bg-orange-950/20 text-orange-700 dark:text-orange-400 text-[10px]">orange</span> = escalation triggered ·
-                <span className="opacity-40 inline-block ml-2">dimmed</span> = skipped (WHEN condition not met)
-              </p>
+              <CardTitle className="text-base">Supplier Ranking</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {evaluatedSuppliers.length === 0 ? (
-                <p className="px-6 py-8 text-sm text-muted-foreground">No suppliers were evaluated through the action pipeline.</p>
+                <p className="px-6 py-6 text-sm text-muted-foreground">No suppliers passed the category filter for evaluation.</p>
               ) : (
-                <Tabs defaultValue={`${evaluatedSuppliers[0].supplier_id}-${evaluatedSuppliers[0].category_l2}`}>
-                  <div className="px-4 pt-2 border-b">
-                    <TabsList className="h-auto flex-wrap gap-1 bg-transparent p-0">
-                      {evaluatedSuppliers.map(s => {
-                        const key = `${s.supplier_id}-${s.category_l2}`;
-                        const rank = s.normalized_rank != null
-                          ? `#${evaluatedSuppliers.filter(x => x.normalized_rank != null).sort((a, b) => (b.normalized_rank ?? 0) - (a.normalized_rank ?? 0)).findIndex(x => x.supplier_id === s.supplier_id && x.category_l2 === s.category_l2) + 1}`
-                          : null;
-                        return (
-                          <TabsTrigger key={key} value={key} className="text-xs h-8">
-                            {rank && <span className="mr-1 font-bold text-emerald-600">{rank}</span>}
-                            {s.supplier_name}
-                          </TabsTrigger>
-                        );
-                      })}
-                    </TabsList>
-                  </div>
-                  {evaluatedSuppliers.map(s => {
-                    const key = `${s.supplier_id}-${s.category_l2}`;
-                    return (
-                      <TabsContent key={key} value={key} className="mt-0">
-                        {(Object.keys(s.pricing_resolved).length > 0 || s.normalized_rank != null) && (
-                          <div className="px-4 py-3 border-b flex flex-wrap gap-4 text-xs">
-                            {Object.entries(s.pricing_resolved).map(([k, v]) => (
-                              <div key={k}>
-                                <span className="text-muted-foreground">{k.replace(/_/g, ' ')}: </span>
-                                <span className="font-mono font-medium">{String(v)}</span>
-                              </div>
-                            ))}
-                            {s.normalized_rank != null && (
-                              <>
-                                <div>
-                                  <span className="text-muted-foreground">cost rank score: </span>
-                                  <span className="font-mono font-medium">{s.normalized_rank.toFixed(4)}</span>
+                <div className="w-full">
+                  <table className="w-full text-xs print:text-[10px] text-left">
+                    <thead>
+                      <tr className="border-b text-xs print:text-[10px] text-muted-foreground uppercase tracking-wide bg-muted/30">
+                        <th className="px-3 print:px-1 py-2.5 print:py-1.5 w-6 text-center">#</th>
+                        <th className="px-3 print:px-1 py-2.5 print:py-1.5 min-w-max">Supplier</th>
+                        <th className="px-3 print:px-1 py-2.5 print:py-1.5 text-center whitespace-nowrap">Unit Price</th>
+                        <th className="px-3 print:px-1 py-2.5 print:py-1.5 text-center whitespace-nowrap">Total Cost</th>
+                        <th className="px-3 print:px-1 py-2.5 print:py-1.5 text-center whitespace-nowrap">Lead Time</th>
+                        <th className="px-3 print:px-1 py-2.5 print:py-1.5 w-16 print:w-14 text-center">Quality</th>
+                        <th className="px-3 print:px-1 py-2.5 print:py-1.5 w-16 print:w-14 text-center">Risk</th>
+                        <th className="px-3 print:px-1 py-2.5 print:py-1.5 w-16 print:w-14 text-center">ESG</th>
+                        <th className="px-3 print:px-1 py-2.5 print:py-1.5 w-16 print:w-14 text-center">Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {evaluatedSuppliers
+                        .slice()
+                        .sort((a, b) => (b.normalized_rank ?? 0) - (a.normalized_rank ?? 0))
+                        .map((s, i) => {
+                          const rank = i + 1;
+                          const m = supplierMetrics(s);
+                          const isWinner = rank === 1;
+                          return (
+                            <tr
+                              key={`${s.supplier_id}-${s.category_l2}`}
+                              className={`border-b last:border-0 transition-colors print:break-inside-avoid ${isWinner
+                                ? 'bg-emerald-50/60 dark:bg-emerald-950/20'
+                                : 'hover:bg-muted/30'
+                                }`}
+                            >
+                              <td className="px-3 print:px-1 py-2.5 print:py-1.5 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {isWinner && <Star className="h-3.5 w-3.5 text-emerald-500 fill-emerald-400 shrink-0" />}
+                                  <span className={`font-bold ${isWinner ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}`}>
+                                    {rank}
+                                  </span>
                                 </div>
-                                <div>
-                                  <span className="text-muted-foreground">reputation score: </span>
-                                  <span className="font-mono font-medium">{(s.final_reputation_score ?? 0).toFixed(4)}</span>
+                              </td>
+                              <td className="px-3 print:px-1 py-2.5 print:py-1.5">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="font-medium">{s.supplier_name}</span>
+                                  {m.isPreferred && <Badge variant="outline" className="text-[10px] print:text-[8px] text-blue-600 border-blue-200 bg-blue-50 dark:bg-blue-950/40 dark:text-blue-300">Preferred</Badge>}
+                                  {m.isIncumbent && <Badge variant="outline" className="text-[10px] print:text-[8px] text-violet-600 border-violet-200 bg-violet-50 dark:bg-violet-950/40 dark:text-violet-300">Incumbent</Badge>}
                                 </div>
-                              </>
-                            )}
-                          </div>
-                        )}
-                        <ActionPipelineTable actions={s.action_logs} />
-                      </TabsContent>
-                    );
-                  })}
-                </Tabs>
+                                <p className="text-xs print:text-[9px] text-muted-foreground mt-0.5">{s.category_l2}</p>
+                              </td>
+                              <td className="px-3 print:px-1 py-2.5 print:py-1.5 text-center font-mono text-xs print:text-[10px] whitespace-nowrap">
+                                {m.unitPrice != null
+                                  ? `${m.currency} ${Number(m.unitPrice).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                                  : <span className="text-muted-foreground">—</span>}
+                              </td>
+                              <td className="px-3 print:px-1 py-2.5 print:py-1.5 text-center font-mono text-xs print:text-[10px] whitespace-nowrap">
+                                {m.totalCost != null
+                                  ? `${m.currency} ${Number(m.totalCost).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
+                                  : <span className="text-muted-foreground">—</span>}
+                              </td>
+                              <td className="px-3 print:px-1 py-2.5 print:py-1.5 text-center text-xs print:text-[10px] whitespace-nowrap">
+                                {m.leadStd != null
+                                  ? <>{String(m.leadStd)}d{m.leadExp != null ? <span className="text-muted-foreground"> / {String(m.leadExp)}d</span> : ''}</>
+                                  : <span className="text-muted-foreground">—</span>}
+                              </td>
+                              <td className="px-3 print:px-1 py-2.5 print:py-1.5">
+                                <div className="flex flex-col items-center gap-1">
+                                  {scoreBar(m.quality as number | null) ?? <span className="text-xs print:text-[10px] text-muted-foreground">—</span>}
+                                </div>
+                              </td>
+                              <td className="px-3 print:px-1 py-2.5 print:py-1.5">
+                                <div className="flex flex-col items-center gap-1">
+                                  {scoreBar(m.risk as number | null, true) ?? <span className="text-xs print:text-[10px] text-muted-foreground">—</span>}
+                                </div>
+                              </td>
+                              <td className="px-3 print:px-1 py-2.5 print:py-1.5">
+                                <div className="flex flex-col items-center gap-1">
+                                  {scoreBar(m.esg as number | null) ?? <span className="text-xs print:text-[10px] text-muted-foreground">—</span>}
+                                </div>
+                              </td>
+                              <td className="px-3 print:px-1 py-2.5 print:py-1.5">
+                                <div className="flex flex-col items-center gap-1">
+                                  {scoreBar(s.normalized_rank != null ? s.normalized_rank * 100 : null) ?? <span className="text-xs print:text-[10px] text-muted-foreground">—</span>}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </CardContent>
           </Card>
-        </div>
-      )}
+
+          {/* Additional Details — collapsible section */}
+          <div className="relative print:hidden">
+            <button
+              className="w-full flex items-center justify-center gap-2 py-3 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+              onClick={() => setAdditionalDetailsOpen(o => !o)}
+            >
+              <div className="flex-1 h-px bg-border" />
+              <span className="flex items-center gap-1.5 shrink-0 px-3">
+                {additionalDetailsOpen ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                Additional Details
+              </span>
+              <div className="flex-1 h-px bg-border" />
+            </button>
+          </div>
+
+          {additionalDetailsOpen && (
+            <div className="space-y-6 print:hidden">
+              {/* Funnel + Escalation */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">Supplier Evaluation Funnel</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <SupplierFunnel logs={log.supplier_logs} />
+                    <ExcludedSuppliers logs={log.supplier_logs} />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">What Needs Your Attention</CardTitle>
+                    <p className="text-xs text-muted-foreground">Issues the system flagged that require a human decision.</p>
+                  </CardHeader>
+                  <CardContent>
+                    <EscalationMap logs={log.supplier_logs} />
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Decision Log */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Decision Log — Actions per Supplier</CardTitle>
+                  <p className="text-xs text-muted-foreground">
+                    Each row is one rule action executed by the pipeline.
+                    <span className="inline-block ml-2 px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-[10px]">amber</span> = value changed ·
+                    <span className="inline-block ml-2 px-1.5 py-0.5 rounded bg-orange-50 dark:bg-orange-950/20 text-orange-700 dark:text-orange-400 text-[10px]">orange</span> = escalation triggered ·
+                    <span className="opacity-40 inline-block ml-2">dimmed</span> = skipped (WHEN condition not met)
+                  </p>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {evaluatedSuppliers.length === 0 ? (
+                    <p className="px-6 py-8 text-sm text-muted-foreground">No suppliers were evaluated through the action pipeline.</p>
+                  ) : (
+                    <Tabs defaultValue={`${evaluatedSuppliers[0].supplier_id}-${evaluatedSuppliers[0].category_l2}`}>
+                      <div className="px-4 pt-2 border-b">
+                        <TabsList className="h-auto flex-wrap gap-1 bg-transparent p-0">
+                          {evaluatedSuppliers.map(s => {
+                            const key = `${s.supplier_id}-${s.category_l2}`;
+                            const rank = s.normalized_rank != null
+                              ? `#${evaluatedSuppliers.filter(x => x.normalized_rank != null).sort((a, b) => (b.normalized_rank ?? 0) - (a.normalized_rank ?? 0)).findIndex(x => x.supplier_id === s.supplier_id && x.category_l2 === s.category_l2) + 1}`
+                              : null;
+                            return (
+                              <TabsTrigger key={key} value={key} className="text-xs h-8">
+                                {rank && <span className="mr-1 font-bold text-emerald-600">{rank}</span>}
+                                {s.supplier_name}
+                              </TabsTrigger>
+                            );
+                          })}
+                        </TabsList>
+                      </div>
+                      {evaluatedSuppliers.map(s => {
+                        const key = `${s.supplier_id}-${s.category_l2}`;
+                        return (
+                          <TabsContent key={key} value={key} className="mt-0">
+                            {(Object.keys(s.pricing_resolved).length > 0 || s.normalized_rank != null) && (
+                              <div className="px-4 py-3 border-b flex flex-wrap gap-4 text-xs">
+                                {Object.entries(s.pricing_resolved).map(([k, v]) => (
+                                  <div key={k}>
+                                    <span className="text-muted-foreground">{k.replace(/_/g, ' ')}: </span>
+                                    <span className="font-mono font-medium">{String(v)}</span>
+                                  </div>
+                                ))}
+                                {s.normalized_rank != null && (
+                                  <>
+                                    <div>
+                                      <span className="text-muted-foreground">cost rank score: </span>
+                                      <span className="font-mono font-medium">{s.normalized_rank.toFixed(4)}</span>
+                                    </div>
+                                    <div>
+                                      <span className="text-muted-foreground">reputation score: </span>
+                                      <span className="font-mono font-medium">{(s.final_reputation_score ?? 0).toFixed(4)}</span>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                            <ActionPipelineTable actions={s.action_logs} />
+                          </TabsContent>
+                        );
+                      })}
+                    </Tabs>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </div>
 
