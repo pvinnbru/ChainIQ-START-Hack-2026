@@ -60,14 +60,59 @@ def notify_decision(request, requester) -> None:
 
 def notify_evaluation_complete(request, requester) -> None:
     """
-    DM the requester a summary of the AI evaluation result.
-    Called after enrich_and_evaluate completes for API-submitted requests.
+    DM the requester a brief confirmation that their request was received
+    and evaluated. No supplier details are shared with the requester.
     """
     if not requester or not getattr(requester, "slack_user_id", None):
         return
 
-    summary = _build_evaluation_summary(request)
-    send_slack_dm(requester.slack_user_id, text=summary["text"], blocks=summary["blocks"])
+    cat = request.category_l1 or ""
+    if request.category_l2:
+        cat += f" / {request.category_l2}" if cat else request.category_l2
+
+    status_msg = (
+        "🟠 Your request requires review by the procurement team."
+        if request.status in ("escalated", "pending_review")
+        else "🟢 Your request has been evaluated and is being processed."
+    )
+
+    blocks = [
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": f"📋 Request Received: {request.id[:12]}…"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": (
+                    f"Your procurement request has been received and evaluated by ChainIQ.\n\n"
+                    + (f"📂 *Category:* {cat}\n" if cat else "")
+                    + (f"💰 *Budget:* {request.currency or 'EUR'} {request.budget_amount:,.0f}\n" if request.budget_amount else "")
+                    + f"\n{status_msg}"
+                ),
+            }
+        },
+        {"type": "divider"},
+        {
+            "type": "context",
+            "elements": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"You will be notified when a decision is made. | 🔗 <{_APP_URL}/dashboard|View Dashboard>"
+                }
+            ]
+        },
+    ]
+
+    send_slack_dm(
+        requester.slack_user_id,
+        text=f"Your request {request.id} has been received and is being processed.",
+        blocks=blocks,
+    )
 
 
 def _build_evaluation_summary(request) -> dict:

@@ -175,10 +175,18 @@ def recent_activity(
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    entries = (
+    query = (
         db.query(models.AuditEntry, models.Request, models.User)
         .join(models.Request, models.AuditEntry.request_id == models.Request.id)
         .join(models.User, models.AuditEntry.actor_id == models.User.id)
+    )
+    # Filter: show entries where the user is either the actor or the requester
+    query = query.filter(
+        (models.AuditEntry.actor_id == current_user.id)
+        | (models.Request.requester_id == current_user.id)
+    )
+    entries = (
+        query
         .order_by(desc(models.AuditEntry.created_at))
         .limit(limit)
         .all()

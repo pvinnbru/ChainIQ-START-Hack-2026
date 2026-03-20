@@ -18,7 +18,7 @@ from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from database import SessionLocal
 import models
-from notifications import _build_evaluation_summary
+# _build_evaluation_summary no longer used — requester sees a brief confirmation only
 
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
 
@@ -26,7 +26,7 @@ _APP_URL = os.environ.get("CHAINIQ_APP_URL", "http://localhost:3000")
 _PROCURE_KEYWORDS = ["procure", "order", "buy", "request", "need", "get", "/need"]
 
 _STATUS_ICON = {
-    "new": "🔵", "escalated": "🟡", "pending_review": "🟠",
+    "new": "🔵", "escalated": "🟡", "pending_review": "🔵",
     "reviewed": "🔶", "approved": "✅", "rejected": "❌", "withdrawn": "⬜",
 }
 
@@ -119,13 +119,47 @@ def _handle_new_request(say, text: str, user: models.User, db):
         from services.evaluation import enrich_and_evaluate
         enrich_and_evaluate(req, db)
         db.refresh(req)
-        summary = _build_evaluation_summary(req)
-        say(text=summary["text"], blocks=summary["blocks"])
+
+        cat = req.category_l1 or ""
+        if req.category_l2:
+            cat += f" / {req.category_l2}" if cat else req.category_l2
+
+        status_emoji = "🔵" if req.status in ("escalated", "pending_review") else "🟢"
+        status_text = (
+            "Your request is under review by the procurement team."
+            if req.status in ("escalated", "pending_review")
+            else "Your request has been evaluated and is being processed."
+        )
+
+        blocks = [
+            {
+                "type": "header",
+                "text": {"type": "plain_text", "text": f"✅ Request Evaluated — {req.id[:12]}"}
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": (
+                        f"Your procurement request has been received and evaluated.\n\n"
+                        + (f"📂 *Category:* {cat}\n" if cat else "")
+                        + (f"💰 *Budget:* {req.currency or 'EUR'} {req.budget_amount:,.0f}\n" if req.budget_amount else "")
+                        + f"\n{status_emoji} {status_text}"
+                    ),
+                },
+            },
+            {"type": "divider"},
+            {
+                "type": "context",
+                "elements": [{"type": "mrkdwn", "text": f"You'll be notified when a decision is made. | 🔗 <{_APP_URL}/dashboard|View Dashboard>"}]
+            },
+        ]
+        say(text=f"Your request {req.id} has been evaluated.", blocks=blocks)
     except Exception as e:
         say(
             f"⚠️ Evaluation could not complete: `{e}`\n"
             f"Your request was saved as `{req.id[:8]}…` and can be reviewed manually.\n"
-            f"🔗 {_APP_URL}/dashboard/transparency?id={req.id}"
+            f"🔗 {_APP_URL}/dashboard"
         )
 
 
@@ -164,13 +198,18 @@ def _handle_clarify(say, request_id: str, message: str, user: models.User, db):
         from services.evaluation import enrich_and_evaluate
         enrich_and_evaluate(req, db)
         db.refresh(req)
-        summary = _build_evaluation_summary(req)
-        summary["text"] = "🔄 Re-evaluated with your clarification\n" + summary["text"]
-        summary["blocks"].insert(0, {
-            "type": "section",
-            "text": {"type": "mrkdwn", "text": "🔄 *Re-evaluated with your clarification*"}
-        })
-        say(text=summary["text"], blocks=summary["blocks"])
+
+        status_emoji = "🔵" if req.status in ("escalated", "pending_review") else "🟢"
+        status_text = (
+            "Your request is still under review by the procurement team."
+            if req.status in ("escalated", "pending_review")
+            else "Your request has been re-evaluated and is being processed."
+        )
+        say(
+            f"🔄 *Re-evaluated with your clarification*\n\n"
+            f"{status_emoji} {status_text}\n"
+            f"🔗 <{_APP_URL}/dashboard|View Dashboard>"
+        )
     except Exception:
         pass  # Clarification is already saved; re-eval failure is non-critical
 

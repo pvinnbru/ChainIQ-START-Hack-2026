@@ -12,7 +12,7 @@ import remarkGfm from 'remark-gfm';
 import {
   ArrowLeft, Bot, Printer, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Send, Trash2,
   AlertTriangle, CheckCircle, Minus, ArrowRight, Star, Package, Clock, ShieldCheck, TrendingUp,
-  Gauge,
+  Gauge, Mail,
 } from 'lucide-react';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
@@ -934,6 +934,27 @@ export default function TransparencyPage() {
   const { user } = useAuth();
   const requestId = searchParams.get('id') ?? '';
 
+  // Only higher-rank roles can access the transparency view
+  const isRequester = user?.role === 'requester';
+  useEffect(() => {
+    if (isRequester) {
+      router.replace('/dashboard');
+    }
+  }, [isRequester, router]);
+
+  if (isRequester) {
+    return (
+      <div className="flex h-[70vh] items-center justify-center">
+        <div className="text-center space-y-3">
+          <AlertTriangle className="h-10 w-10 mx-auto opacity-40" />
+          <p className="font-medium">Access restricted</p>
+          <p className="text-sm text-muted-foreground">The AI Decision Log is only available to approvers and reviewers.</p>
+          <Button variant="outline" size="sm" onClick={() => router.push('/dashboard')}>Back to Dashboard</Button>
+        </div>
+      </div>
+    );
+  }
+
   const [log, setLog] = useState<ExecutionLog | null>(null);
   const [requestTitle, setRequestTitle] = useState('');
   const [loading, setLoading] = useState(true);
@@ -1035,7 +1056,7 @@ export default function TransparencyPage() {
             </div>
             <div className="flex gap-2 shrink-0">
               <Button variant="outline" size="sm" className="gap-2" onClick={() => window.print()}>
-                <Printer className="h-4 w-4" /> Download PDF
+                <Printer className="h-4 w-4" />Report
               </Button>
               {!chatOpen && (
                 <Button
@@ -1509,6 +1530,7 @@ export default function TransparencyPage() {
                         <th className="px-3 print:px-1 py-2.5 print:py-1.5 w-16 print:w-14 text-center" title="Overall rank: 95% cost + 2.5% reputation + 2.5% historic, × compliance">Score</th>
                         <th className="px-3 print:px-1 py-2.5 print:py-1.5 w-16 print:w-14 text-center" title="Composite quality, risk and ESG score">Reputation</th>
                         <th className="px-3 print:px-1 py-2.5 print:py-1.5 w-16 print:w-14 text-center" title="Policy compliance — 100 = fully compliant, lower = soft violations">Compliance</th>
+                        <th className="px-3 print:px-1 py-2.5 print:py-1.5 w-24 text-center print:hidden">Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1577,6 +1599,27 @@ export default function TransparencyPage() {
                                   {scoreBar(m.complianceScore != null ? Math.round(m.complianceScore * 100) : null) ?? <span className="text-xs print:text-[10px] text-muted-foreground">—</span>}
                                 </div>
                               </td>
+                              <td className="px-3 print:px-1 py-2.5 print:py-1.5 text-center print:hidden">
+                                {isRequired ? (
+                                  <a
+                                    href={`mailto:?subject=${encodeURIComponent(`Quote Request: ${requestTitle || requestId} — ${s.supplier_name}`)}&body=${encodeURIComponent(
+                                      `Dear ${s.supplier_name} Team,\n\n` +
+                                      `We are reaching out regarding procurement request ${requestId}.\n\n` +
+                                      `Request: ${requestTitle || 'N/A'}\n` +
+                                      `Category: ${s.category_l2}\n` +
+                                      (m.unitPrice != null ? `Indicative Unit Price: ${m.currency} ${Number(m.unitPrice).toLocaleString(undefined, { maximumFractionDigits: 2 })}\n` : '') +
+                                      (m.totalCost != null ? `Estimated Total: ${m.currency} ${Number(m.totalCost).toLocaleString(undefined, { maximumFractionDigits: 0 })}\n` : '') +
+                                      `\nCould you please provide a formal quote for this request at your earliest convenience?\n\n` +
+                                      `Best regards`
+                                    )}`}
+                                    className="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors no-underline"
+                                    title="Open email client to request a quote"
+                                  >
+                                    <Mail className="h-3 w-3" />
+                                    Quote
+                                  </a>
+                                ) : null}
+                              </td>
                             </tr>
                           );
                         })}
@@ -1611,40 +1654,40 @@ export default function TransparencyPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs text-left">
                     <thead>
-                    <tr className="border-b text-xs text-muted-foreground uppercase tracking-wide bg-muted/30">
-                      <th className="px-3 py-2 w-48">Flag</th>
-                      <th className="px-3 py-2 w-24 text-center">Severity</th>
-                      <th className="px-3 py-2">Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(() => {
-                      const FLAG_LABELS: Record<string, string> = {
-                        NO_COMPLIANT_SUPPLIERS: 'No Compliant Suppliers',
-                        LOW_RANK_CLUSTER: 'Low Ranking Cluster',
-                        INDISTINGUISHABLE_RANKS: 'Indistinguishable Rankings',
-                        HIGH_EXCLUSION_RATE: 'High Exclusion Rate',
-                        BUDGET_INSUFFICIENT: 'Budget Insufficient',
-                        PREFERRED_SUPPLIER_RESTRICTED: 'Preferred Supplier Restricted',
-                        PREFERRED_BONUS_DECISIVE: 'Preferred Bonus Was Decisive',
-                        QUANTITY_EXCEEDS_TIER_MAXIMUM: 'Quantity Exceeds Tier Maximum',
-                      };
-                      return log.flag_assessment!.flags!.map((f, i) => (
-                        <tr key={i} className={`border-b last:border-0 ${f.severity === 'warning' ? 'bg-amber-50/60 dark:bg-amber-950/10' : ''}`}>
-                          <td className="px-3 py-2.5 font-medium text-foreground">{FLAG_LABELS[f.flag_id] ?? f.flag_id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</td>
-                          <td className="px-3 py-2.5 text-center">
-                            {f.severity === 'warning' ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400">Warning</span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400">Info</span>
-                            )}
-                          </td>
-                          <td className="px-3 py-2.5 text-muted-foreground leading-relaxed">{f.description}</td>
-                        </tr>
-                      ));
-                    })()}
-                  </tbody>
-                </table>
+                      <tr className="border-b text-xs text-muted-foreground uppercase tracking-wide bg-muted/30">
+                        <th className="px-3 py-2 w-48">Flag</th>
+                        <th className="px-3 py-2 w-24 text-center">Severity</th>
+                        <th className="px-3 py-2">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(() => {
+                        const FLAG_LABELS: Record<string, string> = {
+                          NO_COMPLIANT_SUPPLIERS: 'No Compliant Suppliers',
+                          LOW_RANK_CLUSTER: 'Low Ranking Cluster',
+                          INDISTINGUISHABLE_RANKS: 'Indistinguishable Rankings',
+                          HIGH_EXCLUSION_RATE: 'High Exclusion Rate',
+                          BUDGET_INSUFFICIENT: 'Budget Insufficient',
+                          PREFERRED_SUPPLIER_RESTRICTED: 'Preferred Supplier Restricted',
+                          PREFERRED_BONUS_DECISIVE: 'Preferred Bonus Was Decisive',
+                          QUANTITY_EXCEEDS_TIER_MAXIMUM: 'Quantity Exceeds Tier Maximum',
+                        };
+                        return log.flag_assessment!.flags!.map((f, i) => (
+                          <tr key={i} className={`border-b last:border-0 ${f.severity === 'warning' ? 'bg-amber-50/60 dark:bg-amber-950/10' : ''}`}>
+                            <td className="px-3 py-2.5 font-medium text-foreground">{FLAG_LABELS[f.flag_id] ?? f.flag_id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</td>
+                            <td className="px-3 py-2.5 text-center">
+                              {f.severity === 'warning' ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400">Warning</span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400">Info</span>
+                              )}
+                            </td>
+                            <td className="px-3 py-2.5 text-muted-foreground leading-relaxed">{f.description}</td>
+                          </tr>
+                        ));
+                      })()}
+                    </tbody>
+                  </table>
                 </div>
               </CardContent>
             </Card>

@@ -108,6 +108,43 @@ def resolve_escalation(
     if not escalation:
         raise HTTPException(status_code=404, detail="Escalation not found")
     escalation.status = "resolved"
+
+    # Add audit trail
+    _add_audit(
+        db, escalation.request_id, current_user.id,
+        "escalation_resolved",
+        f"Escalation '{escalation.type}' resolved by {current_user.name}",
+    )
+
+    # Check if ALL escalations for this request are now resolved
+    remaining = (
+        db.query(models.Escalation)
+        .filter(
+            models.Escalation.request_id == escalation.request_id,
+            models.Escalation.status == "pending",
+        )
+        .count()
+    )
+
+    if remaining == 0:
+        # All escalations resolved → approve the request
+        request = db.query(models.Request).filter(
+            models.Request.id == escalation.request_id
+        ).first()
+        if request and request.status == "escalated":
+            request.status = "approved"
+            _add_audit(
+                db, request.id, current_user.id,
+                "approved",
+                "All escalations resolved — request auto-approved",
+            )
+            # Notify requester via Slack
+            try:
+                from notifications import notify_decision
+                notify_decision(request, request.requester)
+            except Exception:
+                pass
+
     db.commit()
     db.refresh(escalation)
     return escalation

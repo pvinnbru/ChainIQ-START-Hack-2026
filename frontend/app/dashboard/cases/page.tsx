@@ -84,7 +84,7 @@ export default function CasesPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<SortBy>('date');
-  const [order, setOrder] = useState<Order>('asc');
+  const [order, setOrder] = useState<Order>('desc');
   const [withdrawTarget, setWithdrawTarget] = useState<Request | null>(null);
   const [page, setPage] = useState(1);
   const PER_PAGE = 10;
@@ -306,7 +306,7 @@ export default function CasesPage() {
             {paginated.map((req) => {
               const title = req.title ?? (req.plain_text ? req.plain_text.slice(0, 60) + (req.plain_text.length > 60 ? '…' : '') : '(untitled)');
               return (
-                <div key={req.id} className="p-4 hover:bg-muted/30 transition-colors cursor-pointer" onClick={() => handleView(req)}>
+                <div key={req.id} className={`p-4 transition-colors ${isRequester ? '' : 'hover:bg-muted/30 cursor-pointer'}`} onClick={() => !isRequester && handleView(req)}>
                   <div className="flex items-start justify-between gap-2 mb-1.5">
                     <p className="font-medium text-sm leading-snug flex-1">{title}</p>
                     <Badge variant="outline" className={`text-xs shrink-0 ${getStatusColor(req.status)}`}>
@@ -321,10 +321,12 @@ export default function CasesPage() {
                     )}
                     {req.required_by_date && <UrgencyChip dateStr={req.required_by_date} status={req.status} />}
                   </div>
-                  <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                    <Button size="sm" variant="outline" className="h-7 px-2 text-xs gap-1" onClick={() => handleView(req)}>
-                      View <ArrowUpRight className="h-3 w-3" />
-                    </Button>
+                    <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                      {!isRequester && (
+                        <Button size="sm" variant="outline" className="h-7 px-2 text-xs gap-1" onClick={() => handleView(req)}>
+                          View <ArrowUpRight className="h-3 w-3" />
+                        </Button>
+                      )}
                     {isRequester && !['approved', 'rejected', 'withdrawn'].includes(req.status) && (
                       <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive" onClick={() => setWithdrawTarget(req)}>
                         <Undo2 className="h-3 w-3" />
@@ -354,7 +356,7 @@ export default function CasesPage() {
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-muted-foreground uppercase bg-muted/50 border-b">
                 <tr>
-                  <th className="px-4 py-3">ID</th>
+                  {!isRequester && <th className="px-4 py-3">ID</th>}
                   <th className="px-4 py-3">Title</th>
                   <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3">Category</th>
@@ -369,12 +371,14 @@ export default function CasesPage() {
                 {paginated.map((req) => (
                   <tr
                     key={req.id}
-                    className="border-b last:border-0 hover:bg-muted/30 transition-colors cursor-pointer"
-                    onClick={() => handleView(req)}
+                    className={`border-b last:border-0 transition-colors ${isRequester ? '' : 'hover:bg-muted/30 cursor-pointer'}`}
+                    onClick={() => !isRequester && handleView(req)}
                   >
-                    <td className="px-4 py-3 font-mono text-xs text-muted-foreground whitespace-nowrap">
-                      {req.id.startsWith('REQ-') ? req.id : `${req.id.slice(0, 8)}…`}
-                    </td>
+                    {!isRequester && (
+                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground whitespace-nowrap">
+                        {req.id.startsWith('REQ-') ? req.id : `${req.id.slice(0, 8)}…`}
+                      </td>
+                    )}
                     <td className="px-4 py-3 max-w-[220px]">
                       <p className="font-medium leading-snug">
                         {req.title
@@ -408,9 +412,11 @@ export default function CasesPage() {
                     </td>
                     <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-1">
-                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs gap-1" onClick={() => handleView(req)}>
-                          View <ArrowUpRight className="h-3 w-3" />
-                        </Button>
+                        {!isRequester && (
+                          <Button size="sm" variant="ghost" className="h-7 px-2 text-xs gap-1" onClick={() => handleView(req)}>
+                            View <ArrowUpRight className="h-3 w-3" />
+                          </Button>
+                        )}
                         {isRequester && !['approved', 'rejected', 'withdrawn'].includes(req.status) && (
                           <Button size="sm" variant="ghost" className="h-7 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive" onClick={() => setWithdrawTarget(req)}>
                             <Undo2 className="h-3 w-3" />
