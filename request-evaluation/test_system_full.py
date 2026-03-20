@@ -454,17 +454,13 @@ def test_all_requests(pipeline):
     print(f"  results written: {RESULTS_PATH}")
     print(f"  logs written:    {LOGS_DIR}/ ({evaluated - errors} × .json)")
 
-    # Sample: show first 3 results with suppliers
-    shown = 0
+    # Print all results
     for r in results:
         if r.get("status") == "ok" and r.get("supplier_count", 0) > 0:
             print(f"\n  {r['request_id']}")
-            for s in r["ranking"][:3]:
+            for s in r["ranking"]:
                 print(f"    #{s['position']} {s['supplier_name']:40s} "
                       f"normalized_rank={s['normalized_rank']:>8}  cost={s['cost_total']}")
-            shown += 1
-            if shown >= 3:
-                break
 
     # Assertions
     assert evaluated > 0, "No requests were evaluated"
