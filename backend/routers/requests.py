@@ -37,6 +37,11 @@ def _normalize(r: dict) -> dict:
     # updated_at not present in file data
     item.setdefault("updated_at", item.get("created_at", ""))
     item.setdefault("escalations", [])
+    
+    countries = item.get("delivery_countries")
+    if isinstance(countries, list):
+        item["delivery_countries"] = ", ".join(countries)
+        
     return item
 
 
@@ -254,7 +259,7 @@ def create_request(
     return req
 
 
-@router.get("/{request_id}")
+@router.get("/{request_id}", response_model=schemas.RequestOut)
 def get_request(
     request_id: str,
     current_user: models.User = Depends(get_current_user),
@@ -318,11 +323,21 @@ def clarify_request(
         models.Escalation.status == "pending",
     ).update({"status": "resolved"})
 
-    req.status = "pending_review"
     req.updated_at = datetime.utcnow()
     _add_audit(db, request_id, current_user.id, "clarified", body.notes)
     db.commit()
     db.refresh(req)
+
+    from services.evaluation import enrich_and_evaluate
+    enrich_and_evaluate(req, db)
+    db.refresh(req)
+
+    try:
+        from notifications import notify_evaluation_complete
+        notify_evaluation_complete(req, current_user)
+    except Exception:
+        pass
+
     return req
 
 

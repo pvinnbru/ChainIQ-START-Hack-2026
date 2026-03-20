@@ -1810,6 +1810,9 @@ def run_procurement_evaluation(
         final_state["normalized_rank"]        = normalized_rank
         final_state["blended_avg_unit_price"] = round(blended_avg, 6) if blended_avg is not None else None
         final_state["budget_penalty"]         = round(penalty, 6)
+        final_state["historic_score"]         = round(historic_score, 6)
+        final_state["cost_score"]             = round(cost_score, 6)
+        final_state["reputation_norm"]        = round(reputation_norm, 6)
         supplier_results[i] = (identity, normalized_rank, final_state)
 
     # Back-fill final_normalized_rank on SupplierLog entries (matched by supplier_id)

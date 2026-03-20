@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Paperclip } from 'lucide-react';
+import { Paperclip, ChevronDown, ChevronUp } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -72,6 +72,7 @@ export default function CreateRequestPage() {
   const [esgRequirement, setEsgRequirement] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const parseAndFill = (file: File) => {
@@ -102,6 +103,7 @@ export default function CreateRequestPage() {
         if (countries) setDeliveryCountries(Array.isArray(countries) ? countries.join(', ') : countries);
         if (d.data_residency_constraint != null) setDataResidency(!!d.data_residency_constraint);
         if (d.esg_requirement != null) setEsgRequirement(!!d.esg_requirement);
+        setDetailsOpen(true);
         toast.success('JSON imported — review and submit.');
       } catch {
         toast.error('Invalid JSON file.');
@@ -227,10 +229,21 @@ export default function CreateRequestPage() {
 
         {/* Meta details */}
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Request Details</CardTitle>
-            <CardDescription>Optional — fill in as much as you know.</CardDescription>
+          <CardHeader
+            className="cursor-pointer select-none"
+            onClick={() => setDetailsOpen(o => !o)}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <CardTitle className="text-base">Request Details</CardTitle>
+                <CardDescription>Optional — fill in as much as you know.</CardDescription>
+              </div>
+              {detailsOpen
+                ? <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
+                : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />}
+            </div>
           </CardHeader>
+          {detailsOpen && (
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
@@ -413,6 +426,7 @@ export default function CreateRequestPage() {
               </div>
             </div>
           </CardContent>
+          )}
         </Card>
 
         {/* Submitter info (read-only) */}

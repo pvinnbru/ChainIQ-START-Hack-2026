@@ -119,7 +119,8 @@ def _handle_new_request(say, text: str, user: models.User, db):
         from services.evaluation import enrich_and_evaluate
         enrich_and_evaluate(req, db)
         db.refresh(req)
-        say(_build_evaluation_summary(req))
+        summary = _build_evaluation_summary(req)
+        say(text=summary["text"], blocks=summary["blocks"])
     except Exception as e:
         say(
             f"⚠️ Evaluation could not complete: `{e}`\n"
@@ -163,7 +164,13 @@ def _handle_clarify(say, request_id: str, message: str, user: models.User, db):
         from services.evaluation import enrich_and_evaluate
         enrich_and_evaluate(req, db)
         db.refresh(req)
-        say("🔄 *Re-evaluated with your clarification:*\n\n" + _build_evaluation_summary(req))
+        summary = _build_evaluation_summary(req)
+        summary["text"] = "🔄 Re-evaluated with your clarification\n" + summary["text"]
+        summary["blocks"].insert(0, {
+            "type": "section",
+            "text": {"type": "mrkdwn", "text": "🔄 *Re-evaluated with your clarification*"}
+        })
+        say(text=summary["text"], blocks=summary["blocks"])
     except Exception:
         pass  # Clarification is already saved; re-eval failure is non-critical
 

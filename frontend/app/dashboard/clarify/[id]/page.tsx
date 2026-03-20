@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useEscalationCount } from '@/context/escalation-count-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -63,6 +64,7 @@ export default function ClarifyPage() {
   const [preferredSupplier, setPreferredSupplier] = useState('');
   const [incumbentSupplier, setIncumbentSupplier] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const { refresh: refreshBadgeCount } = useEscalationCount();
 
   useEffect(() => {
     fetch(`${API}/requests/${id}`, { credentials: 'include' })
@@ -105,6 +107,7 @@ export default function ClarifyPage() {
       });
       if (!res.ok) throw new Error('Failed to submit clarification');
       toast.success('Clarification submitted successfully!');
+      refreshBadgeCount();
       router.push('/dashboard/cases');
     } catch {
       toast.error('Failed to submit. Please try again.');
@@ -133,7 +136,7 @@ export default function ClarifyPage() {
     );
   }
 
-  const pendingEscalations = request.escalations.filter(
+  const pendingEscalations = (request?.escalations || []).filter(
     (e) => e.type === 'requester_clarification' && e.status === 'pending'
   );
 

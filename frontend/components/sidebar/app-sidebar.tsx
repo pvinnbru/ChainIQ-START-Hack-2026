@@ -28,7 +28,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { count: escalationCount } = useEscalationCount()
   const { resolvedTheme, setTheme } = useTheme()
 
-const navMain = [
+  const navMain: {
+    title: string
+    icon?: any
+    isActive?: boolean
+    badge?: number | string
+    items?: { title: string; url: string; badge?: number | string }[]
+  }[] = [
     {
       title: "Requests",
       icon: FileCheck,
@@ -46,10 +52,12 @@ const navMain = [
       title: "My Escalations",
       icon: Bell,
       isActive: false,
+      badge: escalationCount > 0 ? escalationCount : undefined,
       items: [
         {
-          title: escalationCount > 0 ? `Pending (${escalationCount})` : "No pending",
+          title: "All Pending",
           url: "/dashboard/escalations",
+          badge: escalationCount > 0 ? escalationCount : undefined,
         },
       ],
     })
