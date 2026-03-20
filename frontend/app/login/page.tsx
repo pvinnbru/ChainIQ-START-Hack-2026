@@ -84,21 +84,21 @@ export default function LoginPage() {
           <h1 className="text-4xl font-bold leading-tight tracking-tight mb-4">
             Procurement<br />Intelligence<br />Platform
           </h1>
-          <p className="text-primary-foreground/70 text-base leading-relaxed">
+          <p className="text-primary-foreground/70 text-base leading-relaxed mb-8">
             AI-powered procurement routing with policy validation, supplier shortlisting, and automated escalation workflows.
           </p>
-        </div>
-        <div className="space-y-4">
-          {[
-            'Automated policy compliance checks',
-            'Smart supplier shortlisting',
-            'Role-based escalation routing',
-          ].map((feat) => (
-            <div key={feat} className="flex items-center gap-3 text-sm text-primary-foreground/80">
-              <div className="h-1.5 w-1.5 rounded-full bg-primary-foreground/50 shrink-0" />
-              {feat}
-            </div>
-          ))}
+          <div className="space-y-4">
+            {[
+              'Automated policy compliance checks',
+              'Smart supplier shortlisting',
+              'Role-based escalation routing',
+            ].map((feat) => (
+              <div key={feat} className="flex items-center gap-3 text-sm text-primary-foreground/80">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary-foreground/50 shrink-0" />
+                {feat}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -123,10 +123,10 @@ export default function LoginPage() {
                   key={u.id}
                   onClick={() => login(u.id)}
                   disabled={!!loggingIn}
-                  className={`group text-left rounded-xl border p-4 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+                  className={`group text-left rounded-xl border p-4 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
                     ${isLoading
                       ? 'border-primary bg-primary/5 shadow-md'
-                      : 'border-border bg-card hover:border-primary hover:shadow-md'
+                      : 'border-border bg-card hover:border-primary hover:shadow-lg hover:scale-[1.03] hover:-translate-y-1'
                     }
                     ${loggingIn && !isLoading ? 'opacity-50' : ''}
                   `}
